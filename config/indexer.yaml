@@ -1,0 +1,51 @@
+server:
+  bind_host: "0.0.0.0"
+  bind_port: 8080
+  tls:
+    cert_path: "certs/server.crt"
+    key_path: "certs/server.key"
+  auth:
+    basic:
+      username: "admin"
+      password_env: "INDEXER_API_PASSWORD"
+
+rpc:
+  node_id: "btc-mainnet-1"
+  url: "https://nginx-rpc:443"
+  auth:
+    basic:
+      username: "rpcuser"
+      password_env: "BITCOIN_RPC_PASSWORD"
+  mtls:
+    ca_path: "certs/mtls/ca.crt"
+    client_cert_path: "certs/mtls/client.crt"
+    client_key_path: "certs/mtls/client.key"
+  timeouts:
+    connect_ms: 5000
+    request_ms: 30000
+
+indexer:
+  chain: "bitcoin"
+  network: "mainnet"
+  reorg_depth: 12
+  poll:
+    tip_interval_ms: 5000
+    mempool_interval_ms: 3000
+  concurrency:
+    max_jobs: 5
+    rpc_parallelism: 8
+    db_writer_parallelism: 4
+  batching:
+    blocks_per_batch: 50
+    txs_per_batch: 5000
+
+jobs:
+  - job_id: "full-sync"
+    mode: "all_addresses"
+    enabled: true
+
+  - job_id: "watchlist"
+    mode: "address_list"
+    enabled: false
+    addresses:
+      - "bc1qexample"

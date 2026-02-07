@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: indexer
+      POSTGRES_USER: indexer
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-indexer}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      RUST_LOG: info
+      INDEXER_API_PASSWORD: ${INDEXER_API_PASSWORD:-changeme}
+      BITCOIN_RPC_PASSWORD: ${BITCOIN_RPC_PASSWORD:-changeme}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/indexer.yaml:/etc/indexer/indexer.yaml:ro
+      - ./certs:/etc/indexer:ro
+
+volumes:
+  postgres_data:
