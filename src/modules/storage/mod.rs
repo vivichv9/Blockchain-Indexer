@@ -7,6 +7,8 @@ use thiserror::Error;
 
 const DEFAULT_MIGRATIONS_PATH: &str = "migrations";
 
+pub mod repo;
+
 #[derive(Debug, Error)]
 pub enum StorageError {
     #[error("DATABASE_URL is not set")]
