@@ -5,27 +5,37 @@ services:
     environment:
       POSTGRES_DB: indexer
       POSTGRES_USER: indexer
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-indexer}
+      POSTGRES_PASSWORD: indexer
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U indexer -d indexer"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       RUST_LOG: info
       INDEXER_API_PASSWORD: ${INDEXER_API_PASSWORD:-changeme}
       BITCOIN_RPC_PASSWORD: ${BITCOIN_RPC_PASSWORD:-changeme}
+      DATABASE_URL: ${DATABASE_URL:-postgres://indexer:indexer@postgres:5432/indexer}
+      INDEXER_CONFIG_PATH: /app/config/indexer.yaml
+      MIGRATIONS_PATH: /app/migrations
     ports:
       - "8080:8080"
     volumes:
-      - ./config/indexer.yaml:/etc/indexer/indexer.yaml:ro
-      - ./certs:/etc/indexer:ro
+      - ./config/indexer.yaml:/app/config/indexer.yaml:ro
+      - ./certs:/app/certs:ro
+      - ./migrations:/app/migrations:ro
 
 volumes:
   postgres_data:

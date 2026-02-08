@@ -11,10 +11,10 @@ server:
 
 rpc:
   node_id: "btc-mainnet-1"
-  url: "https://nginx-rpc:443"
+  url: "https://bitcoin-testnet4.blch.ru"
   auth:
     basic:
-      username: "rpcuser"
+      username: "user_d"
       password_env: "BITCOIN_RPC_PASSWORD"
   mtls:
     ca_path: "certs/mtls/ca.crt"

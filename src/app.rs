@@ -1,12 +1,15 @@
 use anyhow::Result;
 use tracing::info;
 
-use crate::modules::api::{self, ApiAuth};
+use crate::modules::api::{self, ApiAuth, AppState};
 use crate::modules::config::AppConfig;
+use crate::modules::jobs::JobsService;
+use crate::modules::storage::Storage;
 
 pub struct App {
     bind_addr: String,
     auth: ApiAuth,
+    state: AppState,
 }
 
 impl App {
@@ -15,6 +18,11 @@ impl App {
 
         let config = AppConfig::load()?;
         let bind_addr = format!("{}:{}", config.server.bind_host, config.server.bind_port);
+
+        let storage = Storage::connect().await?;
+        storage.apply_migrations().await?;
+        let jobs_service = JobsService::new(storage.pool().clone());
+        jobs_service.sync_from_config(&config.jobs).await?;
 
         info!(
             component = "config",
@@ -29,6 +37,7 @@ impl App {
                 username: config.server.auth.username,
                 password: config.server.auth.password,
             },
+            state: AppState { jobs: jobs_service },
         })
     }
 
@@ -40,7 +49,7 @@ impl App {
             message = "http server listening"
         );
 
-        axum::serve(listener, api::router(self.auth)).await?;
+        axum::serve(listener, api::router(self.auth, self.state)).await?;
         Ok(())
     }
 }

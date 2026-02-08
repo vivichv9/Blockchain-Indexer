@@ -3,7 +3,7 @@ use std::env;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 const DEFAULT_CONFIG_PATH: &str = "config/indexer.yaml";
@@ -101,7 +101,7 @@ pub struct BatchingConfig {
     pub txs_per_batch: u32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct JobConfig {
     pub job_id: String,
     pub mode: String,
