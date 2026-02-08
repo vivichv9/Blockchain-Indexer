@@ -23,7 +23,20 @@ async fn start_api(bind_addr: &str, auth: ApiAuth, state: AppState) {
     });
 }
 
-async fn setup() -> (String, ApiAuth) {
+fn docker_available() -> bool {
+    std::process::Command::new("docker")
+        .arg("info")
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
+}
+
+async fn setup() -> Option<(String, ApiAuth)> {
+    if !docker_available() {
+        eprintln!("Docker is not available, skipping integration test.");
+        return None;
+    }
+
     let docker = Cli::default();
     let image = GenericImage::new("postgres", "16")
         .with_env_var("POSTGRES_DB", "postgres")
@@ -69,13 +82,15 @@ async fn setup() -> (String, ApiAuth) {
     start_api(&bind_addr, auth.clone(), state).await;
     sleep(Duration::from_millis(150)).await;
 
-    (bind_addr, auth)
+    Some((bind_addr, auth))
 }
 
 #[tokio::test]
 #[ignore]
 async fn jobs_lifecycle_api() {
-    let (bind_addr, auth) = setup().await;
+    let Some((bind_addr, auth)) = setup().await else {
+        return;
+    };
 
     let client = reqwest::Client::new();
 
@@ -143,7 +158,9 @@ async fn jobs_lifecycle_api() {
 #[tokio::test]
 #[ignore]
 async fn jobs_requires_auth() {
-    let (bind_addr, auth) = setup().await;
+    let Some((bind_addr, auth)) = setup().await else {
+        return;
+    };
     let client = reqwest::Client::new();
 
     let resp = client
@@ -167,7 +184,9 @@ async fn jobs_requires_auth() {
 #[tokio::test]
 #[ignore]
 async fn jobs_not_found() {
-    let (bind_addr, auth) = setup().await;
+    let Some((bind_addr, auth)) = setup().await else {
+        return;
+    };
     let client = reqwest::Client::new();
 
     let resp = client
@@ -183,7 +202,9 @@ async fn jobs_not_found() {
 #[tokio::test]
 #[ignore]
 async fn jobs_invalid_transition() {
-    let (bind_addr, auth) = setup().await;
+    let Some((bind_addr, auth)) = setup().await else {
+        return;
+    };
     let client = reqwest::Client::new();
 
     let resp = client
