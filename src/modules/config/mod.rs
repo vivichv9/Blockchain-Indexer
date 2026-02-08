@@ -499,4 +499,202 @@ jobs:
         let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
         assert!(err.to_string().contains("reorg_depth"));
     }
+
+    #[test]
+    fn rejects_invalid_network() {
+        let dir = tempdir().expect("tempdir");
+
+        let server_cert = dir.path().join("server.crt");
+        let server_key = dir.path().join("server.key");
+        let ca = dir.path().join("ca.crt");
+        let client_cert = dir.path().join("client.crt");
+        let client_key = dir.path().join("client.key");
+
+        write_file(&server_cert);
+        write_file(&server_key);
+        write_file(&ca);
+        write_file(&client_cert);
+        write_file(&client_key);
+
+        let mut yaml = make_yaml(
+            &[
+                ("server_cert", server_cert.display().to_string()),
+                ("server_key", server_key.display().to_string()),
+                ("ca", ca.display().to_string()),
+                ("client_cert", client_cert.display().to_string()),
+                ("client_key", client_key.display().to_string()),
+            ],
+            "  - job_id: \"full-sync\"\n    mode: \"all_addresses\"\n    enabled: true\n",
+            12,
+        );
+
+        yaml = yaml.replace("network: \"mainnet\"", "network: \"unknown\"");
+
+        let yaml_path = dir.path().join("indexer.yaml");
+        fs::write(&yaml_path, yaml).expect("write yaml");
+
+        std::env::set_var("INDEXER_API_PASSWORD", "api-pass");
+        std::env::set_var("BITCOIN_RPC_PASSWORD", "rpc-pass");
+
+        let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
+        assert!(err.to_string().contains("indexer.network"));
+    }
+
+    #[test]
+    fn rejects_duplicate_job_ids() {
+        let dir = tempdir().expect("tempdir");
+
+        let server_cert = dir.path().join("server.crt");
+        let server_key = dir.path().join("server.key");
+        let ca = dir.path().join("ca.crt");
+        let client_cert = dir.path().join("client.crt");
+        let client_key = dir.path().join("client.key");
+
+        write_file(&server_cert);
+        write_file(&server_key);
+        write_file(&ca);
+        write_file(&client_cert);
+        write_file(&client_key);
+
+        let jobs = "  - job_id: \"full-sync\"\n    mode: \"all_addresses\"\n    enabled: true\n  - job_id: \"full-sync\"\n    mode: \"all_addresses\"\n    enabled: true\n";
+
+        let yaml = make_yaml(
+            &[
+                ("server_cert", server_cert.display().to_string()),
+                ("server_key", server_key.display().to_string()),
+                ("ca", ca.display().to_string()),
+                ("client_cert", client_cert.display().to_string()),
+                ("client_key", client_key.display().to_string()),
+            ],
+            jobs,
+            12,
+        );
+
+        let yaml_path = dir.path().join("indexer.yaml");
+        fs::write(&yaml_path, yaml).expect("write yaml");
+
+        std::env::set_var("INDEXER_API_PASSWORD", "api-pass");
+        std::env::set_var("BITCOIN_RPC_PASSWORD", "rpc-pass");
+
+        let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
+        assert!(err.to_string().contains("job_id MUST be unique"));
+    }
+
+    #[test]
+    fn rejects_empty_address_list() {
+        let dir = tempdir().expect("tempdir");
+
+        let server_cert = dir.path().join("server.crt");
+        let server_key = dir.path().join("server.key");
+        let ca = dir.path().join("ca.crt");
+        let client_cert = dir.path().join("client.crt");
+        let client_key = dir.path().join("client.key");
+
+        write_file(&server_cert);
+        write_file(&server_key);
+        write_file(&ca);
+        write_file(&client_cert);
+        write_file(&client_key);
+
+        let jobs = "  - job_id: \"watchlist\"\n    mode: \"address_list\"\n    enabled: true\n";
+
+        let yaml = make_yaml(
+            &[
+                ("server_cert", server_cert.display().to_string()),
+                ("server_key", server_key.display().to_string()),
+                ("ca", ca.display().to_string()),
+                ("client_cert", client_cert.display().to_string()),
+                ("client_key", client_key.display().to_string()),
+            ],
+            jobs,
+            12,
+        );
+
+        let yaml_path = dir.path().join("indexer.yaml");
+        fs::write(&yaml_path, yaml).expect("write yaml");
+
+        std::env::set_var("INDEXER_API_PASSWORD", "api-pass");
+        std::env::set_var("BITCOIN_RPC_PASSWORD", "rpc-pass");
+
+        let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
+        assert!(err.to_string().contains("addresses MUST be non-empty"));
+    }
+
+    #[test]
+    fn rejects_missing_password_env() {
+        let dir = tempdir().expect("tempdir");
+
+        let server_cert = dir.path().join("server.crt");
+        let server_key = dir.path().join("server.key");
+        let ca = dir.path().join("ca.crt");
+        let client_cert = dir.path().join("client.crt");
+        let client_key = dir.path().join("client.key");
+
+        write_file(&server_cert);
+        write_file(&server_key);
+        write_file(&ca);
+        write_file(&client_cert);
+        write_file(&client_key);
+
+        let mut yaml = make_yaml(
+            &[
+                ("server_cert", server_cert.display().to_string()),
+                ("server_key", server_key.display().to_string()),
+                ("ca", ca.display().to_string()),
+                ("client_cert", client_cert.display().to_string()),
+                ("client_key", client_key.display().to_string()),
+            ],
+            "  - job_id: \"full-sync\"\n    mode: \"all_addresses\"\n    enabled: true\n",
+            12,
+        );
+
+        yaml = yaml.replace("password_env: \"INDEXER_API_PASSWORD\"", "password_env: \"MISSING_ENV\"");
+
+        let yaml_path = dir.path().join("indexer.yaml");
+        fs::write(&yaml_path, yaml).expect("write yaml");
+
+        std::env::remove_var("MISSING_ENV");
+        std::env::set_var("BITCOIN_RPC_PASSWORD", "rpc-pass");
+
+        let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
+        assert!(err.to_string().contains("MISSING_ENV"));
+    }
+
+    #[test]
+    fn rejects_missing_files() {
+        let dir = tempdir().expect("tempdir");
+
+        let server_cert = dir.path().join("server.crt");
+        let server_key = dir.path().join("server.key");
+        let ca = dir.path().join("ca.crt");
+        let client_cert = dir.path().join("client.crt");
+        let client_key = dir.path().join("client.key");
+
+        write_file(&server_cert);
+        write_file(&server_key);
+        write_file(&ca);
+        write_file(&client_cert);
+        // client_key intentionally missing
+
+        let yaml = make_yaml(
+            &[
+                ("server_cert", server_cert.display().to_string()),
+                ("server_key", server_key.display().to_string()),
+                ("ca", ca.display().to_string()),
+                ("client_cert", client_cert.display().to_string()),
+                ("client_key", client_key.display().to_string()),
+            ],
+            "  - job_id: \"full-sync\"\n    mode: \"all_addresses\"\n    enabled: true\n",
+            12,
+        );
+
+        let yaml_path = dir.path().join("indexer.yaml");
+        fs::write(&yaml_path, yaml).expect("write yaml");
+
+        std::env::set_var("INDEXER_API_PASSWORD", "api-pass");
+        std::env::set_var("BITCOIN_RPC_PASSWORD", "rpc-pass");
+
+        let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
+        assert!(err.to_string().contains("client.key"));
+    }
 }
