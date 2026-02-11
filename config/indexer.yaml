@@ -17,6 +17,7 @@ rpc:
       username: "user_d"
       password_env: "BITCOIN_RPC_PASSWORD"
   mtls:
+    enabled: true
     ca_path: "certs/mtls/ca.crt"
     client_cert_path: "certs/mtls/client.crt"
     client_key_path: "certs/mtls/client.key"

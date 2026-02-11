@@ -55,7 +55,7 @@ pub struct RpcConfig {
     pub node_id: String,
     pub url: String,
     pub auth: BasicAuthResolved,
-    pub mtls: MtlsConfig,
+    pub mtls: Option<MtlsConfig>,
     pub timeouts: RpcTimeouts,
 }
 
@@ -147,12 +147,13 @@ struct RawRpcConfig {
     node_id: String,
     url: String,
     auth: RawAuthConfig,
-    mtls: RawMtlsConfig,
+    mtls: Option<RawMtlsConfig>,
     timeouts: RawRpcTimeouts,
 }
 
 #[derive(Debug, Deserialize)]
 struct RawMtlsConfig {
+    enabled: Option<bool>,
     ca_path: String,
     client_cert_path: String,
     client_key_path: String,
@@ -221,9 +222,24 @@ impl AppConfig {
         validate_readable_file(&raw.server.tls.cert_path)?;
         validate_readable_file(&raw.server.tls.key_path)?;
 
-        validate_readable_file(&raw.rpc.mtls.ca_path)?;
-        validate_readable_file(&raw.rpc.mtls.client_cert_path)?;
-        validate_readable_file(&raw.rpc.mtls.client_key_path)?;
+        let mtls = match raw.rpc.mtls {
+            Some(mtls) => {
+                let enabled = mtls.enabled.unwrap_or(true);
+                if enabled {
+                    validate_readable_file(&mtls.ca_path)?;
+                    validate_readable_file(&mtls.client_cert_path)?;
+                    validate_readable_file(&mtls.client_key_path)?;
+                    Some(MtlsConfig {
+                        ca_path: PathBuf::from(mtls.ca_path),
+                        client_cert_path: PathBuf::from(mtls.client_cert_path),
+                        client_key_path: PathBuf::from(mtls.client_key_path),
+                    })
+                } else {
+                    None
+                }
+            }
+            None => None,
+        };
 
         let server_auth = resolve_basic_auth(&raw.server.auth.basic)?;
         let rpc_auth = resolve_basic_auth(&raw.rpc.auth.basic)?;
@@ -291,11 +307,7 @@ impl AppConfig {
                 node_id: raw.rpc.node_id,
                 url: raw.rpc.url,
                 auth: rpc_auth,
-                mtls: MtlsConfig {
-                    ca_path: PathBuf::from(raw.rpc.mtls.ca_path),
-                    client_cert_path: PathBuf::from(raw.rpc.mtls.client_cert_path),
-                    client_key_path: PathBuf::from(raw.rpc.mtls.client_key_path),
-                },
+                mtls,
                 timeouts: RpcTimeouts {
                     connect_ms: raw.rpc.timeouts.connect_ms,
                     request_ms: raw.rpc.timeouts.request_ms,
@@ -696,5 +708,48 @@ jobs:
 
         let err = AppConfig::load_from_path(&yaml_path).expect_err("should fail");
         assert!(err.to_string().contains("client.key"));
+    }
+
+    #[test]
+    fn allows_mtls_disabled_without_files() {
+        let dir = tempdir().expect("tempdir");
+
+        let server_cert = dir.path().join("server.crt");
+        let server_key = dir.path().join("server.key");
+        let ca = dir.path().join("ca.crt");
+        let client_cert = dir.path().join("client.crt");
+        let client_key = dir.path().join("client.key");
+
+        write_file(&server_cert);
+        write_file(&server_key);
+        write_file(&ca);
+        write_file(&client_cert);
+        write_file(&client_key);
+
+        let mut yaml = make_yaml(
+            &[
+                ("server_cert", server_cert.display().to_string()),
+                ("server_key", server_key.display().to_string()),
+                ("ca", ca.display().to_string()),
+                ("client_cert", client_cert.display().to_string()),
+                ("client_key", client_key.display().to_string()),
+            ],
+            "  - job_id: \"full-sync\"\n    mode: \"all_addresses\"\n    enabled: true\n",
+            12,
+        );
+
+        yaml = yaml.replace(
+            "mtls:\n    ca_path:",
+            "mtls:\n    enabled: false\n    ca_path:",
+        );
+
+        let yaml_path = dir.path().join("indexer.yaml");
+        fs::write(&yaml_path, yaml).expect("write yaml");
+
+        std::env::set_var("INDEXER_API_PASSWORD", "api-pass");
+        std::env::set_var("BITCOIN_RPC_PASSWORD", "rpc-pass");
+
+        let cfg = AppConfig::load_from_path(&yaml_path).expect("config should load");
+        assert!(cfg.rpc.mtls.is_none());
     }
 }
