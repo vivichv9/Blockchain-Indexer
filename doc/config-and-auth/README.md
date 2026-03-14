@@ -12,6 +12,7 @@
 - Разрешение секретов из environment variables в runtime-конфиг.
 - Обязательный Basic Auth middleware для API (на текущем этапе для всех маршрутов).
 - Формат ошибки авторизации приведен к контракту API (`AUTH_FAILED`, HTTP 401).
+- mTLS для RPC можно отключить через `rpc.mtls.enabled: false`.
 
 ## Где находится
 - Загрузка и валидация конфига: `src/modules/config/mod.rs`.

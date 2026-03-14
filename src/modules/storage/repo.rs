@@ -1,5 +1,5 @@
 use serde_json::Value;
-use sqlx::PgPool;
+use sqlx::{Executor, PgPool, Postgres, Row};
 
 #[derive(Debug, Clone)]
 pub struct BlockRecord {
@@ -40,16 +40,17 @@ pub struct TxInputRecord {
     pub sequence: i64,
 }
 
-pub struct BlocksRepo<'a> {
-    pool: &'a PgPool,
-}
+pub struct BlocksRepo;
 
-impl<'a> BlocksRepo<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
-        Self { pool }
+impl BlocksRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
     }
 
-    pub async fn upsert(&self, block: &BlockRecord) -> Result<(), sqlx::Error> {
+    pub async fn upsert<'e, E>(&self, executor: E, block: &BlockRecord) -> Result<(), sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
         sqlx::query(
             "INSERT INTO blocks (height, hash, prev_hash, time, status, meta)\
              VALUES ($1, $2, $3, $4, $5, $6)\
@@ -66,23 +67,24 @@ impl<'a> BlocksRepo<'a> {
         .bind(block.time)
         .bind(&block.status)
         .bind(&block.meta)
-        .execute(self.pool)
+        .execute(executor)
         .await?;
 
         Ok(())
     }
 }
 
-pub struct TransactionsRepo<'a> {
-    pool: &'a PgPool,
-}
+pub struct TransactionsRepo;
 
-impl<'a> TransactionsRepo<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
-        Self { pool }
+impl TransactionsRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
     }
 
-    pub async fn upsert(&self, tx: &TransactionRecord) -> Result<(), sqlx::Error> {
+    pub async fn upsert<'e, E>(&self, executor: E, tx: &TransactionRecord) -> Result<(), sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
         sqlx::query(
             "INSERT INTO transactions (txid, block_height, block_hash, time, status, decoded)\
              VALUES ($1, $2, $3, $4, $5, $6)\
@@ -99,23 +101,24 @@ impl<'a> TransactionsRepo<'a> {
         .bind(tx.time)
         .bind(&tx.status)
         .bind(&tx.decoded)
-        .execute(self.pool)
+        .execute(executor)
         .await?;
 
         Ok(())
     }
 }
 
-pub struct TxOutputsRepo<'a> {
-    pool: &'a PgPool,
-}
+pub struct TxOutputsRepo;
 
-impl<'a> TxOutputsRepo<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
-        Self { pool }
+impl TxOutputsRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
     }
 
-    pub async fn insert(&self, output: &TxOutputRecord) -> Result<(), sqlx::Error> {
+    pub async fn insert<'e, E>(&self, executor: E, output: &TxOutputRecord) -> Result<(), sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
         sqlx::query(
             "INSERT INTO tx_outputs (txid, vout, value_sats, script_type, address, script_hex)\
              VALUES ($1, $2, $3, $4, $5, $6)\
@@ -127,23 +130,24 @@ impl<'a> TxOutputsRepo<'a> {
         .bind(&output.script_type)
         .bind(&output.address)
         .bind(&output.script_hex)
-        .execute(self.pool)
+        .execute(executor)
         .await?;
 
         Ok(())
     }
 }
 
-pub struct TxInputsRepo<'a> {
-    pool: &'a PgPool,
-}
+pub struct TxInputsRepo;
 
-impl<'a> TxInputsRepo<'a> {
-    pub fn new(pool: &'a PgPool) -> Self {
-        Self { pool }
+impl TxInputsRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
     }
 
-    pub async fn insert(&self, input: &TxInputRecord) -> Result<(), sqlx::Error> {
+    pub async fn insert<'e, E>(&self, executor: E, input: &TxInputRecord) -> Result<(), sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
         sqlx::query(
             "INSERT INTO tx_inputs (txid, vin, prev_txid, prev_vout, sequence)\
              VALUES ($1, $2, $3, $4, $5)\
@@ -154,10 +158,169 @@ impl<'a> TxInputsRepo<'a> {
         .bind(&input.prev_txid)
         .bind(input.prev_vout)
         .bind(input.sequence)
-        .execute(self.pool)
+        .execute(executor)
         .await?;
 
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct UtxoCreateRecord {
+    pub out_txid: String,
+    pub out_vout: i32,
+    pub address: String,
+    pub value_sats: i64,
+    pub created_in_txid: String,
+}
+
+pub struct UtxosRepo;
+
+impl UtxosRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
+    }
+
+    pub async fn insert_unspent_if_absent<'e, E>(
+        &self,
+        executor: E,
+        utxo: &UtxoCreateRecord,
+    ) -> Result<bool, sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
+        let result = sqlx::query(
+            "INSERT INTO utxos_current \
+             (out_txid, out_vout, address, value_sats, created_in_txid, spent_in_txid, status) \
+             VALUES ($1, $2, $3, $4, $5, NULL, 'unspent') \
+             ON CONFLICT (out_txid, out_vout) DO NOTHING",
+        )
+        .bind(&utxo.out_txid)
+        .bind(utxo.out_vout)
+        .bind(&utxo.address)
+        .bind(utxo.value_sats)
+        .bind(&utxo.created_in_txid)
+        .execute(executor)
+        .await?;
+
+        Ok(result.rows_affected() == 1)
+    }
+
+    pub async fn mark_spent_if_unspent(
+        &self,
+        executor: impl Executor<'_, Database = Postgres>,
+        out_txid: &str,
+        out_vout: i32,
+        spent_in_txid: &str,
+    ) -> Result<bool, sqlx::Error> {
+        let result = sqlx::query(
+            "UPDATE utxos_current \
+             SET spent_in_txid = $3, status = 'spent' \
+             WHERE out_txid = $1 AND out_vout = $2 AND status = 'unspent'",
+        )
+        .bind(out_txid)
+        .bind(out_vout)
+        .bind(spent_in_txid)
+        .execute(executor)
+        .await?;
+
+        Ok(result.rows_affected() == 1)
+    }
+}
+
+pub struct AddressBalancesRepo;
+
+impl AddressBalancesRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
+    }
+
+    pub async fn add_delta<'e, E>(
+        &self,
+        executor: E,
+        address: &str,
+        delta_sats: i64,
+    ) -> Result<(), sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
+        sqlx::query(
+            "INSERT INTO address_balance_current (address, balance_sats, updated_at) \
+             VALUES ($1, $2, NOW()) \
+             ON CONFLICT (address) DO UPDATE SET \
+               balance_sats = address_balance_current.balance_sats + EXCLUDED.balance_sats, \
+               updated_at = NOW()",
+        )
+        .bind(address)
+        .bind(delta_sats)
+        .execute(executor)
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn current_balance<'e, E>(&self, executor: E, address: &str) -> Result<Option<i64>, sqlx::Error>
+    where
+        E: Executor<'e, Database = Postgres>,
+    {
+        let row = sqlx::query("SELECT balance_sats FROM address_balance_current WHERE address = $1")
+            .bind(address)
+            .fetch_optional(executor)
+            .await?;
+
+        Ok(row.map(|r| r.get::<i64, _>("balance_sats")))
+    }
+
+    pub async fn upsert_history_snapshot(
+        &self,
+        executor: impl Executor<'_, Database = Postgres>,
+        address: &str,
+        block_height: i32,
+        time: i64,
+        balance_sats: i64,
+    ) -> Result<(), sqlx::Error> {
+        sqlx::query(
+            "INSERT INTO address_balance_history (address, block_height, time, balance_sats) \
+             VALUES ($1, $2, $3, $4) \
+             ON CONFLICT (address, block_height) DO UPDATE SET \
+               time = EXCLUDED.time, \
+               balance_sats = EXCLUDED.balance_sats",
+        )
+        .bind(address)
+        .bind(block_height)
+        .bind(time)
+        .bind(balance_sats)
+        .execute(executor)
+        .await?;
+
+        Ok(())
+    }
+}
+
+pub struct AddressLookupRepo;
+
+impl AddressLookupRepo {
+    pub fn new(_pool: &PgPool) -> Self {
+        Self
+    }
+
+    pub async fn output_address_value(
+        &self,
+        executor: impl Executor<'_, Database = Postgres>,
+        txid: &str,
+        vout: i32,
+    ) -> Result<Option<(String, i64)>, sqlx::Error> {
+        let row = sqlx::query(
+            "SELECT address, value_sats \
+             FROM tx_outputs \
+             WHERE txid = $1 AND vout = $2 AND address IS NOT NULL",
+        )
+        .bind(txid)
+        .bind(vout)
+        .fetch_optional(executor)
+        .await?;
+
+        Ok(row.map(|r| (r.get::<String, _>("address"), r.get::<i64, _>("value_sats"))))
     }
 }
 

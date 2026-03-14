@@ -3,12 +3,15 @@ use tracing::info;
 
 use crate::modules::api::{self, ApiAuth, AppState};
 use crate::modules::config::AppConfig;
-use crate::modules::jobs::JobsService;
+use crate::modules::indexer::IndexerService;
+use crate::modules::jobs::{JobsRunner, JobsRunnerConfig, JobsService};
+use crate::modules::rpc::RpcClient;
 use crate::modules::storage::Storage;
 
 pub struct App {
     bind_addr: String,
     auth: ApiAuth,
+    jobs_runner: JobsRunner,
     state: AppState,
 }
 
@@ -23,6 +26,18 @@ impl App {
         storage.apply_migrations().await?;
         let jobs_service = JobsService::new(storage.pool().clone());
         jobs_service.sync_from_config(&config.jobs).await?;
+        let rpc = RpcClient::from_config(&config.rpc)?;
+        let indexer = IndexerService::new(rpc.clone(), storage.pool().clone());
+        let jobs_runner = JobsRunner::new(
+            jobs_service.clone(),
+            rpc,
+            indexer,
+            JobsRunnerConfig {
+                max_jobs: config.indexer.concurrency.max_jobs as usize,
+                poll_interval: std::time::Duration::from_millis(config.indexer.poll.tip_interval_ms),
+                blocks_per_batch: config.indexer.batching.blocks_per_batch,
+            },
+        );
 
         info!(
             component = "config",
@@ -37,11 +52,13 @@ impl App {
                 username: config.server.auth.username,
                 password: config.server.auth.password,
             },
+            jobs_runner,
             state: AppState { jobs: jobs_service },
         })
     }
 
     pub async fn run(self) -> Result<()> {
+        self.jobs_runner.start();
         let listener = tokio::net::TcpListener::bind(&self.bind_addr).await?;
         info!(
             component = "api",

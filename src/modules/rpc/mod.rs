@@ -105,6 +105,10 @@ impl RpcClient {
             .await
     }
 
+    pub async fn get_block_count(&self) -> Result<u64, RpcError> {
+        self.call("getblockcount", serde_json::json!([])).await
+    }
+
     pub async fn get_block(&self, hash: &str, verbosity: u8) -> Result<Value, RpcError> {
         self.call("getblock", serde_json::json!([hash, verbosity]))
             .await

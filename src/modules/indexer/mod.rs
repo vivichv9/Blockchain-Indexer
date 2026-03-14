@@ -1,11 +1,14 @@
+use std::collections::{HashMap, HashSet};
+
 use serde::Deserialize;
 use serde_json::Value;
 use sqlx::PgPool;
 use thiserror::Error;
 
 use crate::modules::storage::repo::{
-    BlockRecord, BlocksRepo, TransactionRecord, TransactionsRepo, TxInputRecord, TxInputsRepo,
-    TxOutputRecord, TxOutputsRepo,
+    AddressBalancesRepo, AddressLookupRepo, BlockRecord, BlocksRepo, TransactionRecord,
+    TransactionsRepo, TxInputRecord, TxInputsRepo, TxOutputRecord, TxOutputsRepo, UtxoCreateRecord,
+    UtxosRepo,
 };
 
 #[derive(Debug, Deserialize, serde::Serialize)]
@@ -59,10 +62,16 @@ impl<'a> IndexerPipeline<'a> {
     }
 
     pub async fn persist_block(&self, block: &RpcBlock) -> Result<(), sqlx::Error> {
+        let mut db_tx = self.pool.begin().await?;
         let blocks = BlocksRepo::new(self.pool);
         let txs = TransactionsRepo::new(self.pool);
         let inputs = TxInputsRepo::new(self.pool);
         let outputs = TxOutputsRepo::new(self.pool);
+        let utxos = UtxosRepo::new(self.pool);
+        let address_balances = AddressBalancesRepo::new(self.pool);
+        let address_lookup = AddressLookupRepo::new(self.pool);
+        let mut address_deltas: HashMap<String, i64> = HashMap::new();
+        let mut touched_addresses: HashSet<String> = HashSet::new();
 
         let block_record = BlockRecord {
             height: block.height,
@@ -72,7 +81,7 @@ impl<'a> IndexerPipeline<'a> {
             status: "canonical".to_string(),
             meta: serde_json::json!({}),
         };
-        blocks.upsert(&block_record).await?;
+        blocks.upsert(&mut *db_tx, &block_record).await?;
 
         for tx in &block.tx {
             let tx_record = TransactionRecord {
@@ -83,7 +92,7 @@ impl<'a> IndexerPipeline<'a> {
                 status: "confirmed".to_string(),
                 decoded: serde_json::to_value(tx).unwrap_or(Value::Null),
             };
-            txs.upsert(&tx_record).await?;
+            txs.upsert(&mut *db_tx, &tx_record).await?;
 
             for (idx, vin) in tx.vin.iter().enumerate() {
                 if let (Some(prev_txid), Some(prev_vout)) = (vin.txid.as_ref(), vin.vout) {
@@ -94,7 +103,21 @@ impl<'a> IndexerPipeline<'a> {
                         prev_vout,
                         sequence: vin.sequence,
                     };
-                    inputs.insert(&input).await?;
+                    inputs.insert(&mut *db_tx, &input).await?;
+
+                    if let Some((address, value_sats)) =
+                        address_lookup
+                            .output_address_value(&mut *db_tx, prev_txid, prev_vout)
+                            .await?
+                    {
+                        let spent = utxos
+                            .mark_spent_if_unspent(&mut *db_tx, prev_txid, prev_vout, &tx.txid)
+                            .await?;
+                        if spent {
+                            *address_deltas.entry(address.clone()).or_insert(0) -= value_sats;
+                            touched_addresses.insert(address);
+                        }
+                    }
                 }
             }
 
@@ -113,10 +136,50 @@ impl<'a> IndexerPipeline<'a> {
                     address,
                     script_hex: vout.script_pub_key.hex.clone(),
                 };
-                outputs.insert(&output).await?;
+                outputs.insert(&mut *db_tx, &output).await?;
+
+                if let Some(output_address) = output.address.as_ref() {
+                    let created = utxos
+                        .insert_unspent_if_absent(&mut *db_tx, &UtxoCreateRecord {
+                            out_txid: output.txid.clone(),
+                            out_vout: output.vout,
+                            address: output_address.clone(),
+                            value_sats: output.value_sats,
+                            created_in_txid: output.txid.clone(),
+                        })
+                        .await?;
+                    if created {
+                        *address_deltas.entry(output_address.clone()).or_insert(0) += output.value_sats;
+                        touched_addresses.insert(output_address.clone());
+                    }
+                }
             }
         }
 
+        for (address, delta) in address_deltas {
+            if delta != 0 {
+                address_balances.add_delta(&mut *db_tx, &address, delta).await?;
+            }
+        }
+
+        for address in touched_addresses {
+            if let Some(balance_sats) = address_balances
+                .current_balance(&mut *db_tx, &address)
+                .await?
+            {
+                address_balances
+                    .upsert_history_snapshot(
+                        &mut *db_tx,
+                        &address,
+                        block.height,
+                        block.time,
+                        balance_sats,
+                    )
+                    .await?;
+            }
+        }
+
+        db_tx.commit().await?;
         Ok(())
     }
 }
