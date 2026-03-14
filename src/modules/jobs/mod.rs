@@ -10,7 +10,8 @@ use tokio::sync::{Mutex, Semaphore};
 use tracing::{error, warn};
 
 use crate::modules::config::JobConfig;
-use crate::modules::indexer::{IndexerError, IndexerService};
+use crate::modules::indexer::{IndexerError, IndexHeightResult, IndexerService, PersistBlockOutcome};
+use crate::modules::metrics::MetricsService;
 use crate::modules::rpc::{RpcClient, RpcError};
 
 #[derive(Debug, Clone, Serialize)]
@@ -83,6 +84,7 @@ pub struct JobsRunnerConfig {
     pub max_jobs: usize,
     pub poll_interval: Duration,
     pub blocks_per_batch: u32,
+    pub reorg_depth: u32,
 }
 
 #[derive(Clone)]
@@ -90,6 +92,7 @@ pub struct JobsRunner {
     jobs: JobsService,
     rpc: RpcClient,
     indexer: IndexerService,
+    metrics: MetricsService,
     config: JobsRunnerConfig,
     active_jobs: Arc<Mutex<HashSet<String>>>,
 }
@@ -101,9 +104,15 @@ impl JobsService {
         }
     }
 
+    pub fn pool(&self) -> &PgPool {
+        self.pool.as_ref()
+    }
+
     pub async fn sync_from_config(&self, jobs: &[JobConfig]) -> Result<(), JobsError> {
         for job in jobs {
             let snapshot = serde_json::to_value(job)?;
+            let mut tx = self.pool.begin().await?;
+
             sqlx::query(
                 "INSERT INTO jobs (job_id, mode, status, progress_height, config_snapshot, updated_at) \
                  VALUES ($1, $2, 'created', 0, $3, NOW()) \
@@ -115,8 +124,27 @@ impl JobsService {
             .bind(&job.job_id)
             .bind(&job.mode)
             .bind(snapshot)
-            .execute(self.pool.as_ref())
+            .execute(&mut *tx)
             .await?;
+
+            sqlx::query("DELETE FROM job_addresses WHERE job_id = $1")
+                .bind(&job.job_id)
+                .execute(&mut *tx)
+                .await?;
+
+            for address in &job.addresses {
+                sqlx::query(
+                    "INSERT INTO job_addresses (job_id, address) \
+                     VALUES ($1, $2) \
+                     ON CONFLICT (job_id, address) DO NOTHING",
+                )
+                .bind(&job.job_id)
+                .bind(address)
+                .execute(&mut *tx)
+                .await?;
+            }
+
+            tx.commit().await?;
         }
 
         Ok(())
@@ -213,6 +241,18 @@ impl JobsService {
         Ok(())
     }
 
+    pub async fn rewind_all_progress(&self, height: i32) -> Result<(), JobsError> {
+        sqlx::query(
+            "UPDATE jobs \
+             SET progress_height = LEAST(progress_height, $1), updated_at = NOW()",
+        )
+        .bind(height)
+        .execute(self.pool.as_ref())
+        .await?;
+
+        Ok(())
+    }
+
     pub async fn mark_failed(&self, job_id: &str, message: &str) -> Result<(), JobsError> {
         sqlx::query(
             "UPDATE jobs \
@@ -266,12 +306,14 @@ impl JobsRunner {
         jobs: JobsService,
         rpc: RpcClient,
         indexer: IndexerService,
+        metrics: MetricsService,
         config: JobsRunnerConfig,
     ) -> Self {
         Self {
             jobs,
             rpc,
             indexer,
+            metrics,
             config,
             active_jobs: Arc::new(Mutex::new(HashSet::new())),
         }
@@ -281,6 +323,7 @@ impl JobsRunner {
         let jobs = self.jobs.clone();
         let rpc = self.rpc.clone();
         let indexer = self.indexer.clone();
+        let metrics = self.metrics.clone();
         let active_jobs = self.active_jobs.clone();
         let config = self.config.clone();
 
@@ -292,9 +335,11 @@ impl JobsRunner {
                     &jobs,
                     &rpc,
                     &indexer,
+                    &metrics,
                     &active_jobs,
                     &semaphore,
                     config.blocks_per_batch,
+                    config.reorg_depth,
                 )
                 .await
                 {
@@ -311,9 +356,11 @@ async fn schedule_running_jobs(
     jobs: &JobsService,
     rpc: &RpcClient,
     indexer: &IndexerService,
+    metrics: &MetricsService,
     active_jobs: &Arc<Mutex<HashSet<String>>>,
     semaphore: &Arc<Semaphore>,
     blocks_per_batch: u32,
+    reorg_depth: u32,
 ) -> Result<(), JobsError> {
     for job_id in jobs.running_job_ids().await? {
         let permit = match semaphore.clone().try_acquire_owned() {
@@ -334,13 +381,25 @@ async fn schedule_running_jobs(
         let jobs = jobs.clone();
         let rpc = rpc.clone();
         let indexer = indexer.clone();
+        let metrics = metrics.clone();
         let active_jobs = active_jobs.clone();
 
         tokio::spawn(async move {
             let _permit = permit;
 
-            if let Err(err) = execute_job_batch(&jobs, &rpc, &indexer, &job_id, blocks_per_batch).await {
+            if let Err(err) = execute_job_batch(
+                &jobs,
+                &rpc,
+                &indexer,
+                &metrics,
+                &job_id,
+                blocks_per_batch,
+                reorg_depth,
+            )
+            .await
+            {
                 error!(component = "jobs", job_id = %job_id, error = %err, message = "job batch failed");
+                metrics.increment_error("job_batch");
 
                 if let Err(mark_err) = jobs.mark_failed(&job_id, &err.to_string()).await {
                     error!(
@@ -364,11 +423,18 @@ async fn execute_job_batch(
     jobs: &JobsService,
     rpc: &RpcClient,
     indexer: &IndexerService,
+    metrics: &MetricsService,
     job_id: &str,
     blocks_per_batch: u32,
+    reorg_depth: u32,
 ) -> Result<(), JobExecutionError> {
     if !jobs.is_running(job_id).await? {
         return Ok(());
+    }
+
+    if let Some(divergence_height) = indexer.reconcile_chain(reorg_depth).await? {
+        jobs.rewind_all_progress(std::cmp::max(0, divergence_height - 1))
+            .await?;
     }
 
     let details = jobs.get(job_id).await?;
@@ -390,8 +456,28 @@ async fn execute_job_batch(
             break;
         }
 
-        indexer.index_height(height as u32).await?;
-        jobs.update_progress(job_id, height).await?;
+        match indexer.index_height(height as u32).await? {
+            IndexHeightResult {
+                outcome: PersistBlockOutcome::Indexed,
+                tx_count,
+            } => {
+                metrics.increment_blocks_processed(job_id, 1);
+                metrics.increment_txs_processed(job_id, tx_count);
+                jobs.update_progress(job_id, height).await?;
+            }
+            IndexHeightResult {
+                outcome: PersistBlockOutcome::AlreadyIndexed,
+                ..
+            } => {
+                jobs.update_progress(job_id, height).await?;
+            }
+            IndexHeightResult {
+                outcome: PersistBlockOutcome::WaitingForPreviousHeight,
+                ..
+            } => {
+                break;
+            }
+        }
     }
 
     Ok(())

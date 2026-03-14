@@ -16,6 +16,7 @@ pub struct TransactionRecord {
     pub txid: String,
     pub block_height: Option<i32>,
     pub block_hash: Option<String>,
+    pub position_in_block: i32,
     pub time: i64,
     pub status: String,
     pub decoded: Value,
@@ -86,11 +87,12 @@ impl TransactionsRepo {
         E: Executor<'e, Database = Postgres>,
     {
         sqlx::query(
-            "INSERT INTO transactions (txid, block_height, block_hash, time, status, decoded)\
-             VALUES ($1, $2, $3, $4, $5, $6)\
+            "INSERT INTO transactions (txid, block_height, block_hash, position_in_block, time, status, decoded)\
+             VALUES ($1, $2, $3, $4, $5, $6, $7)\
              ON CONFLICT (txid) DO UPDATE SET\
                block_height = EXCLUDED.block_height,\
                block_hash = EXCLUDED.block_hash,\
+               position_in_block = EXCLUDED.position_in_block,\
                time = EXCLUDED.time,\
                status = EXCLUDED.status,\
                decoded = EXCLUDED.decoded",
@@ -98,6 +100,7 @@ impl TransactionsRepo {
         .bind(&tx.txid)
         .bind(tx.block_height)
         .bind(&tx.block_hash)
+        .bind(tx.position_in_block)
         .bind(tx.time)
         .bind(&tx.status)
         .bind(&tx.decoded)
@@ -348,6 +351,7 @@ mod tests {
             txid: "t".to_string(),
             block_height: Some(1),
             block_hash: Some("h".to_string()),
+            position_in_block: 0,
             time: 0,
             status: "confirmed".to_string(),
             decoded: serde_json::json!({}),

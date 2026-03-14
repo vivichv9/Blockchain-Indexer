@@ -1,0 +1,80 @@
+@startuml BPMN_Indexer_Process
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+
+|Клиент / Оператор|
+start
+:Отправить команду jobs
+(start/pause/resume/stop/status);
+
+|API Layer|
+:Проверка Basic Auth;
+:Валидация команды;
+
+|JobService|
+:Проверка допустимости
+перехода состояния;
+if (Команда валидна?) then (Да)
+  :Обновить состояние job в D2;
+  :Передать сигнал в Indexer Pipeline;
+
+  |API Layer|
+  :Сформировать немедленный ответ\nо принятии команды;
+  |Клиент / Оператор|
+  :Получить подтверждение запуска\nили изменения состояния job;
+
+  |Monitoring|
+  :Инициализировать run-scoped gauges
+  на старте/возобновлении job;
+  :Записать событие старта run
+  (без сброса counters);
+
+else (Нет)
+  |API Layer|
+  :Сформировать ошибку
+  валидации команды;
+  |Клиент / Оператор|
+  :Получить ответ с ошибкой;
+  stop
+endif
+
+|Indexer Pipeline|
+repeat
+  :Получить tip сети;
+  if (Local < Tip?) then (Да)
+    |RPC Client|
+    :Запросить блок/транзакции у Bitcoin Core;
+    |Indexer Pipeline|
+    if (Reorg detected?) then (Да)
+      :Rollback N blocks;
+    else (Нет)
+      :Persist block + tx + utxo;
+      :Update progress_height;
+    endif
+
+    |Monitoring|
+    :Опубликовать метрики итерации
+    (lag, blocks/tx processed, rpc latency);
+    :Записать логи шага индексации;
+
+    |Indexer Pipeline|
+  else (Нет)
+    :Wait / Poll;
+
+    |Monitoring|
+    :Опубликовать heartbeat
+    и текущий lag;
+
+    |Indexer Pipeline|
+  endif
+repeat while (Job active?) is (Да)
+
+|Monitoring|
+:Опубликовать terminal-метрики run
+(status, duration, last_error);
+:Записать итоговые логи run;
+stop
+@enduml

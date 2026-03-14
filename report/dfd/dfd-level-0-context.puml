@@ -1,0 +1,18 @@
+@startuml DFD_Level_0_Context
+!include dfd-notation.puml
+
+title DFD 0 уровня - Контекстная диаграмма Bitcoin Indexer
+
+ExternalEntity(E1, "E1 Клиентские системы")
+ExternalEntity(E2, "E2 Bitcoin Core RPC Proxy")
+ExternalEntity(E3, "E3 Контур мониторинга")
+Process(P0, "P0 Bitcoin Blockchain Indexer")
+
+Flow(E1, P0, "API-запросы: данные, команды управления")
+Flow(P0, E1, "API-ответы: данные индекса")
+Flow(P0, E2, "JSON-RPC запросы к узлу")
+Flow(E2, P0, "Блоки, транзакции, mempool")
+Flow(P0, E3, "Метрики, логи")
+Flow(E3, P0, "Сигналы и алерты")
+
+@enduml

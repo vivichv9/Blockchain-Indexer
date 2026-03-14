@@ -1,0 +1,33 @@
+@startuml DFD_Level_2_Indexing
+!include dfd-notation.puml
+
+title DFD 2 уровня - Детализация процесса P1 Индексация данных
+
+ExternalEntity(E2, "E2 Bitcoin Core RPC Proxy")
+Process(P11, "P1.1 Получение tip и диапазона синхронизации")
+Process(P12, "P1.2 Загрузка блока и транзакций")
+Process(P13, "P1.3 Проверка reorg и согласование ветки")
+Process(P14, "P1.4 Нормализация и запись данных")
+Process(P15, "P1.5 Обновление прогресса job")
+
+DataStore(D1, "D1 Операционное хранилище индексера")
+DataStore(D2, "D2 Конфигурация и состояние jobs")
+
+Flow(D2, P11, "Активные jobs и текущий progress_height")
+Flow(P11, E2, "RPC: getblockcount/getblockhash")
+Flow(E2, P11, "Tip и контрольные хэши")
+Flow(P11, P12, "Диапазон высот для обработки")
+
+Flow(P12, E2, "RPC: getblock/getrawtransaction")
+Flow(E2, P12, "Сырые блоки и транзакции")
+Flow(P12, P13, "Кандидатные блоки и ссылки prev_hash")
+
+Flow(P13, D1, "Чтение локальной канонической цепи")
+Flow(D1, P13, "Локальные hash/height для сверки")
+Flow(P13, P14, "Согласованные данные или команды rollback")
+
+Flow(P14, D1, "Upsert blocks/transactions/inputs/outputs/utxo")
+Flow(P14, P15, "Факт записи и новый checkpoint")
+Flow(P15, D2, "Обновление статуса/progress/last_error")
+
+@enduml

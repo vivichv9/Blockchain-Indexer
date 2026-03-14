@@ -1,5 +1,5 @@
 use axum::body::Body;
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::header::AUTHORIZATION;
 use axum::http::{HeaderValue, Request, StatusCode};
 use axum::middleware::{from_fn_with_state, Next};
@@ -7,9 +7,14 @@ use axum::response::{IntoResponse, Response};
 use axum::{routing::get, Json, Router};
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
+use crate::modules::data::{
+    BalanceFilter, BlocksFilter, DataError, DataService, Pagination, TransactionsFilter,
+};
 use crate::modules::jobs::{JobDetails, JobSummary, JobsError, JobsService};
+use crate::modules::metrics::MetricsService;
+use crate::modules::nodes::{NodeHealthDetails, NodeSummary, NodesError, NodesService};
 
 #[derive(Debug, Clone)]
 pub struct ApiAuth {
@@ -20,6 +25,9 @@ pub struct ApiAuth {
 #[derive(Debug, Clone)]
 pub struct AppState {
     pub jobs: JobsService,
+    pub data: DataService,
+    pub metrics: MetricsService,
+    pub nodes: NodesService,
 }
 
 #[derive(Debug, Serialize)]
@@ -44,9 +52,66 @@ struct JobDetailsResponse {
     item: JobDetails,
 }
 
+#[derive(Debug, Serialize)]
+struct NodesListResponse {
+    items: Vec<NodeSummary>,
+}
+
+#[derive(Debug, Serialize)]
+struct NodeDetailsResponse {
+    item: NodeHealthDetails,
+}
+
+#[derive(Debug, Deserialize)]
+struct PaginationQuery {
+    offset: Option<i64>,
+    limit: Option<i64>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BalanceQuery {
+    from_time: Option<i64>,
+    to_time: Option<i64>,
+    from_height: Option<i32>,
+    to_height: Option<i32>,
+}
+
+#[derive(Debug, Deserialize)]
+struct TransactionsQuery {
+    from_height: Option<i32>,
+    to_height: Option<i32>,
+    from_time: Option<i64>,
+    to_time: Option<i64>,
+    address: Option<String>,
+    txid: Option<String>,
+    offset: Option<i64>,
+    limit: Option<i64>,
+}
+
+#[derive(Debug, Deserialize)]
+struct MempoolQuery {
+    address: Option<String>,
+    offset: Option<i64>,
+    limit: Option<i64>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BlocksQuery {
+    from_height: Option<i32>,
+    to_height: Option<i32>,
+    from_time: Option<i64>,
+    to_time: Option<i64>,
+    block_hash: Option<String>,
+    has_txid: Option<String>,
+    address: Option<String>,
+    offset: Option<i64>,
+    limit: Option<i64>,
+}
+
 pub fn router(auth: ApiAuth, state: AppState) -> Router {
     Router::new()
         .route("/health", get(health))
+        .route("/metrics", get(metrics))
         .route("/v1/jobs", get(list_jobs))
         .route("/v1/jobs/{job_id}", get(get_job))
         .route("/v1/jobs/{job_id}/start", axum::routing::post(start_job))
@@ -54,6 +119,13 @@ pub fn router(auth: ApiAuth, state: AppState) -> Router {
         .route("/v1/jobs/{job_id}/pause", axum::routing::post(pause_job))
         .route("/v1/jobs/{job_id}/resume", axum::routing::post(resume_job))
         .route("/v1/jobs/{job_id}/retry", axum::routing::post(retry_job))
+        .route("/v1/nodes", get(list_nodes))
+        .route("/v1/nodes/{node_id}/health", get(get_node_health))
+        .route("/v1/data/addresses/{address}/balance", get(get_balance))
+        .route("/v1/data/addresses/{address}/utxos", get(get_utxos))
+        .route("/v1/data/transactions", get(list_transactions))
+        .route("/v1/data/transactions/mempool", get(list_mempool_transactions))
+        .route("/v1/data/blocks", get(list_blocks))
         .with_state(state)
         .layer(from_fn_with_state(auth, basic_auth_middleware))
 }
@@ -62,8 +134,34 @@ async fn health() -> Json<HealthResponse> {
     Json(HealthResponse { status: "ok" })
 }
 
+async fn metrics(State(state): State<AppState>) -> Result<Response, ApiResponse> {
+    let body = state
+        .metrics
+        .render(state.jobs.pool())
+        .await
+        .map_err(|_| ApiResponse::new(StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "Storage failure"))?;
+
+    Ok((
+        StatusCode::OK,
+        [(axum::http::header::CONTENT_TYPE, "text/plain; version=0.0.4; charset=utf-8")],
+        body,
+    )
+        .into_response())
+}
+
 async fn list_jobs(State(state): State<AppState>) -> Result<Json<JobsListResponse>, ApiResponse> {
-    let items = state.jobs.list().await.map_err(ApiResponse::from)?;
+    let tip_height = state.nodes.tip_height().await.map_err(ApiResponse::from)?;
+    let items = state
+        .jobs
+        .list()
+        .await
+        .map_err(ApiResponse::from)?
+        .into_iter()
+        .map(|mut item| {
+            item.tip_height = tip_height;
+            item
+        })
+        .collect();
     Ok(Json(JobsListResponse { items }))
 }
 
@@ -73,6 +171,19 @@ async fn get_job(
 ) -> Result<Json<JobDetailsResponse>, ApiResponse> {
     let item = state.jobs.get(&job_id).await.map_err(ApiResponse::from)?;
     Ok(Json(JobDetailsResponse { item }))
+}
+
+async fn list_nodes(State(state): State<AppState>) -> Result<Json<NodesListResponse>, ApiResponse> {
+    let items = state.nodes.list().await.map_err(ApiResponse::from)?;
+    Ok(Json(NodesListResponse { items }))
+}
+
+async fn get_node_health(
+    Path(node_id): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Json<NodeDetailsResponse>, ApiResponse> {
+    let item = state.nodes.get(&node_id).await.map_err(ApiResponse::from)?;
+    Ok(Json(NodeDetailsResponse { item }))
 }
 
 async fn start_job(
@@ -113,6 +224,103 @@ async fn retry_job(
 ) -> Result<Json<JobDetailsResponse>, ApiResponse> {
     let item = state.jobs.retry(&job_id).await.map_err(ApiResponse::from)?;
     Ok(Json(JobDetailsResponse { item }))
+}
+
+async fn get_balance(
+    Path(address): Path<String>,
+    Query(query): Query<BalanceQuery>,
+    State(state): State<AppState>,
+) -> Result<Json<crate::modules::data::BalanceResponse>, ApiResponse> {
+    let item = state
+        .data
+        .get_balance(
+            &address,
+            BalanceFilter {
+                from_time: query.from_time,
+                to_time: query.to_time,
+                from_height: query.from_height,
+                to_height: query.to_height,
+            },
+        )
+        .await
+        .map_err(ApiResponse::from)?;
+    Ok(Json(item))
+}
+
+async fn get_utxos(
+    Path(address): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Json<crate::modules::data::UtxosResponse>, ApiResponse> {
+    let item = state.data.get_utxos(&address).await.map_err(ApiResponse::from)?;
+    Ok(Json(item))
+}
+
+async fn list_transactions(
+    Query(query): Query<TransactionsQuery>,
+    State(state): State<AppState>,
+) -> Result<Json<crate::modules::data::TransactionsPage>, ApiResponse> {
+    let pagination = parse_pagination(&state.data, query.offset, query.limit)?;
+    let page = state
+        .data
+        .list_transactions(
+            TransactionsFilter {
+                from_height: query.from_height,
+                to_height: query.to_height,
+                from_time: query.from_time,
+                to_time: query.to_time,
+                address: query.address,
+                txid: query.txid,
+            },
+            pagination,
+        )
+        .await
+        .map_err(ApiResponse::from)?;
+    Ok(Json(page))
+}
+
+async fn list_mempool_transactions(
+    Query(query): Query<MempoolQuery>,
+    State(state): State<AppState>,
+) -> Result<Json<crate::modules::data::TransactionsPage>, ApiResponse> {
+    let pagination = parse_pagination(&state.data, query.offset, query.limit)?;
+    let page = state
+        .data
+        .list_mempool_transactions(query.address.as_deref(), pagination)
+        .await
+        .map_err(ApiResponse::from)?;
+    Ok(Json(page))
+}
+
+async fn list_blocks(
+    Query(query): Query<BlocksQuery>,
+    State(state): State<AppState>,
+) -> Result<Json<crate::modules::data::BlocksPage>, ApiResponse> {
+    let pagination = parse_pagination(&state.data, query.offset, query.limit)?;
+    let page = state
+        .data
+        .list_blocks(
+            BlocksFilter {
+                from_height: query.from_height,
+                to_height: query.to_height,
+                from_time: query.from_time,
+                to_time: query.to_time,
+                block_hash: query.block_hash,
+                has_txid: query.has_txid,
+                address: query.address,
+            },
+            pagination,
+        )
+        .await
+        .map_err(ApiResponse::from)?;
+    Ok(Json(page))
+}
+
+fn parse_pagination(
+    _data: &DataService,
+    offset: Option<i64>,
+    limit: Option<i64>,
+) -> Result<Pagination, ApiResponse> {
+    DataService::validate_pagination(offset, limit).map_err(ApiResponse::from)
 }
 
 async fn basic_auth_middleware(
@@ -199,6 +407,48 @@ impl From<JobsError> for ApiResponse {
     }
 }
 
+impl From<DataError> for ApiResponse {
+    fn from(err: DataError) -> Self {
+        match err {
+            DataError::AddressNotIndexed => ApiResponse::with_details(
+                StatusCode::NOT_FOUND,
+                "ADDRESS_NOT_INDEXED",
+                "Address is not indexed",
+                serde_json::json!({}),
+            ),
+            DataError::Validation(message) => ApiResponse::with_details(
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "VALIDATION_ERROR",
+                "Validation failed",
+                serde_json::json!({ "reason": message }),
+            ),
+            DataError::Storage(_) => ApiResponse::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "INTERNAL_ERROR",
+                "Storage failure",
+            ),
+        }
+    }
+}
+
+impl From<NodesError> for ApiResponse {
+    fn from(err: NodesError) -> Self {
+        match err {
+            NodesError::NotFound => ApiResponse::new(StatusCode::NOT_FOUND, "NOT_FOUND", "Not found"),
+            NodesError::Rpc(_) => ApiResponse::new(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "NODE_UNAVAILABLE",
+                "Node is unavailable",
+            ),
+            NodesError::Storage(_) => ApiResponse::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "INTERNAL_ERROR",
+                "Storage failure",
+            ),
+        }
+    }
+}
+
 impl ApiResponse {
     fn new(status: StatusCode, code: &'static str, message: &'static str) -> Self {
         Self {
@@ -207,6 +457,22 @@ impl ApiResponse {
                 code,
                 message,
                 details: serde_json::json!({}),
+            }),
+        }
+    }
+
+    fn with_details(
+        status: StatusCode,
+        code: &'static str,
+        message: &'static str,
+        details: serde_json::Value,
+    ) -> Self {
+        Self {
+            status,
+            body: Json(ApiError {
+                code,
+                message,
+                details,
             }),
         }
     }

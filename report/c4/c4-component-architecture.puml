@@ -1,0 +1,54 @@
+@startuml C4_Component_Architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "Клиентские системы", "CLI/Admin UI/внутренние сервисы")
+System_Ext(bitcoin, "Bitcoin Core", "Узел через nginx RPC proxy")
+System_Ext(postgres, "PostgreSQL", "Операционное хранилище")
+System_Ext(observability, "Monitoring Stack", "Prometheus + log collector")
+
+Container_Boundary(indexer, "Bitcoin Blockchain Indexer (модульный монолит)") {
+  Component(api, "API Module", "Rust + Axum", "HTTPS REST endpoints, Basic Auth, маршрутизация")
+  Component(config, "Config Module", "Rust", "Загрузка/валидация YAML и секретов")
+  Component(jobs, "Jobs Module", "Rust", "Управление lifecycle jobs и переходами состояний")
+  Component(indexer_core, "Indexer Module", "Rust", "Цикл индексации, reorg, mempool")
+  Component(rpc, "RPC Module", "Rust", "JSON-RPC клиент к Bitcoin Core по mTLS")
+  Component(storage, "Storage Module", "Rust + SQLx", "Репозитории, транзакционная запись/чтение")
+  Component(metrics, "Metrics Module", "Rust", "Экспорт метрик Prometheus")
+  Component(logging, "Logging Module", "Rust", "Структурированные JSON-логи")
+}
+
+Rel(client, api, "Запросы данных и команды jobs", "REST over HTTPS + Basic Auth")
+Rel(api, jobs, "Команды lifecycle jobs", "in-process service call")
+Rel(api, storage, "Чтение индексированных данных", "in-process repository call")
+Rel(api, rpc, "Fallback при отсутствии данных в индексе", "in-process client call")
+Rel(api, metrics, "Сервисные метрики API", "in-process")
+Rel(api, logging, "События доступа/ошибки API", "in-process")
+
+Rel(jobs, indexer_core, "Сигналы start/pause/resume/stop", "in-process command signal")
+Rel(jobs, storage, "Состояния, progress_height, last_error", "in-process repository call")
+Rel(jobs, metrics, "Метрики управления jobs", "in-process")
+Rel(jobs, logging, "События lifecycle", "in-process")
+
+Rel(indexer_core, rpc, "Запрос блоков/tx/mempool", "in-process client call")
+Rel(indexer_core, storage, "Upsert block/tx/utxo + rollback/checkpoint", "in-process repository call")
+Rel(indexer_core, metrics, "Индексационные метрики", "in-process")
+Rel(indexer_core, logging, "Технические логи", "in-process")
+
+Rel(rpc, bitcoin, "getblockcount/getblock/getrawtransaction", "JSON-RPC over HTTPS (mTLS + Basic Auth)")
+Rel(storage, postgres, "Транзакционная запись/чтение blocks/tx/utxo/jobs", "SQL/TCP (защищенный сегмент)")
+
+Rel(metrics, observability, "Метрики", "Prometheus scrape")
+Rel(logging, observability, "Логи", "JSON stream")
+
+Rel(config, api, "Параметры сервера/безопасности", "startup config")
+Rel(config, rpc, "RPC/mTLS конфигурация", "startup config")
+Rel(config, jobs, "Начальные jobs", "startup config")
+Rel(config, indexer_core, "Параметры poll/reorg/batching", "startup config")
+Rel(config, storage, "DSN/пул подключений БД", "startup config")
+Rel(config, metrics, "Параметры экспорта метрик", "startup config")
+Rel(config, logging, "Уровни и формат логирования", "startup config")
+
+SHOW_LEGEND()
+@enduml
