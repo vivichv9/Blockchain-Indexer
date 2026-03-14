@@ -1,8 +1,11 @@
 pub mod api;
 pub mod config;
+pub mod data;
 pub mod indexer;
 pub mod jobs;
 pub mod logging;
+pub mod mempool;
 pub mod metrics;
+pub mod nodes;
 pub mod rpc;
 pub mod storage;

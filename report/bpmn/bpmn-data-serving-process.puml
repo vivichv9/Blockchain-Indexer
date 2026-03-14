@@ -1,0 +1,52 @@
+@startuml BPMN_Data_Serving_Process
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+
+|Клиент / Оператор|
+start
+:Отправить запрос данных
+(block/tx/address/mempool);
+
+|API Layer|
+:Проверка Basic Auth;
+:Валидация параметров запроса;
+
+|Data Query Layer|
+:Поиск данных в D1;
+if (Данные найдены?) then (Да)
+  :Подготовить данные
+  из локального индекса;
+  |API Layer|
+  :Сформировать ответ API
+  из локальных данных;
+  |Клиент / Оператор|
+  :Получить данные;
+  stop
+else (Нет)
+  |RPC Client|
+  :Запрос данных к Bitcoin Core;
+  if (RPC успешно?) then (Да)
+    |Data Query Layer|
+    :Нормализация данных;
+    :Дозапись в D1;
+    :Передать нормализованные
+    данные в API Layer;
+    |API Layer|
+    :Сформировать ответ API
+    после fallback;
+    |Клиент / Оператор|
+    :Получить данные;
+    stop
+  else (Нет)
+    |API Layer|
+    :Сформировать ошибку
+    недоступности источника;
+    |Клиент / Оператор|
+    :Получить ответ с ошибкой;
+    stop
+  endif
+endif
+@enduml

@@ -1,6 +1,6 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use reqwest::{Certificate, Client, Identity};
 use serde::de::DeserializeOwned;
@@ -9,7 +9,8 @@ use serde_json::Value;
 use thiserror::Error;
 
 use crate::modules::config::RpcConfig;
-use crate::modules::indexer::RpcBlock;
+use crate::modules::indexer::{RpcBlock, RpcTransaction};
+use crate::modules::metrics::MetricsService;
 
 #[derive(Debug, Error)]
 pub enum RpcError {
@@ -32,6 +33,7 @@ pub struct RpcClient {
     username: String,
     password: String,
     id: Arc<AtomicU64>,
+    metrics: Option<MetricsService>,
 }
 
 impl RpcClient {
@@ -66,13 +68,20 @@ impl RpcClient {
             username: config.auth.username.clone(),
             password: config.auth.password.clone(),
             id: Arc::new(AtomicU64::new(1)),
+            metrics: None,
         })
+    }
+
+    pub fn with_metrics(mut self, metrics: MetricsService) -> Self {
+        self.metrics = Some(metrics);
+        self
     }
 
     pub async fn call<T>(&self, method: &str, params: Value) -> Result<T, RpcError>
     where
         T: DeserializeOwned,
     {
+        let started = Instant::now();
         let id = self.id.fetch_add(1, Ordering::Relaxed);
         let request = RpcRequest {
             jsonrpc: "1.0",
@@ -81,23 +90,36 @@ impl RpcClient {
             params,
         };
 
-        let response = self
-            .client
-            .post(&self.url)
-            .basic_auth(&self.username, Some(&self.password))
-            .json(&request)
-            .send()
-            .await?
-            .error_for_status()?;
+        let result = async {
+            let response = self
+                .client
+                .post(&self.url)
+                .basic_auth(&self.username, Some(&self.password))
+                .json(&request)
+                .send()
+                .await?
+                .error_for_status()?;
 
-        let payload: RpcResponse<T> = response.json().await?;
-        if let Some(error) = payload.error {
-            return Err(RpcError::Rpc(format!("{}", error.message)));
+            let payload: RpcResponse<T> = response.json().await?;
+            if let Some(error) = payload.error {
+                return Err(RpcError::Rpc(error.message));
+            }
+
+            payload
+                .result
+                .ok_or_else(|| RpcError::Rpc("missing result".to_string()))
+        }
+        .await;
+
+        if let Some(metrics) = &self.metrics {
+            metrics.increment_rpc_request(method);
+            metrics.observe_rpc_request_duration(method, started.elapsed().as_secs_f64());
+            if result.is_err() {
+                metrics.increment_error("rpc");
+            }
         }
 
-        payload
-            .result
-            .ok_or_else(|| RpcError::Rpc("missing result".to_string()))
+        result
     }
 
     pub async fn get_block_hash(&self, height: u32) -> Result<String, RpcError> {
@@ -121,6 +143,15 @@ impl RpcClient {
     pub async fn get_raw_transaction(&self, txid: &str, verbose: bool) -> Result<Value, RpcError> {
         self.call("getrawtransaction", serde_json::json!([txid, verbose]))
             .await
+    }
+
+    pub async fn get_raw_transaction_verbose(&self, txid: &str) -> Result<RpcTransaction, RpcError> {
+        self.call("getrawtransaction", serde_json::json!([txid, true]))
+            .await
+    }
+
+    pub async fn get_raw_mempool(&self) -> Result<Vec<String>, RpcError> {
+        self.call("getrawmempool", serde_json::json!([])).await
     }
 }
 

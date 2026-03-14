@@ -1,0 +1,33 @@
+@startuml C4_Deployment_Architecture
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "Клиентские системы", "CLI/Admin UI/внутренние сервисы")
+System_Ext(bitcoin, "Bitcoin Core Node", "Внешний узел сети Bitcoin")
+System_Ext(observability, "Monitoring Stack", "Prometheus + log collector")
+
+Deployment_Node(host, "Docker Host", "Linux VM/Server", "Контур развертывания MVP") {
+  Deployment_Node(compose, "docker-compose", "Container Orchestration", "Локальная оркестрация сервисов") {
+    Deployment_Node(indexer_node, "indexer container", "Docker Container", "Статeless-модульный монолит") {
+      Container(indexer_api, "Bitcoin Blockchain Indexer", "Rust + Axum", "REST API, Jobs, Indexer, RPC client, Metrics/Logging")
+    }
+
+    Deployment_Node(proxy_node, "nginx-rpc-proxy container", "Docker Container", "Терминация и проксирование RPC канала") {
+      Container(rpc_proxy, "RPC Proxy", "Nginx", "Прокси к Bitcoin Core с TLS/mTLS")
+    }
+
+    Deployment_Node(pg_node, "postgres container", "Docker Container", "Операционное хранилище") {
+      ContainerDb(pg, "PostgreSQL", "PostgreSQL", "Персистентные данные blocks/tx/utxo/jobs/balances")
+    }
+  }
+}
+
+Rel(client, indexer_api, "Запросы API", "REST over HTTPS + Basic Auth")
+Rel(indexer_api, pg, "Чтение/запись данных", "SQL/TCP")
+Rel(indexer_api, rpc_proxy, "RPC вызовы", "JSON-RPC over HTTPS")
+Rel(rpc_proxy, bitcoin, "Проксирование RPC", "HTTPS (mTLS + Basic Auth)")
+Rel(indexer_api, observability, "Метрики и логи", "Prometheus scrape + JSON stream")
+
+SHOW_LEGEND()
+@enduml

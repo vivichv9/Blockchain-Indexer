@@ -1,0 +1,35 @@
+' Common notation helpers for DFD diagrams
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam ArrowThickness 1
+skinparam rectangle {
+  BorderColor #1F2937
+  FontColor #111827
+  RoundCorner 8
+}
+skinparam database {
+  BorderColor #1F2937
+  FontColor #111827
+}
+skinparam diamond {
+  BorderColor #1F2937
+  FontColor #111827
+}
+
+skinparam rectangle<<external>> {
+  BackgroundColor #E5F0FF
+}
+skinparam rectangle<<process>> {
+  BackgroundColor #EAF7EA
+}
+skinparam database<<store>> {
+  BackgroundColor #FFF7E6
+}
+
+!define ExternalEntity($id, $label) rectangle "$label" as $id <<external>>
+!define Process($id, $label) rectangle "$label" as $id <<process>>
+!define DataStore($id, $label) database "$label" as $id <<store>>
+!define Flow($from, $to, $label) $from --> $to : $label

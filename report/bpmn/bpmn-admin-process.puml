@@ -1,0 +1,39 @@
+@startuml BPMN_Admin_Process
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+
+|Клиент / Оператор|
+start
+:Отправить команду jobs
+(create/start/pause/resume/stop/status);
+
+|API Layer|
+:Проверка Basic Auth;
+:Валидация структуры команды;
+
+|JobService|
+:Проверка допустимости
+перехода состояния;
+if (Переход допустим?) then (Да)
+  :Обновление состояния job
+  в D2;
+  :Формирование управляющего
+  сигнала для Indexer Pipeline;
+  |API Layer|
+  :Сформировать успешный
+  ответ API;
+  |Клиент / Оператор|
+  :Получить новый статус job;
+  stop
+else (Нет)
+  |API Layer|
+  :Сформировать ошибку
+  валидации перехода;
+  |Клиент / Оператор|
+  :Получить ответ с ошибкой;
+  stop
+endif
+@enduml
