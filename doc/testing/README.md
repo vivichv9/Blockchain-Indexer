@@ -1,7 +1,7 @@
 # Testing
 
 ## Что реализовано
-- Добавлены интеграционные тесты для lifecycle jobs API, nodes API, data API и indexer storage pipeline.
+- Добавлены интеграционные тесты для lifecycle jobs API, nodes API, data API, indexer storage pipeline и runtime runner-сценариев.
 - Тесты поднимают PostgreSQL через `testcontainers`, применяют SQL-миграции и собирают актуальный `AppState` backend-монолита.
 - Контейнер PostgreSQL удерживается на всём времени теста, чтобы наборы не зависели от времени жизни локальных переменных helper-функций.
 - Проверяются сценарии:
@@ -23,10 +23,13 @@
   - идемпотентность повторной записи блока;
   - ожидание предыдущей высоты при gap в chain;
   - mempool lookup по адресу через связи `inputs/outputs`.
+  - `MempoolRunner::sync_once` для новых и dropped mempool transactions через mock JSON-RPC;
+  - `IndexerService::reconcile_chain` с пометкой orphaned-данных и пересборкой агрегатов после reorg.
 
 ## Где находится
 - Интеграционные тесты: `tests/integration_jobs_api.rs`.
 - Интеграционные тесты pipeline/storage: `tests/integration_indexer_pipeline.rs`.
+- Интеграционные тесты runtime runner-сценариев: `tests/integration_runtime_runners.rs`.
 
 ## Требования к запуску
 - Нужен доступный Docker daemon, потому что тесты используют `testcontainers`.
@@ -36,6 +39,6 @@
 - Если Docker недоступен, тесты завершаются без падения и печатают диагностическое сообщение.
 
 ## Ограничения текущего этапа
-- Сейчас покрыты jobs API, nodes API, основные endpoint'ы data API и storage-часть indexer pipeline.
-- Полные сценарии `MempoolRunner::sync_once`, `IndexerService::reconcile_chain` и live RPC-взаимодействие всё ещё не имеют собственного интеграционного покрытия.
+- Сейчас покрыты jobs API, nodes API, основные endpoint'ы data API, storage-часть indexer pipeline и ключевые runtime runner-сценарии.
+- Пока используется mock JSON-RPC server, а не реальный Bitcoin Core/regtest, поэтому end-to-end цепочка с настоящим узлом ещё не проверяется.
 - Для полной проверки нужен запуск `cargo check` и `cargo test`, но в текущей среде инструменты Rust CLI могут быть недоступны в `PATH`.
