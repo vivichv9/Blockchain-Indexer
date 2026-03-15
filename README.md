@@ -1,55 +1,55 @@
 # Bitcoin Blockchain Indexer
 
-Bitcoin Blockchain Indexer is a modular stateless monolith for indexing Bitcoin blockchain data into PostgreSQL and exposing it through a REST API, Swagger UI, admin panel, and CLI.
+Bitcoin Blockchain Indexer — это индексер блокчейна Bitcoin в формате модульного stateless-монолита. Проект сохраняет данные в PostgreSQL и отдает их через REST API, Swagger UI, admin panel и CLI.
 
-The backend is written in Rust with Axum, data is stored in PostgreSQL, the admin panel is built with React/Vite, and the whole stack can be started with Docker Compose.
+Backend написан на Rust с Axum, данные хранятся в PostgreSQL, admin panel собрана на React/Vite, а весь стек можно запустить через Docker Compose.
 
-## Features
+## Возможности
 
-- Bitcoin JSON-RPC integration over HTTP/HTTPS with Basic Auth
-- PostgreSQL-backed canonical blocks, transactions, UTXO, balances, mempool, jobs, and node health
-- REST API for data access and runtime operations
-- Interactive API docs at `/docs` and OpenAPI JSON at `/openapi.json`
-- Admin panel for jobs and node health
-- Runtime creation of jobs and monitored nodes without backend restart
-- Python CLI for jobs, nodes, and data API
+- интеграция с Bitcoin JSON-RPC по HTTP/HTTPS с Basic Auth
+- хранение canonical blocks, transactions, UTXO, balances, mempool, jobs и node health в PostgreSQL
+- REST API для выдачи данных и runtime-операций
+- интерактивная документация API на `/docs` и OpenAPI JSON на `/openapi.json`
+- admin panel для управления jobs и мониторинга узлов
+- создание jobs и monitored nodes без перезапуска backend
+- Python CLI для работы с jobs, nodes и data API
 
-## Architecture
+## Архитектура
 
-- Architectural style: modular stateless monolith
-- Backend: Rust + Axum + SQLx
-- Database: PostgreSQL 16
-- Admin UI: React + Vite + nginx
-- Deployment mode in repository: Docker Compose
+- архитектурный стиль: модульный stateless-монолит
+- backend: Rust + Axum + SQLx
+- база данных: PostgreSQL 16
+- admin UI: React + Vite + nginx
+- способ развёртывания в репозитории: Docker Compose
 
-## Requirements
+## Что нужно для запуска
 
-To run the project you need:
+Для запуска проекта нужны:
 
-- Docker Desktop or Docker Engine with `docker compose`
-- Access to a Bitcoin JSON-RPC endpoint
-- Credentials for:
-  - backend Basic Auth
-  - Bitcoin RPC Basic Auth
+- Docker Desktop или Docker Engine с `docker compose`
+- доступный Bitcoin JSON-RPC endpoint
+- учётные данные для:
+  - Basic Auth backend API
+  - Basic Auth Bitcoin RPC
 
-The repository does not start Bitcoin Core for you. You need an existing Bitcoin JSON-RPC endpoint, for example a dedicated Bitcoin Core node behind reverse proxy or a remote RPC service you control.
+Репозиторий не поднимает Bitcoin Core автоматически. Нужен уже существующий Bitcoin JSON-RPC endpoint, например собственный Bitcoin Core за reverse proxy или отдельный удалённый RPC-сервис.
 
-## Quick Start
+## Быстрый старт
 
-### 1. Clone the repository
+### 1. Клонируй репозиторий
 
 ```powershell
-git clone <YOUR_REPOSITORY_URL>
+git clone <URL_ТВОЕГО_РЕПОЗИТОРИЯ>
 cd Blockchain-Indexer
 ```
 
-### 2. Create `.env`
+### 2. Создай `.env`
 
 ```powershell
 Copy-Item .env.template .env
 ```
 
-Fill in the required secrets in `.env`:
+Заполни обязательные секреты в `.env`:
 
 ```env
 INDEXER_API_USERNAME=admin
@@ -58,11 +58,11 @@ BITCOIN_RPC_PASSWORD=change-me-rpc-password
 DATABASE_URL=postgres://indexer:indexer@postgres:5432/indexer
 ```
 
-### 3. Review `config/indexer.yaml`
+### 3. Проверь `config/indexer.yaml`
 
-The main application config lives in [config/indexer.yaml](config/indexer.yaml).
+Основной конфиг приложения находится в [config/indexer.yaml](config/indexer.yaml).
 
-At minimum, review these fields:
+Перед первым запуском обязательно проверь:
 
 - `server.bind_host`
 - `server.bind_port`
@@ -76,117 +76,117 @@ At minimum, review these fields:
 - `indexer.reorg_depth`
 - `jobs`
 
-Important notes:
+Важно:
 
-- API password is loaded from `INDEXER_API_PASSWORD`, not from YAML.
-- RPC password is loaded from `BITCOIN_RPC_PASSWORD`, not from YAML.
-- For a self-signed RPC TLS certificate, set `rpc.insecure_skip_verify: true`.
-- For `address_list` jobs, `addresses` must not be empty.
+- пароль API берётся из `INDEXER_API_PASSWORD`, а не из YAML
+- пароль RPC берётся из `BITCOIN_RPC_PASSWORD`, а не из YAML
+- если у RPC self-signed TLS сертификат, включи `rpc.insecure_skip_verify: true`
+- для jobs с `mode: address_list` список `addresses` не должен быть пустым
 
-### 4. Optional: provide certificates
+### 4. При необходимости подготовь сертификаты
 
-`docker-compose.yml` mounts `./certs` into the backend container as `/app/certs`.
+`docker-compose.yml` монтирует каталог `./certs` в контейнер backend как `/app/certs`.
 
-If you enable RPC mTLS in `config/indexer.yaml`, provide:
+Если в `config/indexer.yaml` включён RPC mTLS, должны существовать:
 
 - `certs/mtls/ca.crt`
 - `certs/mtls/client.crt`
 - `certs/mtls/client.key`
 
-If you also configure server TLS paths, provide:
+Если дополнительно настроены пути для server TLS, должны существовать:
 
 - `certs/server.crt`
 - `certs/server.key`
 
-Note: the backend validates configured file paths at startup. At the current stage, the config supports TLS settings, but the main Axum application is still served as HTTP on port `8080`.
+Примечание: backend валидирует наличие указанных файлов при старте. На текущем этапе конфиг поддерживает TLS-поля, но основное Axum-приложение всё ещё публикуется как HTTP-сервис на порту `8080`.
 
-### 5. Start the stack
+### 5. Подними стек
 
 ```powershell
 docker compose up --build
 ```
 
-Run in background:
+Запуск в фоне:
 
 ```powershell
 docker compose up --build -d
 ```
 
-Stop services:
+Остановить сервисы:
 
 ```powershell
 docker compose down
 ```
 
-Stop services and remove PostgreSQL data:
+Остановить сервисы и удалить данные PostgreSQL:
 
 ```powershell
 docker compose down -v
 ```
 
-## What Starts in Docker Compose
+## Что поднимается в Docker Compose
 
-The repository starts three services:
+Репозиторий поднимает три сервиса:
 
 - `postgres`
 - `backend`
 - `admin-panel`
 
-During backend startup the application:
+Во время старта backend приложение:
 
-- loads and validates `config/indexer.yaml`
-- checks required env vars and certificate paths
-- connects to PostgreSQL
-- applies SQL migrations from `migrations/`
-- synchronizes jobs from YAML into the database
-- synchronizes the primary RPC node into the runtime node registry
-- starts the HTTP API
-- starts background runners for jobs, mempool, and node health
+- загружает и валидирует `config/indexer.yaml`
+- проверяет обязательные env-переменные и пути к сертификатам
+- подключается к PostgreSQL
+- применяет SQL-миграции из `migrations/`
+- синхронизирует jobs из YAML в базу данных
+- синхронизирует основной RPC-узел в runtime-реестр узлов
+- запускает HTTP API
+- запускает фоновые runners для jobs, mempool и node health
 
-## Service Endpoints
+## Адреса сервисов
 
-After successful startup:
+После успешного запуска доступны:
 
-- Backend API: `http://127.0.0.1:8080`
+- backend API: `http://127.0.0.1:8080`
 - Swagger UI: `http://127.0.0.1:8080/docs`
 - OpenAPI JSON: `http://127.0.0.1:8080/openapi.json`
-- Admin panel: `http://127.0.0.1:4173`
+- admin panel: `http://127.0.0.1:4173`
 
-## Verify the Installation
+## Как проверить запуск
 
-Health check:
+Проверка health:
 
 ```powershell
 curl http://127.0.0.1:8080/health
 ```
 
-Jobs API:
+Проверка jobs API:
 
 ```powershell
 curl -u admin:change-me-api-password http://127.0.0.1:8080/v1/jobs
 ```
 
-Nodes API:
+Проверка nodes API:
 
 ```powershell
 curl -u admin:change-me-api-password http://127.0.0.1:8080/v1/nodes
 ```
 
-Data API:
+Проверка data API:
 
 ```powershell
 curl -u admin:change-me-api-password "http://127.0.0.1:8080/v1/data/transactions?limit=10"
 ```
 
-OpenAPI document:
+Проверка OpenAPI:
 
 ```powershell
 curl -u admin:change-me-api-password http://127.0.0.1:8080/openapi.json
 ```
 
-## Runtime Operations Without Restart
+## Runtime-операции без перезапуска
 
-### Create a new indexing job
+### Создание новой job
 
 ```powershell
 curl -u admin:change-me-api-password ^
@@ -195,7 +195,7 @@ curl -u admin:change-me-api-password ^
   -d "{\"job_id\":\"watchlist-runtime\",\"mode\":\"address_list\",\"enabled\":true,\"addresses\":[\"addr1\",\"addr2\"]}"
 ```
 
-### Add a new monitored node
+### Добавление нового узла
 
 ```powershell
 curl -u admin:change-me-api-password ^
@@ -206,23 +206,23 @@ curl -u admin:change-me-api-password ^
 
 ## Admin Panel
 
-The admin panel is included in Docker Compose and is available immediately after startup at `http://127.0.0.1:4173`.
+Admin panel входит в `docker compose` и после запуска доступна по адресу `http://127.0.0.1:4173`.
 
-Currently it provides:
+Сейчас в ней доступны:
 
-- `Jobs` page
-- `Node Health` page
-- create job form
-- create node form
-- job state control actions
+- страница `Jobs`
+- страница `Node Health`
+- форма создания job
+- форма добавления узла
+- действия управления состоянием job
 
-More details: [doc/admin-panel/README.md](doc/admin-panel/README.md)
+Подробнее: [doc/admin-panel/README.md](doc/admin-panel/README.md)
 
 ## CLI
 
-The repository also includes a Python CLI in [cli/indexer_cli.py](cli/indexer_cli.py).
+В репозитории также есть Python CLI: [cli/indexer_cli.py](cli/indexer_cli.py).
 
-Examples:
+Примеры:
 
 ```powershell
 python cli/indexer_cli.py --base-url http://127.0.0.1:8080 --username admin --password change-me-api-password jobs list
@@ -230,35 +230,34 @@ python cli/indexer_cli.py --base-url http://127.0.0.1:8080 --username admin --pa
 python cli/indexer_cli.py --base-url http://127.0.0.1:8080 --username admin --password change-me-api-password data txs --limit 10
 ```
 
-## Repository Structure
+## Структура репозитория
 
-- `src/` - Rust backend
-- `admin-panel/` - React/Vite admin panel
-- `cli/` - Python CLI
-- `config/` - application configuration
-- `migrations/` - SQL migrations
-- `doc/` - module-level documentation
-- `scripts/` - helper scripts
+- `src/` — Rust backend
+- `admin-panel/` — React/Vite admin panel
+- `cli/` — Python CLI
+- `config/` — конфигурация приложения
+- `migrations/` — SQL-миграции
+- `doc/` — модульная документация
+- `scripts/` — вспомогательные скрипты
 
-## Useful Documentation
+## Полезная документация
 
-- Config and auth: [doc/config-and-auth/README.md](doc/config-and-auth/README.md)
-- API docs: [doc/api-docs/README.md](doc/api-docs/README.md)
-- Database schema: [doc/database-schema/README.md](doc/database-schema/README.md)
-- Indexer: [doc/indexer/README.md](doc/indexer/README.md)
-- Mempool: [doc/mempool/README.md](doc/mempool/README.md)
-- Reorg handling: [doc/reorg/README.md](doc/reorg/README.md)
-- Jobs: [doc/jobs/README.md](doc/jobs/README.md)
-- Nodes: [doc/nodes/README.md](doc/nodes/README.md)
-- Data API: [doc/data-api/README.md](doc/data-api/README.md)
-- Testing: [doc/testing/README.md](doc/testing/README.md)
+- конфиг и авторизация: [doc/config-and-auth/README.md](doc/config-and-auth/README.md)
+- документация API: [doc/api-docs/README.md](doc/api-docs/README.md)
+- схема БД: [doc/database-schema/README.md](doc/database-schema/README.md)
+- индексатор: [doc/indexer/README.md](doc/indexer/README.md)
+- mempool: [doc/mempool/README.md](doc/mempool/README.md)
+- обработка reorg: [doc/reorg/README.md](doc/reorg/README.md)
+- jobs: [doc/jobs/README.md](doc/jobs/README.md)
+- nodes: [doc/nodes/README.md](doc/nodes/README.md)
+- data API: [doc/data-api/README.md](doc/data-api/README.md)
+- тестирование: [doc/testing/README.md](doc/testing/README.md)
 - CLI: [doc/cli/README.md](doc/cli/README.md)
-- Acceptance checklist: [doc/acceptance/README.md](doc/acceptance/README.md)
+- acceptance checklist: [doc/acceptance/README.md](doc/acceptance/README.md)
 
-## Current Limitations
+## Текущие ограничения
 
-- Docker Compose starts PostgreSQL, backend, and admin panel, but not Bitcoin Core.
-- A working Bitcoin JSON-RPC endpoint must be provided separately.
-- The backend currently serves HTTP on port `8080`.
-- Production hardening, full HTTPS termination, and real end-to-end regtest verification still need separate confirmation.
-
+- `docker compose` поднимает PostgreSQL, backend и admin panel, но не поднимает Bitcoin Core
+- рабочий Bitcoin JSON-RPC endpoint нужно предоставить отдельно
+- backend сейчас публикуется как HTTP-сервис на порту `8080`
+- production hardening, полноценный HTTPS-контур и полная end-to-end проверка с regtest требуют отдельного подтверждения

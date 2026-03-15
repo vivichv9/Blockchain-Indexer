@@ -1,39 +1,39 @@
 # API Docs
 
-## What is available
+## Что доступно
 
-The backend exposes OpenAPI documentation and an interactive Swagger UI directly from the Axum application.
+Backend публикует OpenAPI-документацию и интерактивный Swagger UI прямо из Axum-приложения.
 
-Available endpoints:
+Доступные endpoints:
 
-- `GET /openapi.json` returns the OpenAPI document in JSON format.
-- `GET /docs` opens the interactive Swagger UI.
+- `GET /openapi.json` возвращает OpenAPI-документ в формате JSON
+- `GET /docs` открывает интерактивный Swagger UI
 
-## Authentication
+## Авторизация
 
-The docs endpoints use the same Basic Auth middleware as the rest of the API.
+Endpoints документации используют тот же Basic Auth middleware, что и остальной API.
 
-Example:
+Пример:
 
 ```powershell
 curl -u admin:admin http://127.0.0.1:8080/openapi.json
 ```
 
-Open in browser:
+Открыть в браузере:
 
 - `http://127.0.0.1:8080/docs`
 
-## Covered routes
+## Что покрыто документацией
 
-The generated documentation includes:
+Сгенерированная документация включает:
 
-- system endpoints: `health`, `metrics`
+- системные endpoints: `health`, `metrics`
 - jobs API
 - nodes API
 - data API
 
-## Notes
+## Примечания
 
-- The docs describe the current Axum HTTP interface.
-- `metrics` is documented as `text/plain`.
-- Swagger UI is served by the backend itself, so no separate docs container is required.
+- документация описывает текущий HTTP-интерфейс Axum
+- endpoint `metrics` описан как `text/plain`
+- Swagger UI отдается самим backend, отдельный контейнер для документации не нужен
