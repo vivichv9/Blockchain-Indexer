@@ -39,14 +39,14 @@ Backend написан на Rust с Axum, данные хранятся в Postg
 ### 1. Клонируй репозиторий
 
 ```powershell
-git clone <URL_ТВОЕГО_РЕПОЗИТОРИЯ>
+git clone https://github.com/vivichv9/Blockchain-Indexer.git
 cd Blockchain-Indexer
 ```
 
 ### 2. Создай `.env`
 
 ```powershell
-Copy-Item .env.template .env
+cp .env.template .env
 ```
 
 Заполни обязательные секреты в `.env`:
