@@ -3,6 +3,10 @@
 ## Что реализовано
 - Хранение jobs в PostgreSQL через таблицу `jobs`.
 - Синхронизация jobs из YAML-конфига при старте backend (upsert по `job_id`).
+- После синхронизации backend автоматически восстанавливает jobs с `enabled: true`:
+  - `created -> running`
+  - `paused -> running`
+  - `failed -> running`
 - Бизнес-логика переходов состояний jobs:
   - `start`: `created -> running`
   - `stop`: `running|paused|failed -> created`
@@ -22,6 +26,7 @@
   - периодически читает jobs со статусом `running`,
   - ограничивает количество одновременно исполняемых jobs через `indexer.concurrency.max_jobs`,
   - перед обработкой батча проверяет расхождение canonical-цепочки в окне `reorg_depth`,
+  - корректно начинает индексирование с genesis-высоты, если в БД ещё нет canonical block `0`,
   - для каждого job индексирует батч высот до `indexer.batching.blocks_per_batch`,
   - при пересечении jobs по одним и тем же данным не пишет соседние высоты вне порядка canonical-цепочки,
   - обновляет `progress_height` после каждого успешно записанного блока,

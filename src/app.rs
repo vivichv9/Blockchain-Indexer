@@ -32,6 +32,7 @@ impl App {
         storage.apply_migrations().await?;
         let jobs_service = JobsService::new(storage.pool().clone());
         jobs_service.sync_from_config(&config.jobs).await?;
+        jobs_service.activate_enabled_jobs(&config.jobs).await?;
         let metrics = MetricsService::new();
         let rpc = RpcClient::from_config(&config.rpc)?.with_metrics(metrics.clone());
         let indexer = IndexerService::new(rpc.clone(), storage.pool().clone(), metrics.clone());

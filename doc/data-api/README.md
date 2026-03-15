@@ -16,6 +16,7 @@
   - если адрес не покрыт индексацией, API возвращает `404 ADDRESS_NOT_INDEXED`.
 - Балансы и UTXO отдаются только из confirmed/canonical-данных.
 - Mempool endpoint отдает только `status=mempool`.
+- Исторический balance query с `from_height` / `to_height` и `from_time` / `to_time` корректно работает как для выборки tip-блока, так и для списка блоков.
 
 ## Где находится
 - HTTP-обработчики и маппинг ошибок: `src/modules/api/mod.rs`.

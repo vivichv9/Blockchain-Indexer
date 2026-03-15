@@ -252,6 +252,10 @@ impl IndexerService {
         Self { rpc, pool, metrics }
     }
 
+    pub async fn has_canonical_block(&self, height: i32) -> Result<bool, IndexerError> {
+        Ok(canonical_block_hash_at_height(&self.pool, height).await?.is_some())
+    }
+
     pub async fn index_height(&self, height: u32) -> Result<IndexHeightResult, IndexerError> {
         let hash = self.rpc.get_block_hash(height).await?;
         let block = self.rpc.get_block_verbose2(&hash).await?;

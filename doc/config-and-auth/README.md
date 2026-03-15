@@ -13,6 +13,7 @@
 - Обязательный Basic Auth middleware для API (на текущем этапе для всех маршрутов).
 - Формат ошибки авторизации приведен к контракту API (`AUTH_FAILED`, HTTP 401).
 - mTLS для RPC можно отключить через `rpc.mtls.enabled: false`.
+- Для self-signed TLS на стороне RPC можно явно отключить проверку доверия через `rpc.insecure_skip_verify: true`.
 
 ## Где находится
 - Загрузка и валидация конфига: `src/modules/config/mod.rs`.

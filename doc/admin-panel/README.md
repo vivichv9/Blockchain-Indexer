@@ -3,6 +3,7 @@
 ## Что реализовано
 - Добавлен отдельный React/Vite модуль админ-панели в `admin-panel/`.
 - Панель использует только REST API backend и не обращается к БД напрямую.
+- Для docker-compose добавлен production-like контейнер admin panel: Vite собирается в статику, `nginx` отдаёт UI и проксирует `/api` в backend.
 - Реализованы две страницы из ТЗ:
   - `Jobs`
   - `Node Health`
@@ -22,6 +23,11 @@
   - `VITE_INDEXER_API_USERNAME`
   - `VITE_INDEXER_API_PASSWORD`
 - Пример переменных вынесен в `admin-panel/.env.example`.
+- В docker-compose UI собирается с `VITE_INDEXER_API_BASE_URL=/api`, поэтому браузер ходит в backend через nginx proxy без отдельной настройки CORS.
+
+## Docker Compose
+- После `docker compose up --build` админ-панель доступна на `http://127.0.0.1:4173`.
+- Запросы `/api/*` проксируются в backend (`http://backend:8080/*`) внутри docker-сети.
 
 ## Где находится
 - Исходники панели: `admin-panel/src/`.

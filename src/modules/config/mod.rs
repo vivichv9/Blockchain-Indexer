@@ -56,6 +56,7 @@ pub struct RpcConfig {
     pub url: String,
     pub auth: BasicAuthResolved,
     pub mtls: Option<MtlsConfig>,
+    pub insecure_skip_verify: bool,
     pub timeouts: RpcTimeouts,
 }
 
@@ -148,6 +149,7 @@ struct RawRpcConfig {
     url: String,
     auth: RawAuthConfig,
     mtls: Option<RawMtlsConfig>,
+    insecure_skip_verify: Option<bool>,
     timeouts: RawRpcTimeouts,
 }
 
@@ -308,6 +310,7 @@ impl AppConfig {
                 url: raw.rpc.url,
                 auth: rpc_auth,
                 mtls,
+                insecure_skip_verify: raw.rpc.insecure_skip_verify.unwrap_or(false),
                 timeouts: RpcTimeouts {
                     connect_ms: raw.rpc.timeouts.connect_ms,
                     request_ms: raw.rpc.timeouts.request_ms,
@@ -400,6 +403,7 @@ rpc:
     basic:
       username: "rpcuser"
       password_env: "BITCOIN_RPC_PASSWORD"
+  insecure_skip_verify: false
   mtls:
     ca_path: "{ca}"
     client_cert_path: "{client_cert}"

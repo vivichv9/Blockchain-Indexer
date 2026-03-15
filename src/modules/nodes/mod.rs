@@ -5,6 +5,7 @@ use serde::Serialize;
 use sqlx::{FromRow, PgPool};
 use thiserror::Error;
 use tracing::warn;
+use utoipa::ToSchema;
 
 use crate::modules::metrics::MetricsService;
 use crate::modules::rpc::{RpcClient, RpcError};
@@ -25,7 +26,7 @@ pub struct NodeHealthRunnerConfig {
     pub node_id: String,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, ToSchema)]
 pub struct NodeSummary {
     pub node_id: String,
     pub status: String,
@@ -34,7 +35,7 @@ pub struct NodeSummary {
     pub last_seen_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, ToSchema)]
 pub struct NodeHealthDetails {
     pub node_id: String,
     pub status: String,

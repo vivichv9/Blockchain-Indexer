@@ -5,3 +5,6 @@ PLANS.md
 техническое_задание_bitcoin_blockchain_indexer_mvp.md
 .env
 .codex
+report/coverage
+coverage.json
+lcov.info

@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -21,7 +22,7 @@ pub enum RpcError {
     #[error("invalid rpc identity: {0}")]
     InvalidIdentity(reqwest::Error),
     #[error("http error: {0}")]
-    Http(#[from] reqwest::Error),
+    Http(String),
     #[error("rpc error: {0}")]
     Rpc(String),
 }
@@ -41,6 +42,10 @@ impl RpcClient {
         let mut builder = Client::builder()
             .connect_timeout(Duration::from_millis(config.timeouts.connect_ms))
             .timeout(Duration::from_millis(config.timeouts.request_ms));
+
+        if config.insecure_skip_verify {
+            builder = builder.danger_accept_invalid_certs(true);
+        }
 
         if let Some(mtls) = &config.mtls {
             let ca_pem = std::fs::read(&mtls.ca_path).map_err(RpcError::Certificate)?;
@@ -173,6 +178,46 @@ struct RpcResponse<T> {
 #[derive(Debug, Deserialize)]
 struct RpcResponseError {
     message: String,
+}
+
+impl From<reqwest::Error> for RpcError {
+    fn from(err: reqwest::Error) -> Self {
+        RpcError::Http(describe_reqwest_error(&err))
+    }
+}
+
+fn describe_reqwest_error(err: &reqwest::Error) -> String {
+    let mut parts = Vec::new();
+
+    parts.push(err.to_string());
+
+    if let Some(url) = err.url() {
+        parts.push(format!("url={url}"));
+    }
+
+    if let Some(status) = err.status() {
+        parts.push(format!("status={status}"));
+    }
+
+    if err.is_timeout() {
+        parts.push("kind=timeout".to_string());
+    } else if err.is_connect() {
+        parts.push("kind=connect".to_string());
+    } else if err.is_request() {
+        parts.push("kind=request".to_string());
+    } else if err.is_body() {
+        parts.push("kind=body".to_string());
+    } else if err.is_decode() {
+        parts.push("kind=decode".to_string());
+    }
+
+    let mut source = err.source();
+    while let Some(inner) = source {
+        parts.push(format!("source={inner}"));
+        source = inner.source();
+    }
+
+    parts.join("; ")
 }
 
 #[cfg(test)]

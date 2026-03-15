@@ -8,13 +8,14 @@ use sqlx::{FromRow, PgPool};
 use thiserror::Error;
 use tokio::sync::{Mutex, Semaphore};
 use tracing::{error, warn};
+use utoipa::ToSchema;
 
 use crate::modules::config::JobConfig;
 use crate::modules::indexer::{IndexerError, IndexHeightResult, IndexerService, PersistBlockOutcome};
 use crate::modules::metrics::MetricsService;
 use crate::modules::rpc::{RpcClient, RpcError};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, ToSchema)]
 pub struct JobSummary {
     pub job_id: String,
     pub mode: String,
@@ -25,7 +26,7 @@ pub struct JobSummary {
     pub last_error: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, ToSchema)]
 pub struct JobDetails {
     pub job_id: String,
     pub mode: String,
@@ -145,6 +146,36 @@ impl JobsService {
             }
 
             tx.commit().await?;
+        }
+
+        Ok(())
+    }
+
+    pub async fn activate_enabled_jobs(&self, jobs: &[JobConfig]) -> Result<(), JobsError> {
+        for job in jobs.iter().filter(|job| job.enabled) {
+            let status = sqlx::query_scalar::<_, String>(
+                "SELECT status
+                 FROM jobs
+                 WHERE job_id = $1",
+            )
+            .bind(&job.job_id)
+            .fetch_optional(self.pool.as_ref())
+            .await?
+            .ok_or(JobsError::NotFound)?;
+
+            match status.as_str() {
+                "created" => {
+                    self.start(&job.job_id).await?;
+                }
+                "paused" => {
+                    self.resume(&job.job_id).await?;
+                }
+                "failed" => {
+                    self.retry(&job.job_id).await?;
+                }
+                "running" | "completed" => {}
+                _ => {}
+            }
         }
 
         Ok(())
@@ -439,7 +470,11 @@ async fn execute_job_batch(
 
     let details = jobs.get(job_id).await?;
     let tip_height = i32::try_from(rpc.get_block_count().await?).map_err(|_| JobExecutionError::TipOverflow)?;
-    let next_height = details.progress_height.saturating_add(1);
+    let next_height = if details.progress_height == 0 && !indexer.has_canonical_block(0).await? {
+        0
+    } else {
+        details.progress_height.saturating_add(1)
+    };
 
     if next_height > tip_height {
         return Ok(());
