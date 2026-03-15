@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use serde::Serialize;
 use sqlx::{PgPool, Postgres, QueryBuilder, Row};
 use thiserror::Error;
+use utoipa::ToSchema;
 
 #[derive(Debug, Error)]
 pub enum DataError {
@@ -19,7 +20,7 @@ pub struct DataService {
     pool: PgPool,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, ToSchema)]
 pub struct Pagination {
     pub offset: i64,
     pub limit: i64,
@@ -54,33 +55,49 @@ pub struct BlocksFilter {
     pub address: Option<String>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct BalanceResponse {
     pub address: String,
     pub balance_sats: i64,
     pub as_of: BalanceAsOf,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct BalanceAsOf {
     pub block_height: Option<i32>,
     pub time: Option<i64>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
+pub struct BalanceHistoryItem {
+    pub block_height: i32,
+    pub time: i64,
+    pub balance_sats: i64,
+}
+
+#[derive(Debug, Serialize, ToSchema)]
+pub struct BalanceHistoryPage {
+    pub address: String,
+    pub items: Vec<BalanceHistoryItem>,
+    pub offset: i64,
+    pub limit: i64,
+    pub total: i64,
+}
+
+#[derive(Debug, Serialize, ToSchema)]
 pub struct UtxoItem {
     pub out_txid: String,
     pub out_vout: i32,
     pub value_sats: i64,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct UtxosResponse {
     pub address: String,
     pub items: Vec<UtxoItem>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct TransactionIo {
     pub txid: Option<String>,
     pub vout: Option<i32>,
@@ -88,7 +105,7 @@ pub struct TransactionIo {
     pub value_sats: Option<i64>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct TransactionItem {
     pub txid: String,
     pub status: String,
@@ -99,7 +116,7 @@ pub struct TransactionItem {
     pub outputs: Vec<TransactionIo>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct TransactionsPage {
     pub items: Vec<TransactionItem>,
     pub offset: i64,
@@ -107,7 +124,7 @@ pub struct TransactionsPage {
     pub total: i64,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct BlockItem {
     pub height: i32,
     pub hash: String,
@@ -116,7 +133,7 @@ pub struct BlockItem {
     pub status: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, ToSchema)]
 pub struct BlocksPage {
     pub items: Vec<BlockItem>,
     pub offset: i64,
@@ -214,7 +231,14 @@ impl DataService {
              FROM blocks
              WHERE status = 'canonical'",
         );
-        apply_block_bounds(&mut tip_query, filter.from_height, filter.to_height, filter.from_time, filter.to_time);
+        apply_block_bounds(
+            &mut tip_query,
+            "blocks",
+            filter.from_height,
+            filter.to_height,
+            filter.from_time,
+            filter.to_time,
+        );
         tip_query.push(" ORDER BY height DESC LIMIT 1");
 
         let tip = tip_query.build().fetch_optional(&self.pool).await?;
@@ -279,6 +303,71 @@ impl DataService {
                     value_sats: row.get::<i64, _>("value_sats"),
                 })
                 .collect(),
+        })
+    }
+
+    pub async fn get_balance_history(
+        &self,
+        address: &str,
+        filter: BalanceFilter,
+        pagination: Pagination,
+    ) -> Result<BalanceHistoryPage, DataError> {
+        self.ensure_address_indexed(address).await?;
+
+        let mut count_builder = QueryBuilder::<Postgres>::new(
+            "SELECT COUNT(*) AS total
+             FROM address_balance_history abh
+             WHERE abh.address = ",
+        );
+        count_builder.push_bind(address);
+        append_balance_history_filters(
+            &mut count_builder,
+            filter.from_height,
+            filter.to_height,
+            filter.from_time,
+            filter.to_time,
+        );
+        let total = count_builder
+            .build()
+            .fetch_one(&self.pool)
+            .await?
+            .get::<i64, _>("total");
+
+        let mut builder = QueryBuilder::<Postgres>::new(
+            "SELECT abh.block_height, abh.time, abh.balance_sats
+             FROM address_balance_history abh
+             WHERE abh.address = ",
+        );
+        builder.push_bind(address);
+        append_balance_history_filters(
+            &mut builder,
+            filter.from_height,
+            filter.to_height,
+            filter.from_time,
+            filter.to_time,
+        );
+        builder.push(" ORDER BY abh.block_height DESC, abh.time DESC");
+        builder.push(" OFFSET ");
+        builder.push_bind(pagination.offset);
+        builder.push(" LIMIT ");
+        builder.push_bind(pagination.limit);
+
+        let rows = builder.build().fetch_all(&self.pool).await?;
+        let items = rows
+            .into_iter()
+            .map(|row| BalanceHistoryItem {
+                block_height: row.get::<i32, _>("block_height"),
+                time: row.get::<i64, _>("time"),
+                balance_sats: row.get::<i64, _>("balance_sats"),
+            })
+            .collect();
+
+        Ok(BalanceHistoryPage {
+            address: address.to_string(),
+            items,
+            offset: pagination.offset,
+            limit: pagination.limit,
+            total,
         })
     }
 
@@ -627,7 +716,7 @@ fn append_block_filters<'a>(
     has_txid: Option<&'a str>,
     address: Option<&'a str>,
 ) {
-    apply_block_bounds(builder, from_height, to_height, from_time, to_time);
+    apply_block_bounds(builder, "b", from_height, to_height, from_time, to_time);
 
     if let Some(block_hash) = block_hash {
         builder.push(" AND b.hash = ");
@@ -648,7 +737,7 @@ fn append_block_filters<'a>(
     }
 }
 
-fn apply_block_bounds(
+fn append_balance_history_filters(
     builder: &mut QueryBuilder<'_, Postgres>,
     from_height: Option<i32>,
     to_height: Option<i32>,
@@ -656,22 +745,59 @@ fn apply_block_bounds(
     to_time: Option<i64>,
 ) {
     if let Some(from_height) = from_height {
-        builder.push(" AND b.height >= ");
+        builder.push(" AND abh.block_height >= ");
         builder.push_bind(from_height);
     }
 
     if let Some(to_height) = to_height {
-        builder.push(" AND b.height <= ");
+        builder.push(" AND abh.block_height <= ");
         builder.push_bind(to_height);
     }
 
     if let Some(from_time) = from_time {
-        builder.push(" AND b.time >= ");
+        builder.push(" AND abh.time >= ");
         builder.push_bind(from_time);
     }
 
     if let Some(to_time) = to_time {
-        builder.push(" AND b.time <= ");
+        builder.push(" AND abh.time <= ");
+        builder.push_bind(to_time);
+    }
+}
+
+fn apply_block_bounds(
+    builder: &mut QueryBuilder<'_, Postgres>,
+    table_ref: &str,
+    from_height: Option<i32>,
+    to_height: Option<i32>,
+    from_time: Option<i64>,
+    to_time: Option<i64>,
+) {
+    if let Some(from_height) = from_height {
+        builder.push(" AND ");
+        builder.push(table_ref);
+        builder.push(".height >= ");
+        builder.push_bind(from_height);
+    }
+
+    if let Some(to_height) = to_height {
+        builder.push(" AND ");
+        builder.push(table_ref);
+        builder.push(".height <= ");
+        builder.push_bind(to_height);
+    }
+
+    if let Some(from_time) = from_time {
+        builder.push(" AND ");
+        builder.push(table_ref);
+        builder.push(".time >= ");
+        builder.push_bind(from_time);
+    }
+
+    if let Some(to_time) = to_time {
+        builder.push(" AND ");
+        builder.push(table_ref);
+        builder.push(".time <= ");
         builder.push_bind(to_time);
     }
 }

@@ -53,13 +53,13 @@ impl BlocksRepo {
         E: Executor<'e, Database = Postgres>,
     {
         sqlx::query(
-            "INSERT INTO blocks (height, hash, prev_hash, time, status, meta)\
-             VALUES ($1, $2, $3, $4, $5, $6)\
-             ON CONFLICT (hash) DO UPDATE SET\
-               height = EXCLUDED.height,\
-               prev_hash = EXCLUDED.prev_hash,\
-               time = EXCLUDED.time,\
-               status = EXCLUDED.status,\
+            "INSERT INTO blocks (height, hash, prev_hash, time, status, meta)
+             VALUES ($1, $2, $3, $4, $5, $6)
+             ON CONFLICT (hash) DO UPDATE SET
+               height = EXCLUDED.height,
+               prev_hash = EXCLUDED.prev_hash,
+               time = EXCLUDED.time,
+               status = EXCLUDED.status,
                meta = EXCLUDED.meta",
         )
         .bind(block.height)
@@ -87,14 +87,14 @@ impl TransactionsRepo {
         E: Executor<'e, Database = Postgres>,
     {
         sqlx::query(
-            "INSERT INTO transactions (txid, block_height, block_hash, position_in_block, time, status, decoded)\
-             VALUES ($1, $2, $3, $4, $5, $6, $7)\
-             ON CONFLICT (txid) DO UPDATE SET\
-               block_height = EXCLUDED.block_height,\
-               block_hash = EXCLUDED.block_hash,\
-               position_in_block = EXCLUDED.position_in_block,\
-               time = EXCLUDED.time,\
-               status = EXCLUDED.status,\
+            "INSERT INTO transactions (txid, block_height, block_hash, position_in_block, time, status, decoded)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             ON CONFLICT (txid) DO UPDATE SET
+               block_height = EXCLUDED.block_height,
+               block_hash = EXCLUDED.block_hash,
+               position_in_block = EXCLUDED.position_in_block,
+               time = EXCLUDED.time,
+               status = EXCLUDED.status,
                decoded = EXCLUDED.decoded",
         )
         .bind(&tx.txid)
@@ -123,8 +123,8 @@ impl TxOutputsRepo {
         E: Executor<'e, Database = Postgres>,
     {
         sqlx::query(
-            "INSERT INTO tx_outputs (txid, vout, value_sats, script_type, address, script_hex)\
-             VALUES ($1, $2, $3, $4, $5, $6)\
+            "INSERT INTO tx_outputs (txid, vout, value_sats, script_type, address, script_hex)
+             VALUES ($1, $2, $3, $4, $5, $6)
              ON CONFLICT (txid, vout) DO NOTHING",
         )
         .bind(&output.txid)
@@ -152,8 +152,8 @@ impl TxInputsRepo {
         E: Executor<'e, Database = Postgres>,
     {
         sqlx::query(
-            "INSERT INTO tx_inputs (txid, vin, prev_txid, prev_vout, sequence)\
-             VALUES ($1, $2, $3, $4, $5)\
+            "INSERT INTO tx_inputs (txid, vin, prev_txid, prev_vout, sequence)
+             VALUES ($1, $2, $3, $4, $5)
              ON CONFLICT (txid, vin) DO NOTHING",
         )
         .bind(&input.txid)

@@ -10,14 +10,15 @@ server:
       password_env: "INDEXER_API_PASSWORD"
 
 rpc:
-  node_id: "btc-mainnet-1"
-  url: "https://bitcoin-testnet4.blch.ru"
+  node_id: "btc-testnet-1"
+  url: "https://your-bitcoin-rpc.example.com"
   auth:
     basic:
-      username: "user_d"
+      username: "rpcuser"
       password_env: "BITCOIN_RPC_PASSWORD"
+  insecure_skip_verify: false
   mtls:
-    enabled: true
+    enabled: false
     ca_path: "certs/mtls/ca.crt"
     client_cert_path: "certs/mtls/client.crt"
     client_key_path: "certs/mtls/client.key"
@@ -27,7 +28,7 @@ rpc:
 
 indexer:
   chain: "bitcoin"
-  network: "mainnet"
+  network: "testnet"
   reorg_depth: 12
   poll:
     tip_interval_ms: 5000
@@ -49,4 +50,4 @@ jobs:
     mode: "address_list"
     enabled: false
     addresses:
-      - "bc1qexample"
+      - "tb1qexampleaddress0000000000000000000000000"

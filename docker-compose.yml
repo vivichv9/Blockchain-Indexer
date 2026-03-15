@@ -37,5 +37,19 @@ services:
       - ./certs:/app/certs:ro
       - ./migrations:/app/migrations:ro
 
+  admin-panel:
+    build:
+      context: ./admin-panel
+      dockerfile: Dockerfile
+      args:
+        VITE_INDEXER_API_BASE_URL: /api
+        VITE_INDEXER_API_USERNAME: ${INDEXER_API_USERNAME:-admin}
+        VITE_INDEXER_API_PASSWORD: ${INDEXER_API_PASSWORD:-changeme}
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "4173:80"
+
 volumes:
   postgres_data:

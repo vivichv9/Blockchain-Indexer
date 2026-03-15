@@ -3,6 +3,7 @@
 ## Что реализовано
 - Добавлены data-endpoint'ы:
   - `GET /v1/data/addresses/{address}/balance`
+  - `GET /v1/data/addresses/{address}/balance/history`
   - `GET /v1/data/addresses/{address}/utxos`
   - `GET /v1/data/transactions`
   - `GET /v1/data/transactions/mempool`
@@ -16,6 +17,9 @@
   - если адрес не покрыт индексацией, API возвращает `404 ADDRESS_NOT_INDEXED`.
 - Балансы и UTXO отдаются только из confirmed/canonical-данных.
 - Mempool endpoint отдает только `status=mempool`.
+- Исторический balance query с `from_height` / `to_height` и `from_time` / `to_time` корректно работает как для выборки tip-блока, так и для списка блоков.
+- `GET /v1/data/addresses/{address}/balance` возвращает один confirmed balance snapshot на конец диапазона.
+- `GET /v1/data/addresses/{address}/balance/history` возвращает историю изменений confirmed balance из `address_balance_history` с фильтрами по высоте/времени и пагинацией.
 
 ## Где находится
 - HTTP-обработчики и маппинг ошибок: `src/modules/api/mod.rs`.

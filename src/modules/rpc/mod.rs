@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -21,7 +22,7 @@ pub enum RpcError {
     #[error("invalid rpc identity: {0}")]
     InvalidIdentity(reqwest::Error),
     #[error("http error: {0}")]
-    Http(#[from] reqwest::Error),
+    Http(String),
     #[error("rpc error: {0}")]
     Rpc(String),
 }
@@ -38,14 +39,46 @@ pub struct RpcClient {
 
 impl RpcClient {
     pub fn from_config(config: &RpcConfig) -> Result<Self, RpcError> {
-        let mut builder = Client::builder()
-            .connect_timeout(Duration::from_millis(config.timeouts.connect_ms))
-            .timeout(Duration::from_millis(config.timeouts.request_ms));
+        Self::new(
+            &config.url,
+            &config.auth.username,
+            &config.auth.password,
+            config.insecure_skip_verify,
+            config.timeouts.connect_ms,
+            config.timeouts.request_ms,
+            config.mtls
+                .as_ref()
+                .map(|mtls| {
+                    (
+                        mtls.ca_path.clone(),
+                        mtls.client_cert_path.clone(),
+                        mtls.client_key_path.clone(),
+                    )
+                }),
+        )
+    }
 
-        if let Some(mtls) = &config.mtls {
-            let ca_pem = std::fs::read(&mtls.ca_path).map_err(RpcError::Certificate)?;
-            let client_cert = std::fs::read(&mtls.client_cert_path).map_err(RpcError::Certificate)?;
-            let client_key = std::fs::read(&mtls.client_key_path).map_err(RpcError::Certificate)?;
+    pub fn new(
+        url: &str,
+        username: &str,
+        password: &str,
+        insecure_skip_verify: bool,
+        connect_timeout_ms: u64,
+        request_timeout_ms: u64,
+        mtls_paths: Option<(std::path::PathBuf, std::path::PathBuf, std::path::PathBuf)>,
+    ) -> Result<Self, RpcError> {
+        let mut builder = Client::builder()
+            .connect_timeout(Duration::from_millis(connect_timeout_ms))
+            .timeout(Duration::from_millis(request_timeout_ms));
+
+        if insecure_skip_verify {
+            builder = builder.danger_accept_invalid_certs(true);
+        }
+
+        if let Some((ca_path, client_cert_path, client_key_path)) = mtls_paths {
+            let ca_pem = std::fs::read(&ca_path).map_err(RpcError::Certificate)?;
+            let client_cert = std::fs::read(&client_cert_path).map_err(RpcError::Certificate)?;
+            let client_key = std::fs::read(&client_key_path).map_err(RpcError::Certificate)?;
 
             let mut identity_pem = Vec::with_capacity(client_cert.len() + client_key.len() + 1);
             identity_pem.extend_from_slice(&client_cert);
@@ -64,9 +97,9 @@ impl RpcClient {
 
         Ok(Self {
             client,
-            url: config.url.clone(),
-            username: config.auth.username.clone(),
-            password: config.auth.password.clone(),
+            url: url.to_string(),
+            username: username.to_string(),
+            password: password.to_string(),
             id: Arc::new(AtomicU64::new(1)),
             metrics: None,
         })
@@ -173,6 +206,46 @@ struct RpcResponse<T> {
 #[derive(Debug, Deserialize)]
 struct RpcResponseError {
     message: String,
+}
+
+impl From<reqwest::Error> for RpcError {
+    fn from(err: reqwest::Error) -> Self {
+        RpcError::Http(describe_reqwest_error(&err))
+    }
+}
+
+fn describe_reqwest_error(err: &reqwest::Error) -> String {
+    let mut parts = Vec::new();
+
+    parts.push(err.to_string());
+
+    if let Some(url) = err.url() {
+        parts.push(format!("url={url}"));
+    }
+
+    if let Some(status) = err.status() {
+        parts.push(format!("status={status}"));
+    }
+
+    if err.is_timeout() {
+        parts.push("kind=timeout".to_string());
+    } else if err.is_connect() {
+        parts.push("kind=connect".to_string());
+    } else if err.is_request() {
+        parts.push("kind=request".to_string());
+    } else if err.is_body() {
+        parts.push("kind=body".to_string());
+    } else if err.is_decode() {
+        parts.push("kind=decode".to_string());
+    }
+
+    let mut source = err.source();
+    while let Some(inner) = source {
+        parts.push(format!("source={inner}"));
+        source = inner.source();
+    }
+
+    parts.join("; ")
 }
 
 #[cfg(test)]
