@@ -182,6 +182,69 @@ pre {
   border-radius: 16px;
 }
 
+.create-job-form {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  background: #f7f9fc;
+}
+
+.create-node-form {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  background: #f7f9fc;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field span {
+  color: #5d7187;
+  font-size: 0.9rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(16, 34, 53, 0.12);
+  border-radius: 16px;
+  background: #ffffff;
+  color: #102235;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.checkbox-field {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.checkbox-field input {
+  width: auto;
+}
+
+.form-hint {
+  color: #5d7187;
+  font-size: 0.92rem;
+}
+
 .error {
   background: rgba(184, 62, 40, 0.12);
   color: #842615;
@@ -323,6 +386,12 @@ tbody tr:hover {
   color: #344c63;
 }
 
+.status-unknown,
+.status-disabled {
+  background: rgba(53, 95, 138, 0.12);
+  color: #2c5b85;
+}
+
 .empty-state {
   display: grid;
   place-items: center;
@@ -356,6 +425,10 @@ tbody tr:hover {
   }
 
   .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid {
     grid-template-columns: 1fr;
   }
 

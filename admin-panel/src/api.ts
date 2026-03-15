@@ -14,6 +14,13 @@ export interface JobDetails extends JobSummary {
   config_snapshot: unknown;
 }
 
+export interface CreateJobPayload {
+  job_id: string;
+  mode: "all_addresses" | "address_list";
+  enabled: boolean;
+  addresses: string[];
+}
+
 export interface NodeSummary {
   node_id: string;
   status: string;
@@ -25,6 +32,15 @@ export interface NodeSummary {
 export interface NodeHealthDetails extends NodeSummary {
   tip_hash: string;
   details: unknown;
+}
+
+export interface CreateNodePayload {
+  node_id: string;
+  url: string;
+  username: string;
+  password: string;
+  insecure_skip_verify: boolean;
+  enabled: boolean;
 }
 
 interface ApiErrorPayload {
@@ -94,6 +110,14 @@ export async function runJobAction(jobId: string, action: "start" | "stop" | "pa
   return response.item;
 }
 
+export async function createJob(payload: CreateJobPayload): Promise<JobDetails> {
+  const response = await request<{ item: JobDetails }>("/v1/jobs", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return response.item;
+}
+
 export async function listNodes(): Promise<NodeSummary[]> {
   const response = await request<{ items: NodeSummary[] }>("/v1/nodes");
   return response.items;
@@ -101,5 +125,13 @@ export async function listNodes(): Promise<NodeSummary[]> {
 
 export async function getNodeHealth(nodeId: string): Promise<NodeHealthDetails> {
   const response = await request<{ item: NodeHealthDetails }>(`/v1/nodes/${nodeId}/health`);
+  return response.item;
+}
+
+export async function createNode(payload: CreateNodePayload): Promise<NodeHealthDetails> {
+  const response = await request<{ item: NodeHealthDetails }>("/v1/nodes", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
   return response.item;
 }

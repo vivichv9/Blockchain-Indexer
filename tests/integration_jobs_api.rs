@@ -242,6 +242,48 @@ async fn jobs_lifecycle_api() {
 
 #[tokio::test]
 #[ignore]
+async fn jobs_can_be_created_via_api_without_restart() {
+    let Some((bind_addr, auth, _pool)) = setup().await else {
+        return;
+    };
+
+    let client = reqwest::Client::new();
+
+    let create_resp = client
+        .post(format!("http://{bind_addr}/v1/jobs"))
+        .basic_auth(&auth.username, Some(&auth.password))
+        .json(&serde_json::json!({
+            "job_id": "watchlist-runtime",
+            "mode": "address_list",
+            "enabled": true,
+            "addresses": ["addr1", "addr2"]
+        }))
+        .send()
+        .await
+        .expect("create job");
+
+    assert_eq!(create_resp.status(), StatusCode::CREATED);
+    let create_body: Value = create_resp.json().await.expect("create body");
+    assert_eq!(create_body["item"]["job_id"], "watchlist-runtime");
+    assert_eq!(create_body["item"]["mode"], "address_list");
+    assert_eq!(create_body["item"]["status"], "running");
+    assert_eq!(create_body["item"]["config_snapshot"]["addresses"][0], "addr1");
+
+    let list_resp = client
+        .get(format!("http://{bind_addr}/v1/jobs"))
+        .basic_auth(&auth.username, Some(&auth.password))
+        .send()
+        .await
+        .expect("list jobs");
+
+    assert_eq!(list_resp.status(), StatusCode::OK);
+    let list_body: Value = list_resp.json().await.expect("list body");
+    let items = list_body["items"].as_array().expect("job items");
+    assert!(items.iter().any(|item| item["job_id"] == "watchlist-runtime"));
+}
+
+#[tokio::test]
+#[ignore]
 async fn jobs_requires_auth() {
     let Some((bind_addr, auth, _pool)) = setup().await else {
         return;
@@ -310,6 +352,21 @@ async fn nodes_list_and_details_api() {
     };
 
     sqlx::query(
+        "INSERT INTO nodes_registry
+         (node_id, url, username, password, insecure_skip_verify, enabled)
+         VALUES ($1, $2, $3, $4, $5, $6)",
+    )
+    .bind("btc-mainnet-1")
+    .bind("https://rpc.example.com")
+    .bind("user")
+    .bind("pass")
+    .bind(false)
+    .bind(true)
+    .execute(&pool)
+    .await
+    .expect("seed node registry");
+
+    sqlx::query(
         "INSERT INTO node_health
          (node_id, last_seen_at, tip_height, tip_hash, rpc_latency_ms, status, details)
          VALUES ($1, NOW(), $2, $3, $4, $5, $6)",
@@ -356,6 +413,49 @@ async fn nodes_list_and_details_api() {
     assert_eq!(detail_body["item"]["tip_hash"], "000000000000000000testhash");
     assert_eq!(detail_body["item"]["rpc_latency_ms"], 42);
     assert_eq!(detail_body["item"]["details"]["source"], "integration-test");
+}
+
+#[tokio::test]
+#[ignore]
+async fn nodes_can_be_created_via_api_without_restart() {
+    let Some((bind_addr, auth, _pool)) = setup().await else {
+        return;
+    };
+
+    let client = reqwest::Client::new();
+
+    let create_resp = client
+        .post(format!("http://{bind_addr}/v1/nodes"))
+        .basic_auth(&auth.username, Some(&auth.password))
+        .json(&serde_json::json!({
+            "node_id": "btc-testnet-2",
+            "url": "https://rpc.testnet.example.com",
+            "username": "user",
+            "password": "pass",
+            "insecure_skip_verify": true,
+            "enabled": true
+        }))
+        .send()
+        .await
+        .expect("create node");
+
+    assert_eq!(create_resp.status(), StatusCode::CREATED);
+    let create_body: Value = create_resp.json().await.expect("create node body");
+    assert_eq!(create_body["item"]["node_id"], "btc-testnet-2");
+    assert_eq!(create_body["item"]["status"], "unknown");
+    assert_eq!(create_body["item"]["details"]["url"], "https://rpc.testnet.example.com");
+
+    let list_resp = client
+        .get(format!("http://{bind_addr}/v1/nodes"))
+        .basic_auth(&auth.username, Some(&auth.password))
+        .send()
+        .await
+        .expect("list nodes");
+
+    assert_eq!(list_resp.status(), StatusCode::OK);
+    let list_body: Value = list_resp.json().await.expect("list nodes body");
+    let items = list_body["items"].as_array().expect("node items");
+    assert!(items.iter().any(|item| item["node_id"] == "btc-testnet-2"));
 }
 
 #[tokio::test]
@@ -414,6 +514,30 @@ async fn data_api_returns_balance_utxos_transactions_mempool_and_blocks() {
         .expect("historical balance body");
     assert_eq!(historical_balance_body["balance_sats"], 7000);
     assert_eq!(historical_balance_body["as_of"]["block_height"], 100);
+
+    let balance_history_resp = client
+        .get(format!(
+            "http://{bind_addr}/v1/data/addresses/addr1/balance/history?from_height=100&to_height=101&limit=10"
+        ))
+        .basic_auth(&auth.username, Some(&auth.password))
+        .send()
+        .await
+        .expect("get balance history");
+    assert_eq!(balance_history_resp.status(), StatusCode::OK);
+    let balance_history_body: Value = balance_history_resp
+        .json()
+        .await
+        .expect("balance history body");
+    let balance_history_items = balance_history_body["items"]
+        .as_array()
+        .expect("balance history items");
+    assert_eq!(balance_history_body["address"], "addr1");
+    assert_eq!(balance_history_body["total"], 2);
+    assert_eq!(balance_history_items.len(), 2);
+    assert_eq!(balance_history_items[0]["block_height"], 101);
+    assert_eq!(balance_history_items[0]["balance_sats"], 5000);
+    assert_eq!(balance_history_items[1]["block_height"], 100);
+    assert_eq!(balance_history_items[1]["balance_sats"], 7000);
 
     let utxos_resp = client
         .get(format!("http://{bind_addr}/v1/data/addresses/addr1/utxos"))

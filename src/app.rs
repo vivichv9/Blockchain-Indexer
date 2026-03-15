@@ -8,7 +8,7 @@ use crate::modules::indexer::IndexerService;
 use crate::modules::jobs::{JobsRunner, JobsRunnerConfig, JobsService};
 use crate::modules::mempool::{MempoolRunner, MempoolRunnerConfig};
 use crate::modules::metrics::MetricsService;
-use crate::modules::nodes::{NodeHealthRunner, NodeHealthRunnerConfig, NodesService};
+use crate::modules::nodes::{NodesRunner, NodesRunnerConfig, NodesService};
 use crate::modules::rpc::RpcClient;
 use crate::modules::storage::Storage;
 
@@ -17,7 +17,7 @@ pub struct App {
     auth: ApiAuth,
     jobs_runner: JobsRunner,
     mempool_runner: MempoolRunner,
-    node_health_runner: NodeHealthRunner,
+    nodes_runner: NodesRunner,
     state: AppState,
 }
 
@@ -34,9 +34,10 @@ impl App {
         jobs_service.sync_from_config(&config.jobs).await?;
         jobs_service.activate_enabled_jobs(&config.jobs).await?;
         let metrics = MetricsService::new();
+        let nodes_service = NodesService::new(storage.pool().clone());
+        nodes_service.ensure_primary_node(&config.rpc).await?;
         let rpc = RpcClient::from_config(&config.rpc)?.with_metrics(metrics.clone());
         let indexer = IndexerService::new(rpc.clone(), storage.pool().clone(), metrics.clone());
-        let nodes_service = NodesService::new(storage.pool().clone());
         let mempool_runner = MempoolRunner::new(
             rpc.clone(),
             storage.pool().clone(),
@@ -44,13 +45,11 @@ impl App {
                 poll_interval: std::time::Duration::from_millis(config.indexer.poll.mempool_interval_ms),
             },
         );
-        let node_health_runner = NodeHealthRunner::new(
-            rpc.clone(),
+        let nodes_runner = NodesRunner::new(
             storage.pool().clone(),
             metrics.clone(),
-            NodeHealthRunnerConfig {
+            NodesRunnerConfig {
                 poll_interval: std::time::Duration::from_millis(config.indexer.poll.tip_interval_ms),
-                node_id: config.rpc.node_id.clone(),
             },
         );
         let jobs_runner = JobsRunner::new(
@@ -81,7 +80,7 @@ impl App {
             },
             jobs_runner,
             mempool_runner,
-            node_health_runner,
+            nodes_runner,
             state: AppState {
                 jobs: jobs_service,
                 data: DataService::new(storage.pool().clone()),
@@ -94,7 +93,7 @@ impl App {
     pub async fn run(self) -> Result<()> {
         self.jobs_runner.start();
         self.mempool_runner.start();
-        self.node_health_runner.start();
+        self.nodes_runner.start();
         let listener = tokio::net::TcpListener::bind(&self.bind_addr).await?;
         info!(
             component = "api",

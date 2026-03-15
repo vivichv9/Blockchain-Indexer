@@ -112,11 +112,12 @@ docker compose down -v
 - подключается к PostgreSQL
 - применяет SQL-миграции из `migrations/`
 - синхронизирует jobs из YAML в БД
+- синхронизирует основной RPC-узел в runtime-реестр `nodes_registry`
 - поднимает API
 - запускает background runners:
   - jobs runner
   - mempool runner
-  - node health runner
+  - nodes health runner
 
 ## 6. Проверка после запуска
 Если compose поднят локально, backend опубликован на порту `8080`.
@@ -134,10 +135,28 @@ curl http://127.0.0.1:8080/health
 curl -u admin:change-me-api-password http://127.0.0.1:8080/v1/jobs
 ```
 
+Создание job без перезапуска:
+
+```powershell
+curl -u admin:change-me-api-password ^
+  -H "Content-Type: application/json" ^
+  -X POST http://127.0.0.1:8080/v1/jobs ^
+  -d "{\"job_id\":\"watchlist-runtime\",\"mode\":\"address_list\",\"enabled\":true,\"addresses\":[\"addr1\",\"addr2\"]}"
+```
+
 Проверка nodes API:
 
 ```powershell
 curl -u admin:change-me-api-password http://127.0.0.1:8080/v1/nodes
+```
+
+Добавление узла без перезапуска:
+
+```powershell
+curl -u admin:change-me-api-password ^
+  -H "Content-Type: application/json" ^
+  -X POST http://127.0.0.1:8080/v1/nodes ^
+  -d "{\"node_id\":\"btc-testnet-2\",\"url\":\"https://rpc.example.com\",\"username\":\"user\",\"password\":\"secret\",\"insecure_skip_verify\":true,\"enabled\":true}"
 ```
 
 Проверка data API:

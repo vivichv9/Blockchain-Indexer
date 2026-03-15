@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import {
+  createJob,
+  createNode,
   getJob,
   getNodeHealth,
   listJobs,
   listNodes,
   runJobAction,
+  type CreateJobPayload,
+  type CreateNodePayload,
   type JobDetails,
   type JobStatus,
   type JobSummary,
@@ -27,12 +31,29 @@ export function App() {
   const [jobsError, setJobsError] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState<JobDetails | null>(null);
   const [jobActionPending, setJobActionPending] = useState<string | null>(null);
+  const [createJobPending, setCreateJobPending] = useState(false);
+  const [jobDraft, setJobDraft] = useState<CreateJobPayload>({
+    job_id: "",
+    mode: "address_list",
+    enabled: true,
+    addresses: [],
+  });
+  const [addressesInput, setAddressesInput] = useState("");
 
   const [nodes, setNodes] = useState<NodeSummary[]>([]);
   const [nodesError, setNodesError] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<NodeHealthDetails | null>(null);
   const [nodeDetailsError, setNodeDetailsError] = useState<string | null>(null);
+  const [createNodePending, setCreateNodePending] = useState(false);
+  const [nodeDraft, setNodeDraft] = useState<CreateNodePayload>({
+    node_id: "",
+    url: "",
+    username: "",
+    password: "",
+    insecure_skip_verify: false,
+    enabled: true,
+  });
 
   useEffect(() => {
     void refreshJobs();
@@ -110,6 +131,31 @@ export function App() {
     }
   }
 
+  async function handleCreateNode(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setCreateNodePending(true);
+    setNodesError(null);
+
+    try {
+      const details = await createNode(nodeDraft);
+      setSelectedNodeId(details.node_id);
+      setSelectedNode(details);
+      setNodeDraft({
+        node_id: "",
+        url: "",
+        username: "",
+        password: "",
+        insecure_skip_verify: false,
+        enabled: true,
+      });
+      await refreshNodes();
+    } catch (error) {
+      setNodesError(asErrorMessage(error));
+    } finally {
+      setCreateNodePending(false);
+    }
+  }
+
   async function handleJobAction(jobId: string, action: "start" | "stop" | "pause" | "resume" | "retry") {
     setJobActionPending(`${jobId}:${action}`);
     try {
@@ -120,6 +166,40 @@ export function App() {
       setJobsError(asErrorMessage(error));
     } finally {
       setJobActionPending(null);
+    }
+  }
+
+  async function handleCreateJob(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setCreateJobPending(true);
+    setJobsError(null);
+
+    try {
+      const payload: CreateJobPayload = {
+        ...jobDraft,
+        addresses:
+          jobDraft.mode === "address_list"
+            ? addressesInput
+                .split(/\r?\n|,/)
+                .map((value) => value.trim())
+                .filter(Boolean)
+            : [],
+      };
+
+      const details = await createJob(payload);
+      setSelectedJob(details);
+      setJobDraft({
+        job_id: "",
+        mode: "address_list",
+        enabled: true,
+        addresses: [],
+      });
+      setAddressesInput("");
+      await refreshJobs();
+    } catch (error) {
+      setJobsError(asErrorMessage(error));
+    } finally {
+      setCreateJobPending(false);
     }
   }
 
@@ -169,6 +249,59 @@ export function App() {
               </button>
             </div>
             {jobsError ? <div className="banner error">{jobsError}</div> : null}
+            <form className="create-job-form" onSubmit={handleCreateJob}>
+              <div className="form-grid">
+                <label className="field">
+                  <span>Job ID</span>
+                  <input
+                    onChange={(event) => setJobDraft((current) => ({ ...current, job_id: event.target.value }))}
+                    placeholder="watchlist-runtime"
+                    required
+                    type="text"
+                    value={jobDraft.job_id}
+                  />
+                </label>
+                <label className="field">
+                  <span>Mode</span>
+                  <select
+                    onChange={(event) =>
+                      setJobDraft((current) => ({
+                        ...current,
+                        mode: event.target.value as CreateJobPayload["mode"],
+                      }))
+                    }
+                    value={jobDraft.mode}
+                  >
+                    <option value="address_list">address_list</option>
+                    <option value="all_addresses">all_addresses</option>
+                  </select>
+                </label>
+              </div>
+              <label className="field checkbox-field">
+                <input
+                  checked={jobDraft.enabled}
+                  onChange={(event) => setJobDraft((current) => ({ ...current, enabled: event.target.checked }))}
+                  type="checkbox"
+                />
+                <span>Start immediately after create</span>
+              </label>
+              <label className="field">
+                <span>Addresses</span>
+                <textarea
+                  disabled={jobDraft.mode === "all_addresses"}
+                  onChange={(event) => setAddressesInput(event.target.value)}
+                  placeholder="addr1&#10;addr2"
+                  rows={4}
+                  value={addressesInput}
+                />
+              </label>
+              <div className="form-hint">
+                Для `address_list` укажи адреса через новую строку или запятую. Для `all_addresses` список должен быть пустым.
+              </div>
+              <button className="action-button" disabled={createJobPending} type="submit">
+                {createJobPending ? "Creating..." : "Create Job"}
+              </button>
+            </form>
             <div className="table-wrap">
               <table>
                 <thead>
@@ -256,6 +389,73 @@ export function App() {
               </button>
             </div>
             {nodesError ? <div className="banner error">{nodesError}</div> : null}
+            <form className="create-node-form" onSubmit={handleCreateNode}>
+              <div className="form-grid">
+                <label className="field">
+                  <span>Node ID</span>
+                  <input
+                    onChange={(event) => setNodeDraft((current) => ({ ...current, node_id: event.target.value }))}
+                    placeholder="btc-testnet-2"
+                    required
+                    type="text"
+                    value={nodeDraft.node_id}
+                  />
+                </label>
+                <label className="field">
+                  <span>RPC URL</span>
+                  <input
+                    onChange={(event) => setNodeDraft((current) => ({ ...current, url: event.target.value }))}
+                    placeholder="https://rpc.example.com"
+                    required
+                    type="url"
+                    value={nodeDraft.url}
+                  />
+                </label>
+              </div>
+              <div className="form-grid">
+                <label className="field">
+                  <span>Username</span>
+                  <input
+                    onChange={(event) => setNodeDraft((current) => ({ ...current, username: event.target.value }))}
+                    required
+                    type="text"
+                    value={nodeDraft.username}
+                  />
+                </label>
+                <label className="field">
+                  <span>Password</span>
+                  <input
+                    onChange={(event) => setNodeDraft((current) => ({ ...current, password: event.target.value }))}
+                    required
+                    type="password"
+                    value={nodeDraft.password}
+                  />
+                </label>
+              </div>
+              <div className="form-grid">
+                <label className="field checkbox-field">
+                  <input
+                    checked={nodeDraft.insecure_skip_verify}
+                    onChange={(event) =>
+                      setNodeDraft((current) => ({ ...current, insecure_skip_verify: event.target.checked }))
+                    }
+                    type="checkbox"
+                  />
+                  <span>Skip TLS verification</span>
+                </label>
+                <label className="field checkbox-field">
+                  <input
+                    checked={nodeDraft.enabled}
+                    onChange={(event) => setNodeDraft((current) => ({ ...current, enabled: event.target.checked }))}
+                    type="checkbox"
+                  />
+                  <span>Enable health polling</span>
+                </label>
+              </div>
+              <button className="action-button" disabled={createNodePending} type="submit">
+                {createNodePending ? "Adding..." : "Add Node"}
+              </button>
+            </form>
             <div className="node-list">
               {nodes.map((node) => (
                 <button

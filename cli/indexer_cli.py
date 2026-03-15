@@ -143,6 +143,18 @@ def build_parser() -> argparse.ArgumentParser:
     balance_parser.add_argument("--from-height", type=int, default=None)
     balance_parser.add_argument("--to-height", type=int, default=None)
 
+    balance_history_parser = data_subparsers.add_parser(
+        "balance-history",
+        help="Get balance history snapshots for an address",
+    )
+    balance_history_parser.add_argument("address", help="Bitcoin address")
+    balance_history_parser.add_argument("--from-time", type=int, default=None)
+    balance_history_parser.add_argument("--to-time", type=int, default=None)
+    balance_history_parser.add_argument("--from-height", type=int, default=None)
+    balance_history_parser.add_argument("--to-height", type=int, default=None)
+    balance_history_parser.add_argument("--offset", type=int, default=None)
+    balance_history_parser.add_argument("--limit", type=int, default=None)
+
     utxos_parser = data_subparsers.add_parser("utxos", help="List address UTXOs")
     utxos_parser.add_argument("address", help="Bitcoin address")
 
@@ -215,6 +227,18 @@ def handle_data(client: ApiClient, args: argparse.Namespace) -> Any:
                 "to_time": args.to_time,
                 "from_height": args.from_height,
                 "to_height": args.to_height,
+            },
+        )
+    if args.action == "balance-history":
+        return client.get(
+            f"/v1/data/addresses/{args.address}/balance/history",
+            query={
+                "from_time": args.from_time,
+                "to_time": args.to_time,
+                "from_height": args.from_height,
+                "to_height": args.to_height,
+                "offset": args.offset,
+                "limit": args.limit,
             },
         )
     if args.action == "utxos":

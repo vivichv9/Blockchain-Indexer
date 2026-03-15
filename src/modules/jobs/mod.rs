@@ -15,6 +15,14 @@ use crate::modules::indexer::{IndexerError, IndexHeightResult, IndexerService, P
 use crate::modules::metrics::MetricsService;
 use crate::modules::rpc::{RpcClient, RpcError};
 
+#[derive(Debug, Clone, Deserialize, ToSchema)]
+pub struct CreateJobRequest {
+    pub job_id: String,
+    pub mode: String,
+    pub enabled: bool,
+    pub addresses: Vec<String>,
+}
+
 #[derive(Debug, Clone, Serialize, ToSchema)]
 pub struct JobSummary {
     pub job_id: String,
@@ -46,8 +54,12 @@ pub struct JobActionRequest {
 pub enum JobsError {
     #[error("job not found")]
     NotFound,
+    #[error("job already exists")]
+    AlreadyExists,
     #[error("invalid transition from '{0}'")]
     InvalidTransition(String),
+    #[error("validation error: {0}")]
+    Validation(String),
     #[error("storage error: {0}")]
     Storage(#[from] sqlx::Error),
     #[error("serialization error: {0}")]
@@ -149,6 +161,48 @@ impl JobsService {
         }
 
         Ok(())
+    }
+
+    pub async fn create(&self, request: CreateJobRequest) -> Result<JobDetails, JobsError> {
+        let job = normalize_job_config(request)?;
+        let snapshot = serde_json::to_value(&job)?;
+        let mut tx = self.pool.begin().await?;
+
+        let inserted = sqlx::query(
+            "INSERT INTO jobs (job_id, mode, status, progress_height, config_snapshot, updated_at) \
+             VALUES ($1, $2, 'created', 0, $3, NOW()) \
+             ON CONFLICT (job_id) DO NOTHING",
+        )
+        .bind(&job.job_id)
+        .bind(&job.mode)
+        .bind(snapshot)
+        .execute(&mut *tx)
+        .await?
+        .rows_affected();
+
+        if inserted == 0 {
+            return Err(JobsError::AlreadyExists);
+        }
+
+        for address in &job.addresses {
+            sqlx::query(
+                "INSERT INTO job_addresses (job_id, address) \
+                 VALUES ($1, $2) \
+                 ON CONFLICT (job_id, address) DO NOTHING",
+            )
+            .bind(&job.job_id)
+            .bind(address)
+            .execute(&mut *tx)
+            .await?;
+        }
+
+        tx.commit().await?;
+
+        if job.enabled {
+            self.start(&job.job_id).await
+        } else {
+            self.get(&job.job_id).await
+        }
     }
 
     pub async fn activate_enabled_jobs(&self, jobs: &[JobConfig]) -> Result<(), JobsError> {
@@ -531,6 +585,45 @@ fn transition_target(action: JobAction, current: &str) -> Result<&'static str, J
     }
 }
 
+fn normalize_job_config(request: CreateJobRequest) -> Result<JobConfig, JobsError> {
+    let job_id = request.job_id.trim();
+    if job_id.is_empty() {
+        return Err(JobsError::Validation("job_id MUST be non-empty".to_string()));
+    }
+
+    if !matches!(request.mode.as_str(), "all_addresses" | "address_list") {
+        return Err(JobsError::Validation(
+            "mode MUST be one of: all_addresses|address_list".to_string(),
+        ));
+    }
+
+    let addresses: Vec<String> = request
+        .addresses
+        .into_iter()
+        .map(|address| address.trim().to_string())
+        .filter(|address| !address.is_empty())
+        .collect();
+
+    if request.mode == "address_list" && addresses.is_empty() {
+        return Err(JobsError::Validation(
+            "addresses MUST be non-empty for address_list mode".to_string(),
+        ));
+    }
+
+    if request.mode == "all_addresses" && !addresses.is_empty() {
+        return Err(JobsError::Validation(
+            "addresses MUST be empty for all_addresses mode".to_string(),
+        ));
+    }
+
+    Ok(JobConfig {
+        job_id: job_id.to_string(),
+        mode: request.mode,
+        enabled: request.enabled,
+        addresses,
+    })
+}
+
 impl From<JobRow> for JobSummary {
     fn from(row: JobRow) -> Self {
         Self {
@@ -573,7 +666,7 @@ struct JobIdRow {
 
 #[cfg(test)]
 mod tests {
-    use super::{transition_target, JobAction};
+    use super::{normalize_job_config, transition_target, CreateJobRequest, JobAction};
 
     #[test]
     fn validates_transitions() {
@@ -586,5 +679,26 @@ mod tests {
         assert!(transition_target(JobAction::Resume, "running").is_err());
         assert_eq!(transition_target(JobAction::Retry, "failed").unwrap(), "running");
         assert!(transition_target(JobAction::Retry, "running").is_err());
+    }
+
+    #[test]
+    fn validates_runtime_job_creation_request() {
+        let err = normalize_job_config(CreateJobRequest {
+            job_id: " ".to_string(),
+            mode: "all_addresses".to_string(),
+            enabled: true,
+            addresses: vec![],
+        })
+        .expect_err("empty job_id should fail");
+        assert!(err.to_string().contains("job_id"));
+
+        let err = normalize_job_config(CreateJobRequest {
+            job_id: "watch".to_string(),
+            mode: "address_list".to_string(),
+            enabled: true,
+            addresses: vec![],
+        })
+        .expect_err("empty address_list should fail");
+        assert!(err.to_string().contains("addresses"));
     }
 }

@@ -23,6 +23,7 @@
   - `health <node_id>`
 - Реализованы demo-команды для `data API`:
   - `balance <address>`
+  - `balance-history <address>`
   - `utxos <address>`
   - `txs`
   - `mempool`
@@ -38,6 +39,7 @@
 - `python cli/indexer_cli.py nodes list`
 - `python cli/indexer_cli.py nodes health btc-mainnet-1`
 - `python cli/indexer_cli.py data balance bc1... --to-height 100`
+- `python cli/indexer_cli.py data balance-history bc1... --from-height 100 --to-height 200 --limit 50`
 - `python cli/indexer_cli.py data utxos bc1...`
 - `python cli/indexer_cli.py data txs --address bc1... --limit 20`
 - `python cli/indexer_cli.py data mempool --address bc1...`

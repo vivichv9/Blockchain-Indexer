@@ -9,10 +9,12 @@
   - `Node Health`
 - На странице `Jobs` доступны:
   - таблица job'ов;
+  - форма создания нового job без перезапуска backend;
   - просмотр деталей выбранного job;
   - действия `start`, `stop`, `pause`, `resume`, `retry`;
   - показ `last_error` и `config_snapshot`.
 - На странице `Node Health` доступны:
+  - форма добавления нового узла без перезапуска backend;
   - список узлов;
   - расширенная карточка выбранного узла;
   - отображение `status`, `tip_height`, `tip_hash`, `rpc_latency_ms`, `last_seen_at`, `details`.

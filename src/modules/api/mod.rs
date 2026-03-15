@@ -14,9 +14,9 @@ use utoipa_swagger_ui::SwaggerUi;
 use crate::modules::data::{
     BalanceFilter, BlocksFilter, DataError, DataService, Pagination, TransactionsFilter,
 };
-use crate::modules::jobs::{JobDetails, JobSummary, JobsError, JobsService};
+use crate::modules::jobs::{CreateJobRequest, JobDetails, JobSummary, JobsError, JobsService};
 use crate::modules::metrics::MetricsService;
-use crate::modules::nodes::{NodeHealthDetails, NodeSummary, NodesError, NodesService};
+use crate::modules::nodes::{CreateNodeRequest, NodeHealthDetails, NodeSummary, NodesError, NodesService};
 
 #[derive(Debug, Clone)]
 pub struct ApiAuth {
@@ -88,6 +88,17 @@ struct BalanceQuery {
 
 #[derive(Debug, Deserialize)]
 #[derive(IntoParams)]
+struct BalanceHistoryQuery {
+    from_time: Option<i64>,
+    to_time: Option<i64>,
+    from_height: Option<i32>,
+    to_height: Option<i32>,
+    offset: Option<i64>,
+    limit: Option<i64>,
+}
+
+#[derive(Debug, Deserialize)]
+#[derive(IntoParams)]
 struct TransactionsQuery {
     from_height: Option<i32>,
     to_height: Option<i32>,
@@ -127,6 +138,7 @@ struct BlocksQuery {
         health,
         metrics,
         list_jobs,
+        create_job,
         get_job,
         start_job,
         stop_job,
@@ -134,8 +146,10 @@ struct BlocksQuery {
         resume_job,
         retry_job,
         list_nodes,
+        create_node,
         get_node_health,
         get_balance,
+        get_balance_history,
         get_utxos,
         list_transactions,
         list_mempool_transactions,
@@ -147,8 +161,10 @@ struct BlocksQuery {
             ApiError,
             JobsListResponse,
             JobDetailsResponse,
+            CreateJobRequest,
             NodesListResponse,
             NodeDetailsResponse,
+            CreateNodeRequest,
             JobSummary,
             JobDetails,
             NodeSummary,
@@ -156,6 +172,8 @@ struct BlocksQuery {
             crate::modules::data::Pagination,
             crate::modules::data::BalanceResponse,
             crate::modules::data::BalanceAsOf,
+            crate::modules::data::BalanceHistoryItem,
+            crate::modules::data::BalanceHistoryPage,
             crate::modules::data::UtxoItem,
             crate::modules::data::UtxosResponse,
             crate::modules::data::TransactionIo,
@@ -200,16 +218,17 @@ pub fn router(auth: ApiAuth, state: AppState) -> Router {
     Router::new()
         .route("/health", get(health))
         .route("/metrics", get(metrics))
-        .route("/v1/jobs", get(list_jobs))
+        .route("/v1/jobs", get(list_jobs).post(create_job))
         .route("/v1/jobs/{job_id}", get(get_job))
         .route("/v1/jobs/{job_id}/start", axum::routing::post(start_job))
         .route("/v1/jobs/{job_id}/stop", axum::routing::post(stop_job))
         .route("/v1/jobs/{job_id}/pause", axum::routing::post(pause_job))
         .route("/v1/jobs/{job_id}/resume", axum::routing::post(resume_job))
         .route("/v1/jobs/{job_id}/retry", axum::routing::post(retry_job))
-        .route("/v1/nodes", get(list_nodes))
+        .route("/v1/nodes", get(list_nodes).post(create_node))
         .route("/v1/nodes/{node_id}/health", get(get_node_health))
         .route("/v1/data/addresses/{address}/balance", get(get_balance))
+        .route("/v1/data/addresses/{address}/balance/history", get(get_balance_history))
         .route("/v1/data/addresses/{address}/utxos", get(get_utxos))
         .route("/v1/data/transactions", get(list_transactions))
         .route("/v1/data/transactions/mempool", get(list_mempool_transactions))
@@ -289,6 +308,29 @@ async fn list_jobs(State(state): State<AppState>) -> Result<Json<JobsListRespons
 }
 
 #[utoipa::path(
+    post,
+    path = "/v1/jobs",
+    tag = "jobs",
+    request_body = CreateJobRequest,
+    security(
+        ("basic_auth" = [])
+    ),
+    responses(
+        (status = 201, description = "Created job", body = JobDetailsResponse),
+        (status = 409, description = "Job already exists", body = ApiError),
+        (status = 422, description = "Validation failed", body = ApiError),
+        (status = 500, description = "Storage failure", body = ApiError)
+    )
+)]
+async fn create_job(
+    State(state): State<AppState>,
+    Json(request): Json<CreateJobRequest>,
+) -> Result<(StatusCode, Json<JobDetailsResponse>), ApiResponse> {
+    let item = state.jobs.create(request).await.map_err(ApiResponse::from)?;
+    Ok((StatusCode::CREATED, Json(JobDetailsResponse { item })))
+}
+
+#[utoipa::path(
     get,
     path = "/v1/jobs/{job_id}",
     tag = "jobs",
@@ -327,6 +369,29 @@ async fn get_job(
 async fn list_nodes(State(state): State<AppState>) -> Result<Json<NodesListResponse>, ApiResponse> {
     let items = state.nodes.list().await.map_err(ApiResponse::from)?;
     Ok(Json(NodesListResponse { items }))
+}
+
+#[utoipa::path(
+    post,
+    path = "/v1/nodes",
+    tag = "nodes",
+    request_body = CreateNodeRequest,
+    security(
+        ("basic_auth" = [])
+    ),
+    responses(
+        (status = 201, description = "Created node", body = NodeDetailsResponse),
+        (status = 409, description = "Node already exists", body = ApiError),
+        (status = 422, description = "Validation failed", body = ApiError),
+        (status = 500, description = "Storage failure", body = ApiError)
+    )
+)]
+async fn create_node(
+    State(state): State<AppState>,
+    Json(request): Json<CreateNodeRequest>,
+) -> Result<(StatusCode, Json<NodeDetailsResponse>), ApiResponse> {
+    let item = state.nodes.create(request).await.map_err(ApiResponse::from)?;
+    Ok((StatusCode::CREATED, Json(NodeDetailsResponse { item })))
 }
 
 #[utoipa::path(
@@ -512,6 +577,47 @@ async fn get_balance(
                 from_height: query.from_height,
                 to_height: query.to_height,
             },
+        )
+        .await
+        .map_err(ApiResponse::from)?;
+    Ok(Json(item))
+}
+
+#[utoipa::path(
+    get,
+    path = "/v1/data/addresses/{address}/balance/history",
+    tag = "data",
+    params(
+        ("address" = String, Path, description = "Bitcoin address"),
+        BalanceHistoryQuery
+    ),
+    security(
+        ("basic_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "Balance history snapshots", body = crate::modules::data::BalanceHistoryPage),
+        (status = 404, description = "Address is not indexed", body = ApiError),
+        (status = 422, description = "Validation failed", body = ApiError),
+        (status = 500, description = "Storage failure", body = ApiError)
+    )
+)]
+async fn get_balance_history(
+    Path(address): Path<String>,
+    Query(query): Query<BalanceHistoryQuery>,
+    State(state): State<AppState>,
+) -> Result<Json<crate::modules::data::BalanceHistoryPage>, ApiResponse> {
+    let pagination = parse_pagination(&state.data, query.offset, query.limit)?;
+    let item = state
+        .data
+        .get_balance_history(
+            &address,
+            BalanceFilter {
+                from_time: query.from_time,
+                to_time: query.to_time,
+                from_height: query.from_height,
+                to_height: query.to_height,
+            },
+            pagination,
         )
         .await
         .map_err(ApiResponse::from)?;
@@ -720,10 +826,17 @@ impl From<JobsError> for ApiResponse {
     fn from(err: JobsError) -> Self {
         match err {
             JobsError::NotFound => ApiResponse::new(StatusCode::NOT_FOUND, "NOT_FOUND", "Not found"),
+            JobsError::AlreadyExists => ApiResponse::new(StatusCode::CONFLICT, "CONFLICT", "Job already exists"),
             JobsError::InvalidTransition(_) => ApiResponse::new(
                 StatusCode::CONFLICT,
                 "CONFLICT",
                 "Invalid job state transition",
+            ),
+            JobsError::Validation(message) => ApiResponse::with_details(
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "VALIDATION_ERROR",
+                "Validation failed",
+                serde_json::json!({ "reason": message }),
             ),
             JobsError::Serialization(_) => ApiResponse::new(
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -767,6 +880,13 @@ impl From<NodesError> for ApiResponse {
     fn from(err: NodesError) -> Self {
         match err {
             NodesError::NotFound => ApiResponse::new(StatusCode::NOT_FOUND, "NOT_FOUND", "Not found"),
+            NodesError::AlreadyExists => ApiResponse::new(StatusCode::CONFLICT, "CONFLICT", "Node already exists"),
+            NodesError::Validation(message) => ApiResponse::with_details(
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "VALIDATION_ERROR",
+                "Validation failed",
+                serde_json::json!({ "reason": message }),
+            ),
             NodesError::Rpc(_) => ApiResponse::new(
                 StatusCode::SERVICE_UNAVAILABLE,
                 "NODE_UNAVAILABLE",
