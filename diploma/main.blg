@@ -1,0 +1,15 @@
+[0] Config.pm:306> INFO - This is Biber 2.18
+[0] Config.pm:309> INFO - Logfile is 'main.blg'
+[51] biber:340> INFO - === Sun Mar 22, 2026, 11:35:14
+[72] Biber.pm:418> INFO - Reading 'main.bcf'
+[120] Biber.pm:978> INFO - Found 8 citekeys in bib section 0
+[129] Biber.pm:4401> INFO - Processing section 0
+[135] Biber.pm:4592> INFO - Looking for bibtex file 'main.bib' for section 0
+[140] bibtex.pm:1713> INFO - LaTeX decoding ...
+[144] bibtex.pm:1518> INFO - Found BibTeX data source 'main.bib'
+[170] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[171] UCollate.pm:68> INFO - Overriding locale 'ru-RU' defaults 'variable = shifted' with 'variable = non-ignorable'
+[171] Biber.pm:4221> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'ru-RU'
+[171] Biber.pm:4227> INFO - No sort tailoring available for locale 'ru-RU'
+[177] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[178] bbl.pm:757> INFO - Output to main.bbl
