@@ -1,0 +1,19 @@
+\appendixsection{Приложение с таблицей}
+
+Таблица~\ref{tab:b1} фиксирует основные каталоги репозитория и их назначение.
+
+\begin{table}
+    \caption{Структура репозитория проекта}
+    \begin{tabular}{|l|p{0.6\linewidth}|}\hline
+    Каталог & Назначение \\ \hline
+    \texttt{src/} & backend-модули на Rust \\ \hline
+    \texttt{admin-panel/} & административная панель на React/Vite \\ \hline
+    \texttt{cli/} & командный интерфейс на Python \\ \hline
+    \texttt{config/} & конфигурация приложения \\ \hline
+    \texttt{migrations/} & SQL-миграции PostgreSQL \\ \hline
+    \texttt{doc/} & модульная документация по функциональным единицам \\ \hline
+    \texttt{report/} & диаграммы и материалы лабораторного отчета \\ \hline
+    \texttt{diploma/} & шаблон и текст ВКР \\ \hline
+    \end{tabular}
+    \label{tab:b1}
+\end{table}
