@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  29 MAR 2026 15:19
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  19 APR 2026 22:34
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1526,7 +1526,7 @@ Package csquotes Info: Redefining alias 'default' -> 'russian'.
 (./contents/2-10-math.aux) (./contents/2-11-algorithms.aux)
 (./contents/2-12-listings.aux) (./contents/3-conclusion.aux)
 (./contents/4-appendix-a.aux) (./contents/4-appendix-b.aux)
-(./contents/4-appendix-c.aux) (./contents/4-appendix-d.aux))
+(./contents/4-appendix-d.aux))
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
@@ -1755,57 +1755,57 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ]
 \openout2 = `contents/2-00-compilation.aux'.
 
- (./contents/2-00-compilation.tex) [9
+ (./contents/2-00-compilation.tex [9
 
 
 
 
-]
+])
+[10]
 \openout2 = `contents/2-01-titlepage.aux'.
 
-
-(./contents/2-01-titlepage.tex) [10
+ (./contents/2-01-titlepage.tex) [11
 
 
 
 ]
 \openout2 = `contents/2-02-techtask.aux'.
 
- (./contents/2-02-techtask.tex) [11
+ (./contents/2-02-techtask.tex)
+[12
 
 
 
-]
-[12]
+] [13]
 \openout2 = `contents/2-03-abstract.aux'.
 
- (./contents/2-03-abstract.tex) [13
+ (./contents/2-03-abstract.tex) [14
 
 
 
-] [14]
+] [15]
 \openout2 = `contents/2-04-glossary.aux'.
 
- (./contents/2-04-glossary.tex
-[15
+
+(./contents/2-04-glossary.tex [16
 
 
 
-]) [16]
+]) [17]
 \openout2 = `contents/2-05-figures.aux'.
 
  (./contents/2-05-figures.tex
 File: ../report/dfd/DFD_Level_0_Context.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_0_Context.png>
- [17
+ [18
 
 
 
-]) [18]
+])
+[19]
 \openout2 = `contents/2-06-citations.aux'.
 
-
-(./contents/2-06-citations.tex) [19
+ (./contents/2-06-citations.tex) [20
 
 
 
@@ -1813,80 +1813,72 @@ File: ../report/dfd/DFD_Level_0_Context.png Graphic file (type bmp)
 ]
 \openout2 = `contents/2-07-tables.aux'.
 
- (./contents/2-07-tables.tex [20
-
-
-
-]) [21]
-\openout2 = `contents/2-08-enums.aux'.
-
-
-(./contents/2-08-enums.tex
-File: ../report/c4/C4_Component_Architecture.png Graphic file (type bmp)
-<../report/c4/C4_Component_Architecture.png>
- [22
-
-
-
-]) [23]
-\openout2 = `contents/2-09-formulas.aux'.
-
- (./contents/2-09-formulas.tex [24
-
-
-
-])
-[25]
-\openout2 = `contents/2-10-math.aux'.
-
- (./contents/2-10-math.tex) [26
-
-
-
-] [27]
-\openout2 = `contents/2-11-algorithms.aux'.
-
- (./contents/2-11-algorithms.tex
-[28
-
-
-
-
-] [29] [30]) [31]
-\openout2 = `contents/2-12-listings.aux'.
-
- (./contents/2-12-listings.tex
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 11.
- (../src/main.rs) [32
+ (./contents/2-07-tables.tex [21
 
 
 
 ]
-(/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2020/03/24 1.8d listings language file
-)
-(../cli/indexer_cli.py
-consecutive:
-)) [33]
-Overfull \vbox (273.56607pt too high) has occurred while \output is active []
+[22]) [23] [24]
+\openout2 = `contents/2-08-enums.aux'.
+
+ (./contents/2-08-enums.tex
+File: ../report/c4/C4_Component_Architecture.png Graphic file (type bmp)
+<../report/c4/C4_Component_Architecture.png>
+ [25
 
 
-[34]
+
+]) [26]
+\openout2 = `contents/2-09-formulas.aux'.
+
+
+(./contents/2-09-formulas.tex [27
+
+
+
+]) [28]
+\openout2 = `contents/2-10-math.aux'.
+
+ (./contents/2-10-math.tex [29
+
+
+
+])
+[30] [31]
+\openout2 = `contents/2-11-algorithms.aux'.
+
+ (./contents/2-11-algorithms.tex [32
+
+
+
+
+] [33] [34]) [35]
+\openout2 = `contents/2-12-listings.aux'.
+
+
+(./contents/2-12-listings.tex
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 11.
+ (../src/main.rs)) [36
+
+
+
+]
 \openout2 = `contents/3-conclusion.aux'.
 
- (./contents/3-conclusion.tex [35
+
+(./contents/3-conclusion.tex [37
 
 
 
 
-] [36] [37] [38] [39] [40
+] [38] [39] [40] [41] [42
 
-] [41] [42])
-[43
+] [43] [44]) [45
 
 
-] [44
+]
+[46
 
 
 
@@ -1897,22 +1889,13 @@ Overfull \vbox (273.56607pt too high) has occurred while \output is active []
  (./contents/4-appendix-a.tex
 File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Deployment_Architecture.png>
-) [45
+) [47
 
 
 ]
 \openout2 = `contents/4-appendix-b.aux'.
 
- (./contents/4-appendix-b.tex)
-[46
-
-
-
-
-]
-\openout2 = `contents/4-appendix-c.aux'.
-
- (./contents/4-appendix-c.tex) [47
+ (./contents/4-appendix-b.tex) [48
 
 
 
@@ -1920,8 +1903,8 @@ File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 ]
 \openout2 = `contents/4-appendix-d.aux'.
 
- (./contents/4-appendix-d.tex
-(../config/indexer.yaml)) [48
+
+(./contents/4-appendix-d.tex) [49
 
 
 
@@ -1937,18 +1920,18 @@ AED: lastpage setting LastPage
 (./contents/2-10-math.aux) (./contents/2-11-algorithms.aux)
 (./contents/2-12-listings.aux) (./contents/3-conclusion.aux)
 (./contents/4-appendix-a.aux) (./contents/4-appendix-b.aux)
-(./contents/4-appendix-c.aux) (./contents/4-appendix-d.aux))
+(./contents/4-appendix-d.aux))
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 42623 strings out of 478025
- 859842 string characters out of 5841685
- 2670748 words of memory out of 5000000
- 61799 multiletter control sequences out of 15000+600000
- 521545 words of font info for 118 fonts, out of 8000000 for 9000
+ 42361 strings out of 478025
+ 856615 string characters out of 5841685
+ 2151160 words of memory out of 5000000
+ 61557 multiletter control sequences out of 15000+600000
+ 521553 words of font info for 119 fonts, out of 8000000 for 9000
  682 hyphenation exceptions out of 8191
  138i,16n,134p,2324b,5501s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (48 pages, 685092 bytes).
+Output written on main.xdv (49 pages, 715724 bytes).

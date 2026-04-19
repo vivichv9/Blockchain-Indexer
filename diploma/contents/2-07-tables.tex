@@ -34,3 +34,65 @@
 обусловливают необходимость построения специализированной модели хранения,
 ориентированной не только на запись блокчейн-событий, но и на быстрые выборки
 по адресам, транзакциям, блокам и заданиям индексирования.
+
+Для последующего контроля полноты реализации в работе используется матрица
+соответствия ключевых требований и проектных артефактов. Она позволяет
+разделить полностью реализованные функции, частично подтвержденные
+возможности и ограничения текущей версии системы.
+
+\begin{footnotesize}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|p{0.23\textwidth}|p{0.33\textwidth}|p{0.21\textwidth}|p{0.07\textwidth}|}
+    \caption{Соответствие ключевых требований проектным артефактам}\label{tab:requirements-traceability}\\ \hline
+    Требование & Реализация & Проверяющий артефакт & Ст. \\ \hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tab:requirements-traceability}}\\ \hline
+    Требование & Реализация & Проверяющий артефакт & Ст. \\ \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Индексация блоков, транзакций, входов и выходов &
+    Модуль \texttt{indexer}, транзакционная запись в PostgreSQL &
+    pipeline-тесты & да \\ \hline
+    Поддержка UTXO и адресных балансов &
+    Текущие UTXO, текущие и исторические балансы адресов &
+    миграции и data API тесты & да \\ \hline
+    Управление заданиями индексирования &
+    Модуль \texttt{jobs}, REST API, CLI и административная панель &
+    jobs API тесты & да \\ \hline
+    Обработка reorg заданной глубины &
+    Реконсиляция цепи, пометка \texttt{orphaned}, пересборка агрегатов &
+    runtime-тесты & да \\ \hline
+    Синхронизация mempool &
+    Модуль \texttt{mempool}, статусы \texttt{mempool} и \texttt{dropped} &
+    runtime-тесты & да \\ \hline
+    REST API выдачи данных &
+    Endpoints \texttt{/v1/data/*}, фильтрация и пагинация &
+    data API тесты, OpenAPI & да \\ \hline
+    Метрики Prometheus и JSON-логирование &
+    Модули \texttt{metrics} и \texttt{logging} &
+    endpoint \texttt{/metrics}, docs & да \\ \hline
+    Контейнерное развертывание &
+    \texttt{docker-compose.yml}, контейнеры backend, PostgreSQL и admin panel &
+    README, acceptance checklist & част. \\ \hline
+    HTTPS для backend API &
+    В конфигурации предусмотрены TLS-поля, но рабочий HTTPS-контур не подтвержден &
+    acceptance checklist & нет \\ \hline
+    RPC через защищенный контур nginx и mTLS &
+    RPC-клиент поддерживает TLS/mTLS-настройки, но полный контур с nginx не проверен &
+    config/auth docs & част. \\ \hline
+    End-to-end проверка с Bitcoin Core/regtest &
+    Подготовлены интеграционные сценарии с PostgreSQL и mock RPC &
+    testing docs & нет \\ \hline
+    Покрытие backend не менее 80\% &
+    Метод измерения зафиксирован через \texttt{cargo llvm-cov} &
+    coverage script & нет \\ \hline
+\end{longtable}
+\end{footnotesize}
+
+Таким образом, проектирование системы опирается на полный набор требований
+MVP, однако часть эксплуатационных и проверочных требований остается
+ограничением текущего этапа. Это учитывается далее при анализе результатов
+испытаний и формировании направлений дальнейшего развития.

@@ -3485,14 +3485,19 @@
     <bcf:citekey order="1" intorder="2">nakamoto2008</bcf:citekey>
     <bcf:citekey order="2" intorder="1">postgres_docs</bcf:citekey>
     <bcf:citekey order="3" intorder="1">btc_core_rpc</bcf:citekey>
-    <bcf:citekey order="4" intorder="1">gost_arch</bcf:citekey>
-    <bcf:citekey order="4" intorder="2">gost_quality</bcf:citekey>
-    <bcf:citekey order="4" intorder="3">postgres_docs</bcf:citekey>
-    <bcf:citekey order="5" intorder="1">docker_docs</bcf:citekey>
-    <bcf:citekey order="5" intorder="2">compose_docs</bcf:citekey>
-    <bcf:citekey order="6" intorder="1">postgres_docs</bcf:citekey>
-    <bcf:citekey order="7" intorder="1">testcontainers_docs</bcf:citekey>
-    <bcf:citekey order="8" intorder="1">prometheus_docs</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">electrs_repo</bcf:citekey>
+    <bcf:citekey order="4" intorder="2">esplora_repo</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">blocksci_paper</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">bitcoin_etl_repo</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">btc_core_rpc</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">gost_arch</bcf:citekey>
+    <bcf:citekey order="8" intorder="2">gost_quality</bcf:citekey>
+    <bcf:citekey order="8" intorder="3">postgres_docs</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">docker_docs</bcf:citekey>
+    <bcf:citekey order="9" intorder="2">compose_docs</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">postgres_docs</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">testcontainers_docs</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">prometheus_docs</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

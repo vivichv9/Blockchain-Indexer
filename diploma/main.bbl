@@ -91,6 +91,123 @@
       \verb https://www.postgresql.org/docs/16/index.html
       \endverb
     \endentry
+    \entry{electrs_repo}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{title}{electrs: An efficient re-implementation of Electrum Server in Rust}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/romanz/electrs
+      \endverb
+      \verb{url}
+      \verb https://github.com/romanz/electrs
+      \endverb
+    \endentry
+    \entry{esplora_repo}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{title}{Esplora Block Explorer}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/Blockstream/esplora
+      \endverb
+      \verb{url}
+      \verb https://github.com/Blockstream/esplora
+      \endverb
+    \endentry
+    \entry{blocksci_paper}{inproceedings}{useauthor=false}
+      \name{author}{7}{}{%
+        {{hash=e805b09589caa915653b84399c1dd749}{%
+           family={Kalodner},
+           familyi={K\bibinitperiod},
+           given={Harry},
+           giveni={H\bibinitperiod}}}%
+        {{hash=7875c2d201799d0d3f15a893bea43d67}{%
+           family={Möser},
+           familyi={M\bibinitperiod},
+           given={Malte},
+           giveni={M\bibinitperiod}}}%
+        {{hash=dd12628ece2c2bcccc0e876cbeafa9c9}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=208ae2fb561a96b06fbdd96f6f18a33c}{%
+           family={Goldfeder},
+           familyi={G\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ba9579d88b3ba7017a7873609773a409}{%
+           family={Plattner},
+           familyi={P\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0dcb5d160218f08e930d2235bb7d9423}{%
+           family={Chator},
+           familyi={C\bibinitperiod},
+           given={Alishah},
+           giveni={A\bibinitperiod}}}%
+        {{hash=95dc795a2be14c50fb6a924acc135ff8}{%
+           family={Narayanan},
+           familyi={N\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{authorbibnamehash}{5870f49c6524ef4dda469e3316b59ce9}
+      \strng{authornamehash}{5870f49c6524ef4dda469e3316b59ce9}
+      \strng{authorfullhash}{bce2fde372e7630ecd35aac3fda56ec0}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labeltitlesource}{title}
+      \field{title}{BlockSci: Design and Applications of a Blockchain Analysis Platform}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{year}{2017}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://collaborate.princeton.edu/en/publications/blocksci-design-and-applications-of-a-blockchain-analysis-platfor/
+      \endverb
+      \verb{url}
+      \verb https://collaborate.princeton.edu/en/publications/blocksci-design-and-applications-of-a-blockchain-analysis-platfor/
+      \endverb
+    \endentry
+    \entry{bitcoin_etl_repo}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin ETL}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/blockchain-etl/bitcoin-etl
+      \endverb
+      \verb{url}
+      \verb https://github.com/blockchain-etl/bitcoin-etl
+      \endverb
+    \endentry
     \entry{gost_arch}{book}{}
       \list{language}{1}{%
         {russian}%
@@ -98,8 +215,8 @@
       \list{publisher}{1}{%
         {Стандартинформ}%
       }
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labeltitlesource}{title}
       \field{title}{ГОСТ Р 57100-2016. Системная и программная инженерия. Описание архитектуры}
       \field{year}{2016}
@@ -111,8 +228,8 @@
       \list{publisher}{1}{%
         {Стандартинформ}%
       }
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labeltitlesource}{title}
       \field{title}{ГОСТ Р ИСО/МЭК 25010-2015. Модели качества систем и программных продуктов}
       \field{year}{2015}
@@ -121,8 +238,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labeltitlesource}{title}
       \field{title}{Docker Documentation}
       \field{urlday}{22}
@@ -140,8 +257,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labeltitlesource}{title}
       \field{title}{Docker Compose Documentation}
       \field{urlday}{22}
@@ -159,8 +276,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labeltitlesource}{title}
       \field{title}{testcontainers for Rust}
       \field{urlday}{22}
@@ -178,8 +295,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labeltitlesource}{title}
       \field{title}{Prometheus Documentation}
       \field{urlday}{22}
