@@ -27,6 +27,50 @@ stateless-характером исполнения и обеспечивает 
 непосредственно поддерживает сформулированные ранее требования к
 восстанавливаемости и управляемости системы.
 
+Ключевые инженерные решения, использованные при реализации серверной части,
+приведены в таблице~\ref{tab:implementation-decisions}. Они связывают
+архитектурные требования с конкретными механизмами кода и базы данных.
+
+\begin{footnotesize}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|p{0.23\textwidth}|p{0.27\textwidth}|p{0.23\textwidth}|p{0.15\textwidth}|}
+    \caption{Ключевые инженерные решения реализации}\label{tab:implementation-decisions}\\ \hline
+    Решение & Назначение & Реализация & Проверка \\ \hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tab:implementation-decisions}}\\ \hline
+    Решение & Назначение & Реализация & Проверка \\ \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Advisory lock на состояние цепи &
+    исключить параллельную запись конфликтующих высот &
+    advisory lock PostgreSQL в транзакции записи блока &
+    pipeline-тесты \\ \hline
+    Идемпотентная запись &
+    безопасно повторять обработку блока или job &
+    \texttt{ON CONFLICT}, первичные и уникальные ключи &
+    storage-тесты \\ \hline
+    Разделение статусов транзакций &
+    не смешивать confirmed, mempool, dropped и orphaned данные &
+    поле \texttt{status} и отдельные API-фильтры &
+    data API тесты \\ \hline
+    Пересборка агрегатов после reorg &
+    восстановить UTXO и балансы по канонической ветке &
+    пометка orphaned и replay canonical blocks &
+    reorg-тесты \\ \hline
+    Прогресс jobs в БД &
+    сохранить управляемость после рестарта приложения &
+    поле \texttt{progress\_height} и переходы job &
+    jobs API тесты \\ \hline
+    Метрики Prometheus &
+    наблюдать лаг, ошибки и объем обработки &
+    \texttt{/metrics}, счетчики и gauge-показатели &
+    smoke-проверка \\ \hline
+\end{longtable}
+\end{footnotesize}
+
 \subsection{Реализация механизма индексации блоков и транзакций}
 
 Основной процесс обработки подтвержденных данных реализован в модуле

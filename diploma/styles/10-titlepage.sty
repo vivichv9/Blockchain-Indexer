@@ -60,11 +60,11 @@
 \RequirePackage{ifthen}
 
 \newcommand\makeHeader{
-    \noindent\begin{minipage}{0.05\textwidth}
-        \includegraphics[scale=0.4]{inc/mai.pdf}
+    \noindent\begin{minipage}{0.12\textwidth}
+        \includegraphics[width=\linewidth]{inc/mai.pdf}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.85\textwidth}\raggedleft
+    \begin{minipage}{0.82\textwidth}\raggedleft
         \begin{center}
             \fontsize{11pt}{10pt}\selectfont 
             \textbf{МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ \\
@@ -90,9 +90,11 @@
     \endgroup
 }
 
+\newlength{\themeLabelWidth}
 \newcommand\makeTheme[1]{
+    \settowidth{\themeLabelWidth}{На тему: }
     \noindent На тему:
-    \expandafter\uline\expandafter{\expanded{#1}\hfill}
+    \uline{\makebox[\dimexpr\textwidth-\themeLabelWidth\relax][l]{#1}}
 }
 
 \newcommand\signature[1]{

@@ -12,30 +12,30 @@
 \contentsline {section}{\numberline {2}ПРОЕКТИРОВАНИЕ СИСТЕМЫ ИНДЕКСАЦИИ ОНЧЕЙН-ДАННЫХ}{20}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Формирование функциональных и нефункциональных требований}{21}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Выбор архитектурного подхода и проектирование структуры модулей}{25}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Проектирование модели данных и схемы хранения}{27}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Проектирование интерфейсов взаимодействия и сценариев работы системы}{29}{subsection.2.4}%
-\contentsline {section}{\numberline {3}РАЗРАБОТКА СИСТЕМЫ ИНДЕКСАЦИИ ОНЧЕЙН-ДАННЫХ}{32}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Реализация серверной части системы}{32}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Реализация механизма индексации блоков и транзакций}{32}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Реализация управления заданиями индексирования, mempool и reorg}{34}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Реализация API, конфигурирования и мониторинга}{35}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}Кодовые фрагменты, иллюстрирующие реализацию}{36}{subsection.3.5}%
-\contentsline {section}{\numberline {4}ИССЛЕДОВАНИЕ И ОЦЕНКА КАЧЕСТВА РАЗРАБОТАННОЙ СИСТЕМЫ}{37}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Цели и задачи испытаний}{37}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Программа и методика испытаний}{37}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Проверка корректности функциональных возможностей}{38}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Оценка устойчивости к reorg и изменениям состояния mempool}{39}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Оценка эксплуатационных характеристик и наблюдаемости}{39}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Анализ результатов испытаний}{40}{subsection.4.6}%
-\contentsline {section}{\numberline {5}ПРАКТИЧЕСКАЯ ЗНАЧИМОСТЬ И ПЕРСПЕКТИВЫ РАЗВИТИЯ СИСТЕМЫ}{42}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Практическая значимость разработанного решения}{42}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Возможности применения системы в прикладных сервисах}{42}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Ограничения текущей версии системы}{43}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Направления дальнейшего развития системы}{43}{subsection.5.4}%
-\contentsline {subsection}{\numberline {5.5}Выводы по результатам работы}{44}{subsection.5.5}%
-\contentsline {structure}{\numberline {}ЗАКЛЮЧЕНИЕ}{45}{structure.4}%
-\contentsline {structure}{\numberline {}СПИСОК~ИСПОЛЬЗОВАННЫХ~ИСТОЧНИКОВ}{46}{structure.5}%
-\contentsline {section}{ПРИЛОЖЕНИЕ~А~{Приложение с рисунком}}{47}{structure.5}%
-\contentsline {section}{ПРИЛОЖЕНИЕ~Б~{Приложение с таблицей}}{48}{figure.caption.8}%
-\contentsline {section}{ПРИЛОЖЕНИЕ~В~{Фрагмент конфигурации индексатора}}{49}{table.caption.9}%
+\contentsline {subsection}{\numberline {2.3}Проектирование модели данных и схемы хранения}{28}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Проектирование интерфейсов взаимодействия и сценариев работы системы}{30}{subsection.2.4}%
+\contentsline {section}{\numberline {3}РАЗРАБОТКА СИСТЕМЫ ИНДЕКСАЦИИ ОНЧЕЙН-ДАННЫХ}{33}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Реализация серверной части системы}{33}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Реализация механизма индексации блоков и транзакций}{34}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Реализация управления заданиями индексирования, mempool и reorg}{35}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Реализация API, конфигурирования и мониторинга}{37}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Кодовые фрагменты, иллюстрирующие реализацию}{38}{subsection.3.5}%
+\contentsline {section}{\numberline {4}ИССЛЕДОВАНИЕ И ОЦЕНКА КАЧЕСТВА РАЗРАБОТАННОЙ СИСТЕМЫ}{40}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Цели и задачи испытаний}{40}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Программа и методика испытаний}{40}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Проверка корректности функциональных возможностей}{42}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Оценка устойчивости к reorg и изменениям состояния mempool}{43}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Оценка эксплуатационных характеристик и наблюдаемости}{44}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Анализ результатов испытаний}{44}{subsection.4.6}%
+\contentsline {section}{\numberline {5}ПРАКТИЧЕСКАЯ ЗНАЧИМОСТЬ И ПЕРСПЕКТИВЫ РАЗВИТИЯ СИСТЕМЫ}{46}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Практическая значимость разработанного решения}{46}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Возможности применения системы в прикладных сервисах}{47}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Ограничения текущей версии системы}{47}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Направления дальнейшего развития системы}{48}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Выводы по результатам работы}{49}{subsection.5.5}%
+\contentsline {structure}{\numberline {}ЗАКЛЮЧЕНИЕ}{50}{structure.4}%
+\contentsline {structure}{\numberline {}СПИСОК~ИСПОЛЬЗОВАННЫХ~ИСТОЧНИКОВ}{51}{structure.5}%
+\contentsline {section}{ПРИЛОЖЕНИЕ~А~{Диаграмма контейнерного развёртывания}}{52}{structure.5}%
+\contentsline {section}{ПРИЛОЖЕНИЕ~Б~{Структура репозитория проекта}}{53}{figure.caption.9}%
+\contentsline {section}{ПРИЛОЖЕНИЕ~В~{Фрагмент конфигурации индексатора}}{54}{table.caption.10}%
 \contentsfinish 

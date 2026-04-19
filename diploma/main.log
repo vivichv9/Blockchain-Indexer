@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  19 APR 2026 22:34
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  19 APR 2026 22:55
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -670,7 +670,9 @@ Package: xstring 2023/01/14 v1.85 String manipulations (CT)
 )
 (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
-))
+)
+\themeLabelWidth=\skip82
+)
 (./styles/11-performers.sty
 Package: 11-performers 2021/03/21 v1.2 Список исполниетелей
 ) (./styles/12-abstract.sty
@@ -778,7 +780,7 @@ Package: fp-eval 1995/04/03
 )))
 \@dtl@toks=\toks36
 \@dtl@tmpcount=\count337
-\dtl@tmplength=\skip82
+\dtl@tmplength=\skip83
 \dtl@sortresult=\count338
 \@dtl@numgrpsepcount=\count339
 \@dtl@datatype=\count340
@@ -801,7 +803,7 @@ Package glossaries Warning: No language module detected for `russian'.
 
 \gls@level=\count344
 \@gls@tmpb=\toks37
-\gls@tmplen=\skip83
+\gls@tmplen=\skip84
 \glskeylisttok=\toks38
 \glslabeltok=\toks39
 \glsshorttok=\toks40
@@ -812,11 +814,11 @@ y
 Package: glossary-hypernav 2022/11/03 v4.52 (NLCT)
 ) (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-list.sty
 Package: glossary-list 2022/11/03 v4.52 (NLCT)
-\glslistdottedwidth=\skip84
+\glslistdottedwidth=\skip85
 ) (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-long.sty
 Package: glossary-long 2022/11/03 v4.52 (NLCT)
-\glsdescwidth=\skip85
-\glspagelistwidth=\skip86
+\glsdescwidth=\skip86
+\glspagelistwidth=\skip87
 ) (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-super.sty
 Package: glossary-super 2022/11/03 v4.52 (NLCT)
 
@@ -824,9 +826,9 @@ Package: glossary-super 2022/11/03 v4.52 (NLCT)
 Package: supertabular 2020/02/02 v4.1g the supertabular environment
 \c@tracingst=\count345
 \ST@wd=\dimen262
-\ST@rightskip=\skip87
-\ST@leftskip=\skip88
-\ST@parfillskip=\skip89
+\ST@rightskip=\skip88
+\ST@leftskip=\skip89
+\ST@parfillskip=\skip90
 \ST@pageleft=\dimen263
 \ST@headht=\dimen264
 \ST@tailht=\dimen265
@@ -840,7 +842,7 @@ Package: supertabular 2020/02/02 v4.1g the supertabular environment
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-tree.sty
 Package: glossary-tree 2022/11/03 v4.52 (NLCT)
-\glstreeindent=\skip90
+\glstreeindent=\skip91
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/glossaries-extra/glossaries-extra.sty
 Package: glossaries-extra 2022/11/08 v1.50 (NLCT)
@@ -953,14 +955,14 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 \blx@sectionciteorderinternal@0=\count397
 \blx@entrysetcounter=\count398
 \blx@biblioinstance=\count399
-\labelnumberwidth=\skip91
-\labelalphawidth=\skip92
-\biblabelsep=\skip93
-\bibitemsep=\skip94
-\bibnamesep=\skip95
-\bibinitsep=\skip96
-\bibparsep=\skip97
-\bibhang=\skip98
+\labelnumberwidth=\skip92
+\labelalphawidth=\skip93
+\biblabelsep=\skip94
+\bibitemsep=\skip95
+\bibnamesep=\skip96
+\bibinitsep=\skip97
+\bibparsep=\skip98
+\bibhang=\skip99
 \blx@bcfin=\read3
 \blx@bcfout=\write3
 \blx@langwohyphens=\language17
@@ -1078,20 +1080,20 @@ Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
 \c@savededitioncredits=\count490
 \c@pageref=\count491
 \c@savedpageref=\count492
-\shorthandwidth=\skip99
-\shortjournalwidth=\skip100
-\shortserieswidth=\skip101
-\shorttitlewidth=\skip102
-\shortauthorwidth=\skip103
-\shorteditorwidth=\skip104
-\locallabelnumberwidth=\skip105
-\locallabelalphawidth=\skip106
-\localshorthandwidth=\skip107
-\localshortjournalwidth=\skip108
-\localshortserieswidth=\skip109
-\localshorttitlewidth=\skip110
-\localshortauthorwidth=\skip111
-\localshorteditorwidth=\skip112
+\shorthandwidth=\skip100
+\shortjournalwidth=\skip101
+\shortserieswidth=\skip102
+\shorttitlewidth=\skip103
+\shortauthorwidth=\skip104
+\shorteditorwidth=\skip105
+\locallabelnumberwidth=\skip106
+\locallabelalphawidth=\skip107
+\localshorthandwidth=\skip108
+\localshortjournalwidth=\skip109
+\localshortserieswidth=\skip110
+\localshorttitlewidth=\skip111
+\localshortauthorwidth=\skip112
+\localshorteditorwidth=\skip113
 Package biblatex Info: Trying to load enhanced support for Unicode engines...
 Package biblatex Info: ... file 'blx-unicode.def' found.
 
@@ -1321,7 +1323,7 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 85.
 )
-\Hy@SectionHShift=\skip113
+\Hy@SectionHShift=\skip114
 )
 (/usr/share/texlive/texmf-dist/tex/latex/bookmark/bkm-dvipdfm.def
 File: bkm-dvipdfm.def 2020-11-06 v1.29 bookmark driver for dvipdfm (HO)
@@ -1427,9 +1429,9 @@ Package: amsthm 2020/05/29 v2.20.6
 \thm@headfont=\toks48
 \thm@notefont=\toks49
 \thm@headpunct=\toks50
-\thm@preskip=\skip114
-\thm@postskip=\skip115
-\thm@headsep=\skip116
+\thm@preskip=\skip115
+\thm@postskip=\skip116
+\thm@headsep=\skip117
 \dth@everypar=\toks51
 )
 \c@definition=\count545
@@ -1447,7 +1449,7 @@ Invalid UTF-8 byte or sequence at line 299 replaced by U+FFFD.
 Invalid UTF-8 byte or sequence at line 550 replaced by U+FFFD.
 Package: algorithm2e 2017/07/18 v5.2 algorithms environments
 \c@AlgoLine=\count550
-\algocf@hangindent=\skip117
+\algocf@hangindent=\skip118
 
 (/usr/share/texlive/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
 Package: ifoddpage 2022/10/18 v1.2 Conditionals for odd/even page detection
@@ -1459,36 +1461,36 @@ Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 (/usr/share/texlive/texmf-dist/tex/latex/relsize/relsize.sty
 Package: relsize 2013/03/29 ver 4.1
 )
-\skiptotal=\skip118
-\skiplinenumber=\skip119
-\skiprule=\skip120
-\skiphlne=\skip121
-\skiptext=\skip122
-\skiplength=\skip123
-\algomargin=\skip124
-\skipalgocfslide=\skip125
+\skiptotal=\skip119
+\skiplinenumber=\skip120
+\skiprule=\skip121
+\skiphlne=\skip122
+\skiptext=\skip123
+\skiplength=\skip124
+\algomargin=\skip125
+\skipalgocfslide=\skip126
 \algowidth=\dimen282
 \inoutsize=\dimen283
 \inoutindent=\dimen284
 \interspacetitleruled=\dimen285
 \interspacealgoruled=\dimen286
 \interspacetitleboxruled=\dimen287
-\algocf@ruledwidth=\skip126
+\algocf@ruledwidth=\skip127
 \algocf@inoutbox=\box80
 \algocf@inputbox=\box81
-\AlCapSkip=\skip127
-\AlCapHSkip=\skip128
-\algoskipindent=\skip129
+\AlCapSkip=\skip128
+\AlCapHSkip=\skip129
+\algoskipindent=\skip130
 \algocf@nlbox=\box82
 \algocf@hangingbox=\box83
 \algocf@untilbox=\box84
-\algocf@skipuntil=\skip130
+\algocf@skipuntil=\skip131
 \algocf@capbox=\box85
-\algocf@lcaptionbox=\skip131
-\algoheightruledefault=\skip132
-\algoheightrule=\skip133
-\algotitleheightruledefault=\skip134
-\algotitleheightrule=\skip135
+\algocf@lcaptionbox=\skip132
+\algoheightruledefault=\skip133
+\algoheightrule=\skip134
+\algotitleheightruledefault=\skip135
+\algotitleheightrule=\skip136
 \c@algocfline=\count552
 \c@algocfproc=\count553
 \c@algocf=\count554
@@ -1700,15 +1702,10 @@ Package hyperref Info: Link coloring ON on input line 27.
 \c@lstlisting=\count555
 File: inc/mai.pdf Graphic file (type pdf)
 <use inc/mai.pdf>
-
-Overfull \hbox (59.07195pt too wide) in paragraph at lines 29--29
-[][] 
- []
-
 LaTeX Font Info:    Calculating math sizes for size <14> on input line 29.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 29.
 
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 29.
@@ -1828,57 +1825,60 @@ File: ../report/c4/C4_Component_Architecture.png Graphic file (type bmp)
 
 
 
-]) [26]
+]) [26] [27]
 \openout2 = `contents/2-09-formulas.aux'.
 
 
-(./contents/2-09-formulas.tex [27
+(./contents/2-09-formulas.tex [28
 
 
 
-]) [28]
+]) [29]
 \openout2 = `contents/2-10-math.aux'.
 
- (./contents/2-10-math.tex [29
+ (./contents/2-10-math.tex [30
 
 
 
 ])
-[30] [31]
+[31] [32]
 \openout2 = `contents/2-11-algorithms.aux'.
 
- (./contents/2-11-algorithms.tex [32
+ (./contents/2-11-algorithms.tex [33
 
 
 
 
-] [33] [34]) [35]
+] [34] [35] [36]) [37]
 \openout2 = `contents/2-12-listings.aux'.
 
 
 (./contents/2-12-listings.tex
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 11.
- (../src/main.rs)) [36
+nput line 17.
+ (../src/modules/indexer/mod.rs
+consecutive:
+) [38
 
 
 
-]
+] (../src/modules/jobs/mod.rs
+consecutive:
+)) [39]
 \openout2 = `contents/3-conclusion.aux'.
 
-
-(./contents/3-conclusion.tex [37
-
+ (./contents/3-conclusion.tex [40
 
 
 
-] [38] [39] [40] [41] [42
 
-] [43] [44]) [45
-
+] [41] [42] [43] [44] [45] [46
 
 ]
-[46
+[47] [48] [49]) [50
+
+
+] [51
 
 
 
@@ -1889,13 +1889,14 @@ nput line 11.
  (./contents/4-appendix-a.tex
 File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Deployment_Architecture.png>
-) [47
+) [52
 
 
 ]
 \openout2 = `contents/4-appendix-b.aux'.
 
- (./contents/4-appendix-b.tex) [48
+
+(./contents/4-appendix-b.tex) [53
 
 
 
@@ -1903,13 +1904,13 @@ File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 ]
 \openout2 = `contents/4-appendix-d.aux'.
 
-
-(./contents/4-appendix-d.tex) [49
-
+ (./contents/4-appendix-d.tex) [54
 
 
 
-] 
+
+]
+
 AED: lastpage setting LastPage
 (./main.aux (./contents/0-abstract.aux) (./contents/1-introduction.aux)
 (./contents/2-00-compilation.aux) (./contents/2-01-titlepage.aux)
@@ -1926,12 +1927,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 42361 strings out of 478025
- 856615 string characters out of 5841685
- 2151160 words of memory out of 5000000
- 61557 multiletter control sequences out of 15000+600000
+ 42380 strings out of 478025
+ 857115 string characters out of 5841685
+ 2266052 words of memory out of 5000000
+ 61573 multiletter control sequences out of 15000+600000
  521553 words of font info for 119 fonts, out of 8000000 for 9000
  682 hyphenation exceptions out of 8191
  138i,16n,134p,2324b,5501s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (49 pages, 715724 bytes).
+Output written on main.xdv (54 pages, 813792 bytes).

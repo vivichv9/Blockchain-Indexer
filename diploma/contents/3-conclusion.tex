@@ -43,6 +43,88 @@ PostgreSQL через \texttt{testcontainers}, что позволяет при�
     диагностической информации о состоянии узлов и заданий индексирования.
 \end{enumerate}
 
+Для фиксации результатов испытаний используется протокол, приведенный в
+таблице~\ref{tab:test-protocol}. Он отделяет реализованные тестовые сценарии
+от тех проверок, которые требуют отдельного запуска или дополнительного
+эксплуатационного окружения.
+
+\begin{footnotesize}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|p{0.22\textwidth}|p{0.23\textwidth}|p{0.22\textwidth}|p{0.23\textwidth}|}
+    \caption{Протокол проверки качества системы}\label{tab:test-protocol}\\ \hline
+    Проверка & Окружение и артефакт & Статус & Ограничение \\ \hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tab:test-protocol}}\\ \hline
+    Проверка & Окружение и артефакт & Статус & Ограничение \\ \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Jobs lifecycle и ошибки переходов &
+    PostgreSQL через testcontainers, jobs API tests &
+    сценарии реализованы &
+    требуется ручной запуск ignored-тестов \\ \hline
+    Nodes API и диагностика узлов &
+    интеграционные API-тесты &
+    сценарии реализованы &
+    данные узла моделируются тестовым состоянием \\ \hline
+    Data API: балансы, UTXO, транзакции, блоки &
+    PostgreSQL, миграции, тестовый AppState &
+    сценарии реализованы &
+    используются подготовленные тестовые данные \\ \hline
+    Storage pipeline и идемпотентность &
+    pipeline-тесты и тестовые блоки &
+    сценарии реализованы &
+    источник RPC моделируется в тесте \\ \hline
+    Mempool и reorg &
+    runtime runner-тесты, mock JSON-RPC &
+    частично подтверждено &
+    нет запуска с реальным Bitcoin Core/regtest \\ \hline
+    Метрики Prometheus &
+    endpoint \texttt{/metrics} и smoke-проверка формата &
+    частично подтверждено &
+    нет длительного эксплуатационного стенда \\ \hline
+    Покрытие backend &
+    coverage-скрипт и cargo llvm-cov &
+    метод зафиксирован &
+    фактический порог 80\% не подтвержден отчетом \\ \hline
+\end{longtable}
+\end{footnotesize}
+
+Дополнительно к функциональным сценариям были выполнены контрольные проверки
+сборки и оформления. Их задача состоит не в замене интеграционных испытаний, а
+в подтверждении воспроизводимости сборки программного комплекса и пояснительной
+записки на текущем этапе работы.
+
+\begin{footnotesize}
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{|p{0.22\textwidth}|p{0.24\textwidth}|p{0.22\textwidth}|p{0.22\textwidth}|}
+    \caption{Контрольные проверки сборки и оформления}\label{tab:control-checks}\\ \hline
+    Проверка & Артефакт & Результат & Примечание \\ \hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tab:control-checks}}\\ \hline
+    Проверка & Артефакт & Результат & Примечание \\ \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Сборка пояснительной записки &
+    PDF-документ средствами XeLaTeX в Docker &
+    выполнена успешно &
+    итоговый файл сформирован без переполнений строк \\ \hline
+    Сборка backend-образа &
+    Docker build проекта &
+    выполнена успешно &
+    release-сборка завершается с предупреждениями о неиспользуемом коде \\ \hline
+    Локальная проверка backend &
+    cargo check в Windows-окружении &
+    не завершена &
+    build script Swagger UI требует внешней загрузки архива \\ \hline
+\end{longtable}
+\end{footnotesize}
+
 Методически испытания ориентированы на подтверждение ключевых свойств системы:
 функциональной корректности, согласованности данных, восстанавливаемости после
 сбоев и эксплуатационной наблюдаемости. Для итоговой оценки используется
@@ -165,6 +247,50 @@ RPC-запросов и ошибок. Это позволяет использо
     \item готовность к контейнерному развертыванию и мониторингу;
     \item сохранение согласованности данных подтвержденной цепи при reorg и при работе с mempool.
 \end{enumerate}
+
+Конкретные пользовательские сценарии, в которых проявляется практическая
+ценность системы, приведены в таблице~\ref{tab:practical-scenarios}. Они
+показывают, какие интерфейсы и данные используются для решения типовых
+прикладных задач.
+
+\begin{scriptsize}
+\setlength{\tabcolsep}{2pt}
+\begin{longtable}{|p{0.19\textwidth}|p{0.24\textwidth}|p{0.21\textwidth}|p{0.26\textwidth}|}
+    \caption{Практические сценарии применения системы}\label{tab:practical-scenarios}\\ \hline
+    Сценарий & API & Данные БД & Практический результат и отличие от RPC \\ \hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tab:practical-scenarios}}\\ \hline
+    Сценарий & API & Данные БД & Практический результат и отличие от RPC \\ \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    Получение текущего баланса адреса &
+    GET /v1/data/addresses/\newline\{address\}/balance &
+    текущий баланс адресов, блоки &
+    сервис сразу возвращает сумму в satoshi и высоту среза; клиенту не нужно
+    самостоятельно обходить UTXO через RPC узла \\ \hline
+    Анализ UTXO и истории баланса &
+    GET /v1/data/addresses/\newline\{address\}/utxos;\newline
+    GET /v1/data/addresses/\newline\{address\}/balance/history &
+    текущие UTXO, история балансов, входы и выходы транзакций &
+    прикладной сервис получает готовые срезы состояния адреса, а не
+    реконструирует историю по сырым блокам \\ \hline
+    Мониторинг прогресса full-sync &
+    GET /v1/jobs;\newline
+    GET /v1/jobs/\newline\{job\_id\};\newline
+    GET /metrics &
+    задания индексирования, состояние узлов, метрики &
+    оператор видит статус, прогресс и ошибки индексирования; Bitcoin Core RPC
+    не хранит состояние прикладного процесса индексации \\ \hline
+    Просмотр mempool-транзакций по адресу &
+    GET /v1/data/transactions/\newline mempool?address=\{address\} &
+    транзакции, входы, выходы и адресный индекс mempool &
+    неподтвержденные транзакции отделены от confirmed-цепи и доступны с
+    адресным фильтром без ручной обработки ответа getrawmempool \\ \hline
+\end{longtable}
+\end{scriptsize}
 
 \subsection{Возможности применения системы в прикладных сервисах}
 
