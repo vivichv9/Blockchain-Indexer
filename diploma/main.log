@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  19 APR 2026 22:55
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  19 APR 2026 23:04
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1738,30 +1738,30 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
  [5] [6
 
 
-] [7
+] [7] [8
 
 
 ]
 \openout2 = `contents/1-introduction.aux'.
 
 
-(./contents/1-introduction.tex) [8
+(./contents/1-introduction.tex) [9
 
 
 
 ]
 \openout2 = `contents/2-00-compilation.aux'.
 
- (./contents/2-00-compilation.tex [9
+ (./contents/2-00-compilation.tex [10
 
 
 
 
 ])
-[10]
+[11]
 \openout2 = `contents/2-01-titlepage.aux'.
 
- (./contents/2-01-titlepage.tex) [11
+ (./contents/2-01-titlepage.tex) [12
 
 
 
@@ -1769,40 +1769,40 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout2 = `contents/2-02-techtask.aux'.
 
  (./contents/2-02-techtask.tex)
-[12
+[13
 
 
 
-] [13]
+] [14]
 \openout2 = `contents/2-03-abstract.aux'.
 
- (./contents/2-03-abstract.tex) [14
+ (./contents/2-03-abstract.tex) [15
 
 
 
-] [15]
+] [16]
 \openout2 = `contents/2-04-glossary.aux'.
 
 
-(./contents/2-04-glossary.tex [16
+(./contents/2-04-glossary.tex [17
 
 
 
-]) [17]
+]) [18]
 \openout2 = `contents/2-05-figures.aux'.
 
  (./contents/2-05-figures.tex
 File: ../report/dfd/DFD_Level_0_Context.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_0_Context.png>
- [18
+ [19
 
 
 
 ])
-[19]
+[20]
 \openout2 = `contents/2-06-citations.aux'.
 
- (./contents/2-06-citations.tex) [20
+ (./contents/2-06-citations.tex) [21
 
 
 
@@ -1810,46 +1810,46 @@ File: ../report/dfd/DFD_Level_0_Context.png Graphic file (type bmp)
 ]
 \openout2 = `contents/2-07-tables.aux'.
 
- (./contents/2-07-tables.tex [21
+ (./contents/2-07-tables.tex [22
 
 
 
 ]
-[22]) [23] [24]
+[23]) [24] [25]
 \openout2 = `contents/2-08-enums.aux'.
 
  (./contents/2-08-enums.tex
 File: ../report/c4/C4_Component_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Component_Architecture.png>
- [25
+ [26
 
 
 
-]) [26] [27]
+]) [27] [28]
 \openout2 = `contents/2-09-formulas.aux'.
 
 
-(./contents/2-09-formulas.tex [28
+(./contents/2-09-formulas.tex [29
 
 
 
-]) [29]
+]) [30]
 \openout2 = `contents/2-10-math.aux'.
 
- (./contents/2-10-math.tex [30
+ (./contents/2-10-math.tex [31
 
 
 
 ])
-[31] [32]
+[32] [33]
 \openout2 = `contents/2-11-algorithms.aux'.
 
- (./contents/2-11-algorithms.tex [33
+ (./contents/2-11-algorithms.tex [34
 
 
 
 
-] [34] [35] [36]) [37]
+] [35] [36] [37]) [38]
 \openout2 = `contents/2-12-listings.aux'.
 
 
@@ -1858,27 +1858,27 @@ Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
 nput line 17.
  (../src/modules/indexer/mod.rs
 consecutive:
-) [38
+) [39
 
 
 
 ] (../src/modules/jobs/mod.rs
 consecutive:
-)) [39]
+)) [40]
 \openout2 = `contents/3-conclusion.aux'.
 
- (./contents/3-conclusion.tex [40
+ (./contents/3-conclusion.tex [41
 
 
 
 
-] [41] [42] [43] [44] [45] [46
+] [42] [43] [44] [45] [46] [47
 
 ]
-[47] [48] [49]) [50
+[48] [49] [50]) [51
 
 
-] [51
+] [52
 
 
 
@@ -1889,14 +1889,14 @@ consecutive:
  (./contents/4-appendix-a.tex
 File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Deployment_Architecture.png>
-) [52
+) [53
 
 
 ]
 \openout2 = `contents/4-appendix-b.aux'.
 
 
-(./contents/4-appendix-b.tex) [53
+(./contents/4-appendix-b.tex) [54
 
 
 
@@ -1904,7 +1904,7 @@ File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 ]
 \openout2 = `contents/4-appendix-d.aux'.
 
- (./contents/4-appendix-d.tex) [54
+ (./contents/4-appendix-d.tex) [55
 
 
 
@@ -1927,12 +1927,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 42380 strings out of 478025
- 857115 string characters out of 5841685
- 2266052 words of memory out of 5000000
- 61573 multiletter control sequences out of 15000+600000
+ 43584 strings out of 478025
+ 882046 string characters out of 5841685
+ 2280029 words of memory out of 5000000
+ 62777 multiletter control sequences out of 15000+600000
  521553 words of font info for 119 fonts, out of 8000000 for 9000
  682 hyphenation exceptions out of 8191
  138i,16n,134p,2324b,5501s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (54 pages, 813792 bytes).
+Output written on main.xdv (55 pages, 842004 bytes).
