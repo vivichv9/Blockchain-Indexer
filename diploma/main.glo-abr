@@ -7,5 +7,5 @@
 (indexentry :tkey (("UTXO" "\\glossentry{utxo}") ) :locref "{}{19}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("API" "\\glossentry{api}") ) :locref "{}{19}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("UTXO" "\\glossentry{utxo}") ) :locref "{}{29}" :attr "pageglsnumberformat" ) 
-(indexentry :tkey (("UTXO" "\\glossentry{utxo}") ) :locref "{}{45}" :attr "pageglsnumberformat" ) 
-(indexentry :tkey (("UTXO" "\\glossentry{utxo}") ) :locref "{}{51}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("UTXO" "\\glossentry{utxo}") ) :locref "{}{44}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("UTXO" "\\glossentry{utxo}") ) :locref "{}{50}" :attr "pageglsnumberformat" ) 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  19 APR 2026 23:04
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  23 APR 2026 16:31
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1872,13 +1872,13 @@ consecutive:
 
 
 
-] [42] [43] [44] [45] [46] [47
+] [42] [43] [44] [45] [46
 
-]
-[48] [49] [50]) [51
+] [47]
+[48] [49]) [50
 
 
-] [52
+] [51
 
 
 
@@ -1889,14 +1889,14 @@ consecutive:
  (./contents/4-appendix-a.tex
 File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Deployment_Architecture.png>
-) [53
+) [52
 
 
 ]
 \openout2 = `contents/4-appendix-b.aux'.
 
 
-(./contents/4-appendix-b.tex) [54
+(./contents/4-appendix-b.tex) [53
 
 
 
@@ -1904,7 +1904,7 @@ File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 ]
 \openout2 = `contents/4-appendix-d.aux'.
 
- (./contents/4-appendix-d.tex) [55
+ (./contents/4-appendix-d.tex) [54
 
 
 
@@ -1927,12 +1927,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 43584 strings out of 478025
- 882046 string characters out of 5841685
- 2280029 words of memory out of 5000000
- 62777 multiletter control sequences out of 15000+600000
+ 43512 strings out of 478025
+ 880692 string characters out of 5841685
+ 2279253 words of memory out of 5000000
+ 62705 multiletter control sequences out of 15000+600000
  521553 words of font info for 119 fonts, out of 8000000 for 9000
  682 hyphenation exceptions out of 8191
  138i,16n,134p,2324b,5501s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (55 pages, 842004 bytes).
+Output written on main.xdv (54 pages, 831928 bytes).
