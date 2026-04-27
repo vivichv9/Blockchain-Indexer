@@ -31,14 +31,17 @@
 \@input{contents/0-abstract.aux}
 \@writefile{toc}{\contentsline {structure}{\numberline {}ТЕРМИНЫ~И~ОПРЕДЕЛЕНИЯ}{6}{structure.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {structure}{\numberline {}ПЕРЕЧЕНЬ~СОКРАЩЕНИЙ~И~ОБОЗНАЧЕНИЙ}{8}{structure.2}\protected@file@percent }
-\@input{contents/1-introduction.aux}
 \abx@aux@cite{0}{btc_core_rpc}
 \abx@aux@segm{0}{0}{btc_core_rpc}
 \abx@aux@cite{0}{nakamoto2008}
 \abx@aux@segm{0}{0}{nakamoto2008}
 \abx@aux@cite{0}{postgres_docs}
 \abx@aux@segm{0}{0}{postgres_docs}
-\@input{contents/2-00-compilation.aux}
+\@writefile{toc}{\contentsline {structure}{\numberline {}ВВЕДЕНИЕ}{9}{structure.3}\protected@file@percent }
+\abx@aux@cite{0}{narayanan2016bitcoin}
+\abx@aux@segm{0}{0}{narayanan2016bitcoin}
+\abx@aux@cite{0}{antonopoulos2017mastering}
+\abx@aux@segm{0}{0}{antonopoulos2017mastering}
 \abx@aux@cite{0}{btc_core_rpc}
 \abx@aux@segm{0}{0}{btc_core_rpc}
 \abx@aux@cite{0}{electrs_repo}
@@ -49,70 +52,174 @@
 \abx@aux@segm{0}{0}{blocksci_paper}
 \abx@aux@cite{0}{bitcoin_etl_repo}
 \abx@aux@segm{0}{0}{bitcoin_etl_repo}
-\@input{contents/2-01-titlepage.aux}
-\@input{contents/2-02-techtask.aux}
+\@writefile{toc}{\contentsline {section}{\numberline {1}ТЕОРЕТИЧЕСКИЕ ОСНОВЫ И АНАЛИЗ ПРЕДМЕТНОЙ ОБЛАСТИ}{10}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Анализ существующих подходов к индексации ончейн-данных}{10}{subsection.1.1}\protected@file@percent }
+\gdef \LT@i {\LT@entry 
+    {1}{86.6091pt}\LT@entry 
+    {1}{100.29265pt}\LT@entry 
+    {1}{100.29265pt}\LT@entry 
+    {1}{58.04202pt}\LT@entry 
+    {1}{86.2091pt}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Сравнение подходов к получению и индексации данных Bitcoin\relax }}{11}{table.1}\protected@file@percent }
+\newlabel{tab:indexer-approaches}{{1}{11}{Сравнение подходов к получению и индексации данных Bitcoin\relax }{table.1}{}}
+\newlabel{totaltables::tab:indexer-approaches}{{1}{11}{Сравнение подходов к получению и индексации данных Bitcoin\relax }{table.1}{}}
 \abx@aux@cite{0}{btc_core_rpc}
 \abx@aux@segm{0}{0}{btc_core_rpc}
-\@input{contents/2-03-abstract.aux}
-\@input{contents/2-04-glossary.aux}
-\@input{contents/2-05-figures.aux}
-\@input{contents/2-06-citations.aux}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Понятие и особенности ончейн-данных}{12}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Особенности блокчейна Bitcoin как источника данных}{13}{subsection.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Проблемы извлечения, хранения и предоставления ончейн-данных}{14}{subsection.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Анализ существующих подходов и средств индексации блокчейн-данных}{15}{subsection.1.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Сравнение подходов к получению и предоставлению блокчейн-данных\relax }}{16}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:indexing-approaches}{{3}{16}{Сравнение подходов к получению и предоставлению блокчейн-данных\relax }{table.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6}Постановка задачи разработки системы индексации ончейн-данных}{17}{subsection.1.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Контекстная DFD-диаграмма системы индексации ончейн-данных\relax }}{18}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:context-dfd}{{1}{18}{Контекстная DFD-диаграмма системы индексации ончейн-данных\relax }{figure.caption.2}{}}
 \abx@aux@cite{0}{gost_arch}
 \abx@aux@segm{0}{0}{gost_arch}
 \abx@aux@cite{0}{gost_quality}
 \abx@aux@segm{0}{0}{gost_quality}
+\abx@aux@cite{0}{kleppmann2017designing}
+\abx@aux@segm{0}{0}{kleppmann2017designing}
+\abx@aux@cite{0}{richards2020fundamentals}
+\abx@aux@segm{0}{0}{richards2020fundamentals}
 \abx@aux@cite{0}{postgres_docs}
 \abx@aux@segm{0}{0}{postgres_docs}
-\@input{contents/2-07-tables.aux}
+\@writefile{toc}{\contentsline {section}{\numberline {2}ПРОЕКТИРОВАНИЕ СИСТЕМЫ ИНДЕКСАЦИИ ОНЧЕЙН-ДАННЫХ}{19}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Формирование функциональных и нефункциональных требований}{19}{subsection.2.1}\protected@file@percent }
 \abx@aux@cite{0}{docker_docs}
 \abx@aux@segm{0}{0}{docker_docs}
 \abx@aux@cite{0}{compose_docs}
 \abx@aux@segm{0}{0}{compose_docs}
-\@input{contents/2-08-enums.aux}
-\@input{contents/2-09-formulas.aux}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Основные группы требований к системе\relax }}{20}{table.caption.3}\protected@file@percent }
+\newlabel{tab:requirements-groups}{{4}{20}{Основные группы требований к системе\relax }{table.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Соответствие ключевых требований проектным артефактам\relax }}{21}{table.caption.4}\protected@file@percent }
+\newlabel{tab:requirements-traceability}{{5}{21}{Соответствие ключевых требований проектным артефактам\relax }{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Выбор архитектурного подхода и проектирование структуры модулей}{22}{subsection.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Компонентная архитектура системы индексации ончейн-данных\relax }}{23}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:component-c4-design}{{2}{23}{Компонентная архитектура системы индексации ончейн-данных\relax }{figure.caption.5}{}}
 \abx@aux@cite{0}{postgres_docs}
 \abx@aux@segm{0}{0}{postgres_docs}
-\@input{contents/2-10-math.aux}
-\@input{contents/2-11-algorithms.aux}
-\@input{contents/2-12-listings.aux}
-\@input{contents/3-conclusion.aux}
+\gdef \LT@ii {\LT@entry 
+    {1}{89.30122pt}\LT@entry 
+    {1}{107.68407pt}\LT@entry 
+    {1}{117.07549pt}\LT@entry 
+    {1}{112.37619pt}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Проектирование модели данных и схемы хранения}{24}{subsection.2.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Ключевые элементы модели данных\relax }}{24}{table.6}\protected@file@percent }
+\newlabel{tab:data-model}{{6}{24}{Ключевые элементы модели данных\relax }{table.6}{}}
+\newlabel{totaltables::tab:data-model}{{6}{24}{Ключевые элементы модели данных\relax }{table.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Проектирование интерфейсов взаимодействия и сценариев работы системы}{25}{subsection.2.4}\protected@file@percent }
+\gdef \LT@iii {\LT@entry 
+    {1}{119.47548pt}\LT@entry 
+    {1}{166.01823pt}\LT@entry 
+    {1}{137.85115pt}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Группы REST API системы\relax }}{26}{table.8}\protected@file@percent }
+\newlabel{tab:api-groups}{{8}{26}{Группы REST API системы\relax }{table.8}{}}
+\newlabel{totaltables::tab:api-groups}{{8}{26}{Группы REST API системы\relax }{table.8}{}}
+\gdef \LT@iv {\LT@entry 
+    {1}{86.6091pt}\LT@entry 
+    {1}{133.15903pt}\LT@entry 
+    {1}{109.68407pt}\LT@entry 
+    {1}{109.68407pt}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Допустимые переходы состояний job\relax }}{27}{table.10}\protected@file@percent }
+\newlabel{tab:job-lifecycle}{{10}{27}{Допустимые переходы состояний job\relax }{table.10}{}}
+\newlabel{totaltables::tab:job-lifecycle}{{10}{27}{Допустимые переходы состояний job\relax }{table.10}{}}
+\gdef \LT@v {\LT@entry 
+    {1}{114.77618pt}\LT@entry 
+    {1}{133.15903pt}\LT@entry 
+    {1}{114.37619pt}\LT@entry 
+    {1}{76.81769pt}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}РАЗРАБОТКА СИСТЕМЫ ИНДЕКСАЦИИ ОНЧЕЙН-ДАННЫХ}{28}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Реализация серверной части системы}{28}{subsection.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Ключевые инженерные решения реализации\relax }}{28}{table.12}\protected@file@percent }
+\newlabel{tab:implementation-decisions}{{12}{28}{Ключевые инженерные решения реализации\relax }{table.12}{}}
+\newlabel{totaltables::tab:implementation-decisions}{{12}{28}{Ключевые инженерные решения реализации\relax }{table.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Реализация механизма индексации блоков и транзакций}{29}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Алгоритм пакетной индексации данных подтвержденной цепи\relax }}{30}{figure.caption.6}\protected@file@percent }
+\newlabel{alg:index-batch}{{3}{30}{Алгоритм пакетной индексации данных подтвержденной цепи\relax }{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Реализация управления заданиями индексирования, mempool и reorg}{30}{subsection.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Алгоритм синхронизации mempool\relax }}{31}{figure.caption.7}\protected@file@percent }
+\newlabel{alg:mempool-sync}{{4}{31}{Алгоритм синхронизации mempool\relax }{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Реализация API, конфигурирования и мониторинга}{32}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Кодовые фрагменты, иллюстрирующие реализацию}{32}{subsection.3.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{../src/modules/indexer/mod.rs}{33}{lstlisting.-1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Фрагмент транзакционной и идемпотентной записи блока\relax }}{33}{figure.caption.8}\protected@file@percent }
+\newlabel{src:src1}{{5}{33}{Фрагмент транзакционной и идемпотентной записи блока\relax }{figure.caption.8}{}}
+\@writefile{lol}{\contentsline {lstlisting}{../src/modules/jobs/mod.rs}{34}{lstlisting.-2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Фрагмент проверки допустимых переходов job\relax }}{34}{figure.caption.9}\protected@file@percent }
+\newlabel{src:src2}{{6}{34}{Фрагмент проверки допустимых переходов job\relax }{figure.caption.9}{}}
 \abx@aux@cite{0}{testcontainers_docs}
 \abx@aux@segm{0}{0}{testcontainers_docs}
+\@writefile{toc}{\contentsline {section}{\numberline {4}ИССЛЕДОВАНИЕ И ОЦЕНКА КАЧЕСТВА РАЗРАБОТАННОЙ СИСТЕМЫ}{35}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Цели и задачи испытаний}{35}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Программа и методика испытаний}{35}{subsection.4.2}\protected@file@percent }
+\gdef \LT@vi {\LT@entry 
+    {1}{110.08406pt}\LT@entry 
+    {1}{114.37619pt}\LT@entry 
+    {1}{109.68407pt}\LT@entry 
+    {1}{114.37619pt}}
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Протокол проверки качества системы\relax }}{36}{table.14}\protected@file@percent }
+\newlabel{tab:test-protocol}{{14}{36}{Протокол проверки качества системы\relax }{table.14}{}}
+\newlabel{totaltables::tab:test-protocol}{{14}{36}{Протокол проверки качества системы\relax }{table.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Проверка корректности функциональных возможностей}{37}{subsection.4.3}\protected@file@percent }
 \abx@aux@cite{0}{prometheus_docs}
 \abx@aux@segm{0}{0}{prometheus_docs}
-\@writefile{toc}{\contentsline {structure}{\numberline {}СПИСОК~ИСПОЛЬЗОВАННЫХ~ИСТОЧНИКОВ}{51}{structure.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Оценка устойчивости к reorg и изменениям состояния mempool}{38}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Оценка эксплуатационных характеристик и наблюдаемости}{38}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Анализ результатов испытаний}{39}{subsection.4.6}\protected@file@percent }
+\gdef \LT@vii {\LT@entry 
+    {1}{94.00052pt}\LT@entry 
+    {1}{117.07549pt}\LT@entry 
+    {1}{102.99194pt}\LT@entry 
+    {1}{126.45973pt}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}ПРАКТИЧЕСКАЯ ЗНАЧИМОСТЬ И ПЕРСПЕКТИВЫ РАЗВИТИЯ СИСТЕМЫ}{40}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Практическая значимость разработанного решения}{40}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Практические сценарии применения системы\relax }}{40}{table.16}\protected@file@percent }
+\newlabel{tab:practical-scenarios}{{16}{40}{Практические сценарии применения системы\relax }{table.16}{}}
+\newlabel{totaltables::tab:practical-scenarios}{{16}{40}{Практические сценарии применения системы\relax }{table.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Возможности применения системы в прикладных сервисах}{41}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Ограничения текущей версии системы}{41}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Направления дальнейшего развития системы}{42}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Выводы по результатам работы}{43}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {structure}{\numberline {}ЗАКЛЮЧЕНИЕ}{44}{structure.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {structure}{\numberline {}СПИСОК~ИСПОЛЬЗОВАННЫХ~ИСТОЧНИКОВ}{45}{structure.5}\protected@file@percent }
 \@input{contents/4-appendix-a.aux}
 \@input{contents/4-appendix-b.aux}
 \@input{contents/4-appendix-d.aux}
 \ttl@finishall
-\newlabel{LastPage}{{}{54}{}{page.54}{}}
-\xdef\lastpage@lastpage{54}
-\xdef\lastpage@lastpageHy{54}
+\newlabel{LastPage}{{}{49}{}{page.49}{}}
+\xdef\lastpage@lastpage{49}
+\xdef\lastpage@lastpageHy{49}
 \IfIsDocumentCounterF{xassoccnt@total@totalfigures}{\DeclareDocumentCounter{xassoccnt@total@totalfigures}}
 
 \setcounter{xassoccnt@total@totalfigures}{7}
 \IfIsDocumentCounterF{xassoccnt@total@totaltables}{\DeclareDocumentCounter{xassoccnt@total@totaltables}}
 
-\setcounter{xassoccnt@total@totaltables}{19}
+\setcounter{xassoccnt@total@totaltables}{18}
 \IfIsDocumentCounterF{xassoccnt@total@totalcites}{\DeclareDocumentCounter{xassoccnt@total@totalcites}}
 
-\setcounter{xassoccnt@total@totalcites}{13}
+\setcounter{xassoccnt@total@totalcites}{17}
 \IfIsDocumentCounterF{xassoccnt@total@totalappendices}{\DeclareDocumentCounter{xassoccnt@total@totalappendices}}
 
 \setcounter{xassoccnt@total@totalappendices}{3}
-\expandafter\ifx\csname c@citenum@totc\endcsname\relax\newcounter{citenum@totc}\fi\setcounter{citenum@totc}{13}
-\abx@aux@read@bbl@mdfivesum{96582959684BB8483E7D3D159DC6653E}
+\expandafter\ifx\csname c@citenum@totc\endcsname\relax\newcounter{citenum@totc}\fi\setcounter{citenum@totc}{17}
+\abx@aux@read@bbl@mdfivesum{FC3758F8D775BF8ED58850FC8486A730}
 \abx@aux@defaultrefcontext{0}{btc_core_rpc}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{nakamoto2008}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{postgres_docs}{none/global//global/global}
+\abx@aux@defaultrefcontext{0}{narayanan2016bitcoin}{none/global//global/global}
+\abx@aux@defaultrefcontext{0}{antonopoulos2017mastering}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{electrs_repo}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{esplora_repo}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{blocksci_paper}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{bitcoin_etl_repo}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{gost_arch}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{gost_quality}{none/global//global/global}
+\abx@aux@defaultrefcontext{0}{kleppmann2017designing}{none/global//global/global}
+\abx@aux@defaultrefcontext{0}{richards2020fundamentals}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{docker_docs}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{compose_docs}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{testcontainers_docs}{none/global//global/global}
 \abx@aux@defaultrefcontext{0}{prometheus_docs}{none/global//global/global}
-\gdef \@abspage@last{54}
+\gdef \@abspage@last{49}

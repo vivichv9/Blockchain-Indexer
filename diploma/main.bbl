@@ -91,12 +91,83 @@
       \verb https://www.postgresql.org/docs/16/index.html
       \endverb
     \endentry
+    \entry{narayanan2016bitcoin}{book}{useauthor=false}
+      \name{author}{5}{}{%
+        {{hash=95dc795a2be14c50fb6a924acc135ff8}{%
+           family={Narayanan},
+           familyi={N\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod}}}%
+        {{hash=e6eb78ec5f92eaff4e9d4b944aff4c9c}{%
+           family={Bonneau},
+           familyi={B\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+        {{hash=5f7a7ca8a5b79afabc956229bd08f9d5}{%
+           family={Felten},
+           familyi={F\bibinitperiod},
+           given={Edward},
+           giveni={E\bibinitperiod}}}%
+        {{hash=403caa7edb7a2770a6a678a46079869e}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={Andrew},
+           giveni={A\bibinitperiod}}}%
+        {{hash=208ae2fb561a96b06fbdd96f6f18a33c}{%
+           family={Goldfeder},
+           familyi={G\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Princeton University Press}%
+      }
+      \strng{authorbibnamehash}{1493becdacb9c2c2ea8e1f8e130cc6e9}
+      \strng{authornamehash}{1493becdacb9c2c2ea8e1f8e130cc6e9}
+      \strng{authorfullhash}{f512b13af32d34046a5ecb069096e94e}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin and Cryptocurrency Technologies: A Comprehensive Introduction}
+      \field{year}{2016}
+    \endentry
+    \entry{antonopoulos2017mastering}{book}{}
+      \name{author}{1}{}{%
+        {{hash=a8107494556af1100a132bb87b1cbd5d}{%
+           family={Antonopoulos},
+           familyi={A\bibinitperiod},
+           given={Andreas\bibnamedelima M.},
+           giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{fullhash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{bibnamehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{authorbibnamehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{authornamehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{authorfullhash}{a8107494556af1100a132bb87b1cbd5d}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2}
+      \field{title}{Mastering Bitcoin: Programming the Open Blockchain}
+      \field{year}{2017}
+    \endentry
     \entry{electrs_repo}{online}{}
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labeltitlesource}{title}
       \field{title}{electrs: An efficient re-implementation of Electrum Server in Rust}
       \field{urlday}{20}
@@ -114,8 +185,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labeltitlesource}{title}
       \field{title}{Esplora Block Explorer}
       \field{urlday}{20}
@@ -173,8 +244,8 @@
       \strng{authorbibnamehash}{5870f49c6524ef4dda469e3316b59ce9}
       \strng{authornamehash}{5870f49c6524ef4dda469e3316b59ce9}
       \strng{authorfullhash}{bce2fde372e7630ecd35aac3fda56ec0}
-      \field{sortinit}{5}
-      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labeltitlesource}{title}
       \field{title}{BlockSci: Design and Applications of a Blockchain Analysis Platform}
       \field{urlday}{20}
@@ -193,8 +264,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labeltitlesource}{title}
       \field{title}{Bitcoin ETL}
       \field{urlday}{20}
@@ -215,8 +286,8 @@
       \list{publisher}{1}{%
         {Стандартинформ}%
       }
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labeltitlesource}{title}
       \field{title}{ГОСТ Р 57100-2016. Системная и программная инженерия. Описание архитектуры}
       \field{year}{2016}
@@ -228,18 +299,77 @@
       \list{publisher}{1}{%
         {Стандартинформ}%
       }
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labeltitlesource}{title}
       \field{title}{ГОСТ Р ИСО/МЭК 25010-2015. Модели качества систем и программных продуктов}
       \field{year}{2015}
+    \endentry
+    \entry{kleppmann2017designing}{book}{}
+      \name{author}{1}{}{%
+        {{hash=34b8d5b1d29d175527a6642f3ec8a76d}{%
+           family={Kleppmann},
+           familyi={K\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{fullhash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{bibnamehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{authorbibnamehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{authornamehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{authorfullhash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems}
+      \field{year}{2017}
+    \endentry
+    \entry{richards2020fundamentals}{book}{}
+      \name{author}{2}{}{%
+        {{hash=8e3c0b09130cc7c13c7cda6ef28a7d48}{%
+           family={Richards},
+           familyi={R\bibinitperiod},
+           given={Mark},
+           giveni={M\bibinitperiod}}}%
+        {{hash=5ffeeeb533dfcb3c39bada5fdcf44fc0}{%
+           family={Ford},
+           familyi={F\bibinitperiod},
+           given={Neal},
+           giveni={N\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{755202f5a26937dce6816860584aac24}
+      \strng{fullhash}{755202f5a26937dce6816860584aac24}
+      \strng{bibnamehash}{755202f5a26937dce6816860584aac24}
+      \strng{authorbibnamehash}{755202f5a26937dce6816860584aac24}
+      \strng{authornamehash}{755202f5a26937dce6816860584aac24}
+      \strng{authorfullhash}{755202f5a26937dce6816860584aac24}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Fundamentals of Software Architecture: An Engineering Approach}
+      \field{year}{2020}
     \endentry
     \entry{docker_docs}{online}{}
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labeltitlesource}{title}
       \field{title}{Docker Documentation}
       \field{urlday}{22}
@@ -257,8 +387,8 @@
       \list{language}{1}{%
         {english}%
       }
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labeltitlesource}{title}
       \field{title}{Docker Compose Documentation}
       \field{urlday}{22}

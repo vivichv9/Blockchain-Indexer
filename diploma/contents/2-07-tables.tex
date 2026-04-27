@@ -40,19 +40,15 @@
 разделить полностью реализованные функции, частично подтвержденные
 возможности и ограничения текущей версии системы.
 
-\begin{footnotesize}
+\begin{table}
+    \caption{Соответствие ключевых требований проектным артефактам}
+    \label{tab:requirements-traceability}
+    \begin{footnotesize}
+\centering
 \setlength{\tabcolsep}{3pt}
-\begin{longtable}{|p{0.23\textwidth}|p{0.33\textwidth}|p{0.21\textwidth}|p{0.07\textwidth}|}
-    \caption{Соответствие ключевых требований проектным артефактам}\label{tab:requirements-traceability}\\ \hline
+\renewcommand{\arraystretch}{0.95}
+\begin{tabular}{|p{0.23\textwidth}|p{0.33\textwidth}|p{0.21\textwidth}|p{0.07\textwidth}|}\hline
     Требование & Реализация & Проверяющий артефакт & Ст. \\ \hline
-    \endfirsthead
-    \caption*{Продолжение таблицы \ref{tab:requirements-traceability}}\\ \hline
-    Требование & Реализация & Проверяющий артефакт & Ст. \\ \hline
-    \endhead
-    \hline
-    \endfoot
-    \hline
-    \endlastfoot
     Индексация блоков, транзакций, входов и выходов &
     Модуль \texttt{indexer}, транзакционная запись в PostgreSQL &
     pipeline-тесты & да \\ \hline
@@ -89,8 +85,9 @@
     Покрытие backend не менее 80\% &
     Метод измерения зафиксирован через \texttt{cargo llvm-cov} &
     coverage script & нет \\ \hline
-\end{longtable}
-\end{footnotesize}
+\end{tabular}
+    \end{footnotesize}
+\end{table}
 
 Таким образом, проектирование системы опирается на полный набор требований
 MVP, однако часть эксплуатационных и проверочных требований остается
