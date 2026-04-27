@@ -3500,8 +3500,9 @@
     <bcf:citekey order="10" intorder="1">docker_docs</bcf:citekey>
     <bcf:citekey order="10" intorder="2">compose_docs</bcf:citekey>
     <bcf:citekey order="11" intorder="1">postgres_docs</bcf:citekey>
-    <bcf:citekey order="12" intorder="1">testcontainers_docs</bcf:citekey>
-    <bcf:citekey order="13" intorder="1">prometheus_docs</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">project_github</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">testcontainers_docs</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">prometheus_docs</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

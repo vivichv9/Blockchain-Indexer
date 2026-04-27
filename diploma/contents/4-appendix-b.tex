@@ -1,21 +1,18 @@
-\appendixsection{Структура репозитория проекта}
+\appendixsection{Репозиторий проекта}
 
-Таблица~\ref{tab:b1} фиксирует основные каталоги репозитория и их назначение.
-Она используется как справочный артефакт, связывающий текст пояснительной
-записки с фактической организацией исходного кода и документации.
+Исходный код разработанной системы размещен в репозитории GitHub:
+\url{https://github.com/vivichv9/Blockchain-Indexer}. Репозиторий содержит
+материалы реализации, конфигурационные файлы, миграции базы данных,
+административную панель и документацию проекта.
 
-\begin{table}
-    \caption{Структура репозитория проекта}
-    \begin{tabular}{|l|p{0.6\linewidth}|}\hline
-    Каталог & Назначение \\ \hline
-    \texttt{src/} & серверные модули на Rust \\ \hline
-    \texttt{admin-panel/} & административная панель на React/Vite \\ \hline
-    \texttt{cli/} & командный интерфейс на Python \\ \hline
-    \texttt{config/} & конфигурация приложения \\ \hline
-    \texttt{migrations/} & SQL-миграции PostgreSQL \\ \hline
-    \texttt{doc/} & модульная документация по функциональным единицам \\ \hline
-    \texttt{report/} & диаграммы и материалы лабораторного отчета \\ \hline
-    \texttt{diploma/} & шаблон и текст ВКР \\ \hline
-    \end{tabular}
-    \label{tab:b1}
-\end{table}
+Для перехода к репозиторию также может использоваться QR-код,
+представленный на рисунке~\ref{fig:github-qr}.
+
+\begin{figure}
+    \centering
+    \href{https://github.com/vivichv9/Blockchain-Indexer}{%
+        \includegraphics[width=0.34\linewidth]{inc/github_qr.png}%
+    }
+    \caption{QR-код для перехода к репозиторию проекта}
+    \label{fig:github-qr}
+\end{figure}

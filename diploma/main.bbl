@@ -402,6 +402,25 @@
       \verb https://docs.docker.com/compose/
       \endverb
     \endentry
+    \entry{project_github}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin Blockchain Indexer: source code repository}
+      \field{urlday}{27}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/vivichv9/Blockchain-Indexer
+      \endverb
+      \verb{url}
+      \verb https://github.com/vivichv9/Blockchain-Indexer
+      \endverb
+    \endentry
     \entry{testcontainers_docs}{online}{}
       \list{language}{1}{%
         {english}%
