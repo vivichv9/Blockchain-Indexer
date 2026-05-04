@@ -3486,23 +3486,25 @@
     <bcf:citekey order="2" intorder="1">postgres_docs</bcf:citekey>
     <bcf:citekey order="3" intorder="1">narayanan2016bitcoin</bcf:citekey>
     <bcf:citekey order="3" intorder="2">antonopoulos2017mastering</bcf:citekey>
-    <bcf:citekey order="4" intorder="1">btc_core_rpc</bcf:citekey>
-    <bcf:citekey order="5" intorder="1">electrs_repo</bcf:citekey>
-    <bcf:citekey order="5" intorder="2">esplora_repo</bcf:citekey>
-    <bcf:citekey order="6" intorder="1">blocksci_paper</bcf:citekey>
-    <bcf:citekey order="7" intorder="1">bitcoin_etl_repo</bcf:citekey>
-    <bcf:citekey order="8" intorder="1">btc_core_rpc</bcf:citekey>
-    <bcf:citekey order="9" intorder="1">gost_arch</bcf:citekey>
-    <bcf:citekey order="9" intorder="2">gost_quality</bcf:citekey>
-    <bcf:citekey order="9" intorder="3">kleppmann2017designing</bcf:citekey>
-    <bcf:citekey order="9" intorder="4">richards2020fundamentals</bcf:citekey>
-    <bcf:citekey order="9" intorder="5">postgres_docs</bcf:citekey>
-    <bcf:citekey order="10" intorder="1">docker_docs</bcf:citekey>
-    <bcf:citekey order="10" intorder="2">compose_docs</bcf:citekey>
-    <bcf:citekey order="11" intorder="1">postgres_docs</bcf:citekey>
-    <bcf:citekey order="12" intorder="1">project_github</bcf:citekey>
-    <bcf:citekey order="13" intorder="1">testcontainers_docs</bcf:citekey>
-    <bcf:citekey order="14" intorder="1">prometheus_docs</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">swan2015blockchain</bcf:citekey>
+    <bcf:citekey order="4" intorder="2">drescher2017blockchain</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">btc_core_rpc</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">electrs_repo</bcf:citekey>
+    <bcf:citekey order="6" intorder="2">esplora_repo</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">blocksci_paper</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">bitcoin_etl_repo</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">btc_core_rpc</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">gost_arch</bcf:citekey>
+    <bcf:citekey order="10" intorder="2">gost_quality</bcf:citekey>
+    <bcf:citekey order="10" intorder="3">kleppmann2017designing</bcf:citekey>
+    <bcf:citekey order="10" intorder="4">richards2020fundamentals</bcf:citekey>
+    <bcf:citekey order="10" intorder="5">postgres_docs</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">docker_docs</bcf:citekey>
+    <bcf:citekey order="11" intorder="2">compose_docs</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">postgres_docs</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">project_github</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">testcontainers_docs</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">prometheus_docs</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
