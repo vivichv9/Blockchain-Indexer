@@ -1,0 +1,44 @@
+\appendixsection{Фрагмент конфигурации индексатора}
+
+В приложении приведен сокращенный пример конфигурации индексатора. Полная
+конфигурация хранится в файле \texttt{config/indexer.yaml}; здесь оставлены
+только параметры, необходимые для понимания структуры настройки серверной
+части, RPC-подключения, индексатора и задания синхронизации.
+
+\begin{lstlisting}[
+language={},
+numbers=none,
+basicstyle=\ttfamily\footnotesize,
+caption={Сокращенный пример конфигурации системы индексации},
+label={src:src3}
+]
+server:
+  bind_host: "0.0.0.0"
+  bind_port: 8080
+  auth:
+    basic:
+      username: "admin"
+      password_env: "INDEXER_API_PASSWORD"
+
+rpc:
+  node_id: "btc-testnet-1"
+  url: "https://rpc.example.com"
+  auth:
+    basic:
+      username: "rpcuser"
+      password_env: "BITCOIN_RPC_PASSWORD"
+  mtls:
+    enabled: false
+
+indexer:
+  network: "testnet"
+  reorg_depth: 12
+  poll:
+    tip_interval_ms: 5000
+    mempool_interval_ms: 3000
+
+jobs:
+  - job_id: "full-sync"
+    mode: "all_addresses"
+    enabled: true
+\end{lstlisting}

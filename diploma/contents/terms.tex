@@ -1,0 +1,104 @@
+﻿\newglossaryentry{term-blockchain-data}{
+    name={Блокчейн данные},
+    description={данные, зафиксированные в блокчейне, а также производные представления, формируемые на их основе для прикладного анализа}
+}
+\newglossaryentry{term-indexer}{
+    name={Индексер},
+    description={серверное приложение, которое получает данные блокчейна, нормализует их, сохраняет в базе данных и предоставляет прикладной API}
+}
+\newglossaryentry{term-bitcoin-core}{
+    name={Bitcoin Core},
+    description={программная реализация узла сети Bitcoin, используемая как доверенный источник первичных блоков и транзакций}
+}
+\newglossaryentry{term-bitcoin}{
+    name={Bitcoin},
+    description={децентрализованная блокчейн-сеть и одноименная криптовалютная система, данные которой являются предметом индексации}
+}
+\newglossaryentry{term-canonical}{
+    name={Каноническая цепь},
+    description={актуальная ветвь блокчейна Bitcoin, признаваемая основной в рассматриваемый момент времени}
+}
+\newglossaryentry{term-job}{
+    name={Задание индексирования},
+    description={управляемый процесс обработки блокчейн данных с собственным идентификатором, статусом, прогрессом и параметрами выполнения}
+}
+\newglossaryentry{term-reorg}{
+    name={Reorg},
+    description={смена канонической ветви блокчейна, из-за которой ранее принятые блоки и транзакции становятся неканоническими}
+}
+\newglossaryentry{term-mempool}{
+    name={Mempool},
+    description={множество неподтвержденных транзакций, известных узлу Bitcoin Core и ожидающих включения в блок}
+}
+\newglossaryentry{term-stateless}{
+    name={Stateless-сервис},
+    description={сервис, который не хранит критичное состояние локально между перезапусками и размещает его во внешнем хранилище}
+}
+\newglossaryentry{term-address-index}{
+    name={Адресный индекс},
+    description={структура данных, позволяющая быстро находить транзакции, выходы, балансы и mempool-события, связанные с конкретным адресом}
+}
+\newglossaryentry{term-address-balance}{
+    name={Адресный баланс},
+    description={агрегированное значение суммы непотраченных выходов или исторического состояния адреса на определенный момент цепи}
+}
+\newglossaryentry{term-utxo}{
+    name={UTXO},
+    description={непотраченный выход транзакции, который может быть использован как вход последующей транзакции}
+}
+\newglossaryentry{term-postgresql}{
+    name={PostgreSQL},
+    description={реляционная система управления базами данных, используемая для хранения блоков, транзакций, UTXO, балансов, заданий и метрик состояния}
+}
+\newglossaryentry{term-rust}{
+    name={Rust},
+    description={язык программирования, на котором реализована серверная часть системы}
+}
+\newglossaryentry{term-python}{
+    name={Python},
+    description={язык программирования, используемый для реализации командного интерфейса проекта}
+}
+\newglossaryentry{term-react}{
+    name={React},
+    description={JavaScript-библиотека, используемая при реализации административной панели}
+}
+\newglossaryentry{term-vite}{
+    name={Vite},
+    description={инструмент сборки frontend-приложений, применяемый для административной панели}
+}
+\newglossaryentry{term-docker}{
+    name={Docker},
+    description={платформа контейнеризации, применяемая для воспроизводимой сборки и развертывания компонентов системы}
+}
+\newglossaryentry{term-docker-compose}{
+    name={Docker Compose},
+    description={средство описания и запуска набора связанных контейнеров проекта}
+}
+\newglossaryentry{term-nginx}{
+    name={nginx},
+    description={веб-сервер и reverse proxy, используемый в проектной схеме защищенного контура и контейнерного развертывания}
+}
+\newglossaryentry{term-prometheus}{
+    name={Prometheus},
+    description={система мониторинга, для которой приложение публикует метрики состояния индексатора и его фоновых процессов}
+}
+\newglossaryentry{term-satoshi}{
+    name={Satoshi},
+    description={минимальная неделимая единица Bitcoin, используемая для представления значений выходов и балансов}
+}
+\newglossaryentry{term-openapi}{
+    name={OpenAPI},
+    description={спецификация описания HTTP API, используемая для документирования контрактов backend-сервиса}
+}
+\newglossaryentry{term-swagger-ui}{
+    name={Swagger UI},
+    description={веб-интерфейс для просмотра и интерактивного вызова API на основе OpenAPI-описания}
+}
+\newglossaryentry{term-regtest}{
+    name={Regtest},
+    description={локальный режим сети Bitcoin, предназначенный для воспроизводимых тестов с управляемой генерацией блоков}
+}
+\newglossaryentry{term-testcontainers}{
+    name={Testcontainers},
+    description={инструмент запуска временных контейнеров в автоматизированных тестах, используемый для проверки сценариев с PostgreSQL}
+}

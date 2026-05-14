@@ -1,0 +1,93 @@
+﻿\subsection{Проектирование модели данных и схемы хранения}
+
+Для реализации функций индексирования и прикладной выдачи данных в проекте
+используется реляционная модель хранения на базе PostgreSQL. Выбор данного
+подхода обусловлен необходимостью обеспечения транзакционной согласованности,
+поддержки ограничений целостности, эффективной индексации и формирования
+многообразных выборок по связанным сущностям \cite{postgres_docs}.
+
+Проектируемая схема хранения включает несколько классов сущностей:
+\begin{enumerate}
+    \item сущности первичного блокчейн-уровня: блоки, транзакции, входы и выходы;
+    \item сущности текущего состояния: набор \gls{utxo}, текущие балансы адресов;
+    \item сущности исторических представлений: история балансов адресов;
+    \item сущности управления системой: задания индексирования и связанные с ними адресные фильтры;
+    \item сущности наблюдаемости: сведения о состоянии подключенных узлов.
+\end{enumerate}
+
+В таблице~\ref{tab:data-model} представлены ключевые проектируемые таблицы,
+их основные ограничения и роль в процессе индексации.
+
+\begin{scriptsize}
+\setlength{\tabcolsep}{2pt}
+\begin{longtable}{|p{0.18\textwidth}|p{0.22\textwidth}|p{0.24\textwidth}|p{0.23\textwidth}|}
+    \caption{Ключевые элементы модели данных}\label{tab:data-model}\\ \hline
+    Таблица & Ключи и индексы & Основные поля & Роль в системе \\ \hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tab:data-model}}\\ \hline
+    Таблица & Ключи и индексы & Основные поля & Роль в системе \\ \hline
+    \endhead
+    \hline
+    \endfoot
+    \hline
+    \endlastfoot
+    \texttt{blocks} &
+    PK \texttt{id}, unique \texttt{hash}, индексы по высоте и статусу &
+    \texttt{height}, \texttt{hash}, \texttt{prev\_hash}, \texttt{status} &
+    фиксация канонических и неканонических блоков \\ \hline
+    \texttt{transactions} &
+    PK \texttt{id}, unique \texttt{txid}, индексы по статусу, высоте и времени &
+    \texttt{txid}, \texttt{block\_hash}, \texttt{block\_height}, \texttt{status} &
+    связь транзакций с блоками и mempool-состояниями \\ \hline
+    \texttt{tx\_outputs} &
+    PK \texttt{(txid, vout)}, индекс по адресу &
+    \texttt{txid}, \texttt{vout}, \texttt{address}, \texttt{value\_sats} &
+    база для адресных выборок и расчета UTXO \\ \hline
+    \texttt{tx\_inputs} &
+    PK \texttt{(txid, vin)}, индекс по расходуемому выходу &
+    \texttt{txid}, \texttt{vin}, \texttt{prev\_txid}, \texttt{prev\_vout} &
+    фиксация расходования выходов \\ \hline
+    \shortstack[l]{\texttt{utxos}\\\texttt{current}} &
+    PK \texttt{(out\_txid, out\_vout)}, индекс по адресу и статусу &
+    \texttt{address}, \texttt{value\_sats}, \texttt{status} &
+    актуальное состояние непотраченных выходов \\ \hline
+    \shortstack[l]{\texttt{address}\\\texttt{balance}\\\texttt{current}} &
+    PK \texttt{address} &
+    \texttt{confirmed\_sats}, \texttt{updated\_height} &
+    быстрый ответ по текущему балансу адреса \\ \hline
+    \shortstack[l]{\texttt{address}\\\texttt{balance}\\\texttt{history}} &
+    PK \texttt{(address, block\_height)}, индекс по адресу и времени &
+    \texttt{balance\_sats}, \texttt{block\_height}, \texttt{block\_time} &
+    история изменения адресного баланса \\ \hline
+    \texttt{jobs} &
+    PK \texttt{job\_id}, CHECK по статусам &
+    \texttt{mode}, \texttt{status}, \texttt{from\_height}, \texttt{current\_height} &
+    управление жизненным циклом индексирования \\ \hline
+    \shortstack[l]{\texttt{job}\\\texttt{addresses}} &
+    PK \texttt{(job\_id, address)}, FK на \texttt{jobs} &
+    \texttt{job\_id}, \texttt{address} &
+    адресные фильтры для выборочных заданий \\ \hline
+    \texttt{node\_health} &
+    PK \texttt{node\_id} &
+    \texttt{last\_seen\_at}, \texttt{tip\_height}, \texttt{status} &
+    наблюдение за доступностью и высотой узлов \\ \hline
+\end{longtable}
+\end{scriptsize}
+
+Важным свойством модели данных является ее ориентированность на
+идемпотентность и воспроизводимость обработки. Для этого в проекте
+используются первичные и уникальные ключи, ограничения целостности и
+детерминированные правила обновления агрегатов. С инженерной точки зрения это
+позволяет описать лаг индексации как
+разность между высотой tip цепи и текущим прогрессом job:
+
+\begin{equation}
+    L = H_{tip} - H_{progress},
+\end{equation}
+
+где $L$ --- лаг индексирования, $H_{tip}$ --- актуальная высота цепи,
+$H_{progress}$ --- высота, до которой синхронизирован job.
+
+Данная модель хранения обеспечивает как последовательную обработку блоков, так
+и эффективное выполнение прикладных запросов к уже подготовленным данным, что
+является ключевым требованием к системе индексации блокчейн данных.

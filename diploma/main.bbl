@@ -1,0 +1,557 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{btc_core_rpc}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin Core RPC Documentation}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://developer.bitcoin.org/reference/rpc/index.html
+      \endverb
+      \verb{url}
+      \verb https://developer.bitcoin.org/reference/rpc/index.html
+      \endverb
+    \endentry
+    \entry{bitcoin_core_rpc_29}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin Core 29.0 RPC Documentation}
+      \field{urlday}{11}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://bitcoincore.org/en/doc/29.0.0/
+      \endverb
+      \verb{url}
+      \verb https://bitcoincore.org/en/doc/29.0.0/
+      \endverb
+    \endentry
+    \entry{nakamoto2008}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=1977190f018b398e43ede3de043de8ea}{%
+           family={Nakamoto},
+           familyi={N\bibinitperiod},
+           given={Satoshi},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{namehash}{1977190f018b398e43ede3de043de8ea}
+      \strng{fullhash}{1977190f018b398e43ede3de043de8ea}
+      \strng{bibnamehash}{1977190f018b398e43ede3de043de8ea}
+      \strng{authorbibnamehash}{1977190f018b398e43ede3de043de8ea}
+      \strng{authornamehash}{1977190f018b398e43ede3de043de8ea}
+      \strng{authorfullhash}{1977190f018b398e43ede3de043de8ea}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin: A Peer-to-Peer Electronic Cash System}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{year}{2008}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://bitcoin.org/bitcoin.pdf
+      \endverb
+      \verb{url}
+      \verb https://bitcoin.org/bitcoin.pdf
+      \endverb
+    \endentry
+    \entry{narayanan2016bitcoin}{book}{useauthor=false}
+      \name{author}{5}{}{%
+        {{hash=95dc795a2be14c50fb6a924acc135ff8}{%
+           family={Narayanan},
+           familyi={N\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod}}}%
+        {{hash=e6eb78ec5f92eaff4e9d4b944aff4c9c}{%
+           family={Bonneau},
+           familyi={B\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+        {{hash=5f7a7ca8a5b79afabc956229bd08f9d5}{%
+           family={Felten},
+           familyi={F\bibinitperiod},
+           given={Edward},
+           giveni={E\bibinitperiod}}}%
+        {{hash=403caa7edb7a2770a6a678a46079869e}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={Andrew},
+           giveni={A\bibinitperiod}}}%
+        {{hash=208ae2fb561a96b06fbdd96f6f18a33c}{%
+           family={Goldfeder},
+           familyi={G\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Princeton University Press}%
+      }
+      \strng{authorbibnamehash}{1493becdacb9c2c2ea8e1f8e130cc6e9}
+      \strng{authornamehash}{1493becdacb9c2c2ea8e1f8e130cc6e9}
+      \strng{authorfullhash}{f512b13af32d34046a5ecb069096e94e}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin and Cryptocurrency Technologies: A Comprehensive Introduction}
+      \field{year}{2016}
+    \endentry
+    \entry{antonopoulos2017mastering}{book}{}
+      \name{author}{1}{}{%
+        {{hash=a8107494556af1100a132bb87b1cbd5d}{%
+           family={Antonopoulos},
+           familyi={A\bibinitperiod},
+           given={Andreas\bibnamedelima M.},
+           giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{fullhash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{bibnamehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{authorbibnamehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{authornamehash}{a8107494556af1100a132bb87b1cbd5d}
+      \strng{authorfullhash}{a8107494556af1100a132bb87b1cbd5d}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2}
+      \field{title}{Mastering Bitcoin: Programming the Open Blockchain}
+      \field{year}{2017}
+    \endentry
+    \entry{postgres_docs}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{title}{PostgreSQL 16 Documentation}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.postgresql.org/docs/16/index.html
+      \endverb
+      \verb{url}
+      \verb https://www.postgresql.org/docs/16/index.html
+      \endverb
+    \endentry
+    \entry{prometheus_docs}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{title}{Prometheus Documentation}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://prometheus.io/docs/introduction/overview/
+      \endverb
+      \verb{url}
+      \verb https://prometheus.io/docs/introduction/overview/
+      \endverb
+    \endentry
+    \entry{project_github}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin Blockchain Indexer: source code repository}
+      \field{urlday}{27}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/vivichv9/Blockchain-Indexer
+      \endverb
+      \verb{url}
+      \verb https://github.com/vivichv9/Blockchain-Indexer
+      \endverb
+    \endentry
+    \entry{swan2015blockchain}{book}{}
+      \name{author}{1}{}{%
+        {{hash=89ec8ae9aa0976203a1a25b6f9536a64}{%
+           family={Swan},
+           familyi={S\bibinitperiod},
+           given={Melanie},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{89ec8ae9aa0976203a1a25b6f9536a64}
+      \strng{fullhash}{89ec8ae9aa0976203a1a25b6f9536a64}
+      \strng{bibnamehash}{89ec8ae9aa0976203a1a25b6f9536a64}
+      \strng{authorbibnamehash}{89ec8ae9aa0976203a1a25b6f9536a64}
+      \strng{authornamehash}{89ec8ae9aa0976203a1a25b6f9536a64}
+      \strng{authorfullhash}{89ec8ae9aa0976203a1a25b6f9536a64}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Blockchain: Blueprint for a New Economy}
+      \field{year}{2015}
+    \endentry
+    \entry{drescher2017blockchain}{book}{}
+      \name{author}{1}{}{%
+        {{hash=9a8bd801d770e9c92e59caef8e853949}{%
+           family={Drescher},
+           familyi={D\bibinitperiod},
+           given={Daniel},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {Apress}%
+      }
+      \strng{namehash}{9a8bd801d770e9c92e59caef8e853949}
+      \strng{fullhash}{9a8bd801d770e9c92e59caef8e853949}
+      \strng{bibnamehash}{9a8bd801d770e9c92e59caef8e853949}
+      \strng{authorbibnamehash}{9a8bd801d770e9c92e59caef8e853949}
+      \strng{authornamehash}{9a8bd801d770e9c92e59caef8e853949}
+      \strng{authorfullhash}{9a8bd801d770e9c92e59caef8e853949}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Blockchain Basics: A Non-Technical Introduction in 25 Steps}
+      \field{year}{2017}
+    \endentry
+    \entry{electrs_repo}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labeltitlesource}{title}
+      \field{title}{electrs: An efficient re-implementation of Electrum Server in Rust}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/romanz/electrs
+      \endverb
+      \verb{url}
+      \verb https://github.com/romanz/electrs
+      \endverb
+    \endentry
+    \entry{esplora_repo}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labeltitlesource}{title}
+      \field{title}{Esplora Block Explorer}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/Blockstream/esplora
+      \endverb
+      \verb{url}
+      \verb https://github.com/Blockstream/esplora
+      \endverb
+    \endentry
+    \entry{blocksci_paper}{inproceedings}{useauthor=false}
+      \name{author}{7}{}{%
+        {{hash=e805b09589caa915653b84399c1dd749}{%
+           family={Kalodner},
+           familyi={K\bibinitperiod},
+           given={Harry},
+           giveni={H\bibinitperiod}}}%
+        {{hash=7875c2d201799d0d3f15a893bea43d67}{%
+           family={Möser},
+           familyi={M\bibinitperiod},
+           given={Malte},
+           giveni={M\bibinitperiod}}}%
+        {{hash=dd12628ece2c2bcccc0e876cbeafa9c9}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=208ae2fb561a96b06fbdd96f6f18a33c}{%
+           family={Goldfeder},
+           familyi={G\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ba9579d88b3ba7017a7873609773a409}{%
+           family={Plattner},
+           familyi={P\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0dcb5d160218f08e930d2235bb7d9423}{%
+           family={Chator},
+           familyi={C\bibinitperiod},
+           given={Alishah},
+           giveni={A\bibinitperiod}}}%
+        {{hash=95dc795a2be14c50fb6a924acc135ff8}{%
+           family={Narayanan},
+           familyi={N\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \strng{authorbibnamehash}{5870f49c6524ef4dda469e3316b59ce9}
+      \strng{authornamehash}{5870f49c6524ef4dda469e3316b59ce9}
+      \strng{authorfullhash}{bce2fde372e7630ecd35aac3fda56ec0}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labeltitlesource}{title}
+      \field{title}{BlockSci: Design and Applications of a Blockchain Analysis Platform}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{year}{2017}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://collaborate.princeton.edu/en/publications/blocksci-design-and-applications-of-a-blockchain-analysis-platfor/
+      \endverb
+      \verb{url}
+      \verb https://collaborate.princeton.edu/en/publications/blocksci-design-and-applications-of-a-blockchain-analysis-platfor/
+      \endverb
+    \endentry
+    \entry{bitcoin_etl_repo}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin ETL}
+      \field{urlday}{20}
+      \field{urlmonth}{4}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/blockchain-etl/bitcoin-etl
+      \endverb
+      \verb{url}
+      \verb https://github.com/blockchain-etl/bitcoin-etl
+      \endverb
+    \endentry
+    \entry{gost_arch}{book}{}
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {Стандартинформ}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{ГОСТ Р 57100-2016. Системная и программная инженерия. Описание архитектуры}
+      \field{year}{2016}
+    \endentry
+    \entry{gost_quality}{book}{}
+      \list{language}{1}{%
+        {russian}%
+      }
+      \list{publisher}{1}{%
+        {Стандартинформ}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{ГОСТ Р ИСО/МЭК 25010-2015. Модели качества систем и программных продуктов}
+      \field{year}{2015}
+    \endentry
+    \entry{kleppmann2017designing}{book}{}
+      \name{author}{1}{}{%
+        {{hash=34b8d5b1d29d175527a6642f3ec8a76d}{%
+           family={Kleppmann},
+           familyi={K\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{fullhash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{bibnamehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{authorbibnamehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{authornamehash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \strng{authorfullhash}{34b8d5b1d29d175527a6642f3ec8a76d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems}
+      \field{year}{2017}
+    \endentry
+    \entry{richards2020fundamentals}{book}{}
+      \name{author}{2}{}{%
+        {{hash=8e3c0b09130cc7c13c7cda6ef28a7d48}{%
+           family={Richards},
+           familyi={R\bibinitperiod},
+           given={Mark},
+           giveni={M\bibinitperiod}}}%
+        {{hash=5ffeeeb533dfcb3c39bada5fdcf44fc0}{%
+           family={Ford},
+           familyi={F\bibinitperiod},
+           given={Neal},
+           giveni={N\bibinitperiod}}}%
+      }
+      \list{language}{1}{%
+        {english}%
+      }
+      \list{publisher}{1}{%
+        {O'Reilly Media}%
+      }
+      \strng{namehash}{755202f5a26937dce6816860584aac24}
+      \strng{fullhash}{755202f5a26937dce6816860584aac24}
+      \strng{bibnamehash}{755202f5a26937dce6816860584aac24}
+      \strng{authorbibnamehash}{755202f5a26937dce6816860584aac24}
+      \strng{authornamehash}{755202f5a26937dce6816860584aac24}
+      \strng{authorfullhash}{755202f5a26937dce6816860584aac24}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Fundamentals of Software Architecture: An Engineering Approach}
+      \field{year}{2020}
+    \endentry
+    \entry{docker_docs}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Docker Documentation}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.docker.com/
+      \endverb
+      \verb{url}
+      \verb https://docs.docker.com/
+      \endverb
+    \endentry
+    \entry{compose_docs}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Docker Compose Documentation}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.docker.com/compose/
+      \endverb
+      \verb{url}
+      \verb https://docs.docker.com/compose/
+      \endverb
+    \endentry
+    \entry{testcontainers_docs}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{testcontainers for Rust}
+      \field{urlday}{22}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://docs.rs/testcontainers/
+      \endverb
+      \verb{url}
+      \verb https://docs.rs/testcontainers/
+      \endverb
+    \endentry
+    \entry{bitcoin_core_benchmarking}{online}{}
+      \list{language}{1}{%
+        {english}%
+      }
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Bitcoin Core Developer Documentation: Benchmarking}
+      \field{urlday}{11}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://casey.github.io/bitcoin/doc/benchmarking.html
+      \endverb
+      \verb{url}
+      \verb https://casey.github.io/bitcoin/doc/benchmarking.html
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
