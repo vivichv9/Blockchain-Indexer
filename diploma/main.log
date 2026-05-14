@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  4 MAY 2026 15:54
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022/Debian) (preloaded format=xelatex 2026.3.22)  12 MAY 2026 19:45
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1734,78 +1734,81 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 (./contents/1-introduction.tex [8
 
 
-]) (./contents/2-00-compilation.tex [9
+] [9
 
 
-]
-[10
+] [10] [11] [12]) [13]
+(./contents/2-00-compilation.tex [14] [15
 
-]) (./contents/2-01-titlepage.tex [11] [12]) (./contents/2-02-techtask.tex
-[13]) (./contents/2-03-abstract.tex [14]) (./contents/2-04-glossary.tex
-[15] [16]) (./contents/2-05-figures.tex [17]
+]) (./contents/2-01-titlepage.tex
+[16] [17]) (./contents/2-02-techtask.tex [18]) (./contents/2-03-abstract.tex
+[19]) (./contents/2-04-glossary.tex [20] [21]) (./contents/2-05-figures.tex
+[22]
 File: ../report/dfd/DFD_Level_0_Context.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_0_Context.png>
- [18]
+ [23]
 File: ../report/dfd/DFD_Level_1.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_1.png>
 File: ../report/dfd/DFD_Level_2_Indexing.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_2_Indexing.png>
- [19]
+ [24]
 File: ../report/dfd/DFD_Level_2_Admin.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_2_Admin.png>
- [20]
+ [25]
 File: ../report/dfd/DFD_Level_2_DataServing.png Graphic file (type bmp)
 <../report/dfd/DFD_Level_2_DataServing.png>
- [21])
-(./contents/2-06-citations.tex [22]) (./contents/2-07-tables.tex [23
+ [26]) (./contents/2-06-citations.tex [27])
+(./contents/2-07-tables.tex [28
 
-] [24]
+] [29]
 LaTeX Font Info:    Calculating math sizes for size <11.66681> on input line 50
 .
-)
-(./contents/2-08-enums.tex [25]
+) (./contents/2-08-enums.tex [30]
 File: ../report/c4/C4_Component_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Component_Architecture.png>
- [26]) (./contents/2-09-formulas.tex [27]
-[28]) (./contents/2-10-math.tex [29] [30]) (./contents/2-11-algorithms.tex
-[31] [32
+ [31])
+(./contents/2-09-formulas.tex [32] [33]) (./contents/2-10-math.tex [34]
+[35]) (./contents/2-11-algorithms.tex [36] [37
 
-] [33] [34] [35]) (./contents/2-12-listings.tex
+] [38] [39] [40])
+(./contents/2-12-listings.tex
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
 nput line 17.
-
-(../src/modules/indexer/mod.rs
+ (../src/modules/indexer/mod.rs
 consecutive:
-) [36] (../src/modules/jobs/mod.rs
+) [41] (../src/modules/jobs/mod.rs
 consecutive:
-) [37]) (./contents/3-conclusion.tex [38] [39
+) [42]) (./contents/3-conclusion.tex [43] [44
 
-] [40] [41] [42] [43] [44]
-[45
-
-] [46] [47] [48]) [49
+] [45] [46] [47] [48] [49]
+LaTeX Font Info:    Calculating math sizes for size <9.3334> on input line 288.
 
 
-] [50
+[50] [51] [52
+
+] [53] [54] [55]) [56
 
 
-] [51]
+] [57
+
+
+] [58]
 \openout2 = `contents/4-appendix-a.aux'.
 
  (./contents/4-appendix-a.tex
 File: ../report/c4/C4_Deployment_Architecture.png Graphic file (type bmp)
 <../report/c4/C4_Deployment_Architecture.png>
-) [52
+)
+[59
 
 
 ]
 \openout2 = `contents/4-appendix-b.aux'.
 
-
-(./contents/4-appendix-b.tex
+ (./contents/4-appendix-b.tex
 File: inc/github_qr.png Graphic file (type bmp)
 <inc/github_qr.png>
-) [53
+) [60
 
 
 
@@ -1813,7 +1816,7 @@ File: inc/github_qr.png Graphic file (type bmp)
 ]
 \openout2 = `contents/4-appendix-d.aux'.
 
- (./contents/4-appendix-d.tex) [54
+ (./contents/4-appendix-d.tex) [61
 
 
 
@@ -1828,12 +1831,12 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 43271 strings out of 478025
- 869700 string characters out of 5841685
- 2296331 words of memory out of 5000000
- 62515 multiletter control sequences out of 15000+600000
- 526213 words of font info for 139 fonts, out of 8000000 for 9000
+ 43314 strings out of 478025
+ 870728 string characters out of 5841685
+ 2296934 words of memory out of 5000000
+ 62552 multiletter control sequences out of 15000+600000
+ 530870 words of font info for 159 fonts, out of 8000000 for 9000
  682 hyphenation exceptions out of 8191
- 138i,16n,134p,2324b,5551s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 138i,16n,134p,2324b,5568s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.xdv (54 pages, 885812 bytes).
+Output written on main.xdv (61 pages, 1036640 bytes).

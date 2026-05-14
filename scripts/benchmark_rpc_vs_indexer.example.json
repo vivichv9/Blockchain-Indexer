@@ -1,0 +1,93 @@
+{
+  "indexer": {
+    "base_url": "http://127.0.0.1:8080",
+    "username": "",
+    "password_env": "INDEXER_API_PASSWORD"
+  },
+  "bitcoin_core": {
+    "rpc_url": "http://127.0.0.1:8332",
+    "username": "bitcoinrpc",
+    "password_env": "BITCOIN_RPC_PASSWORD"
+  },
+  "defaults": {
+    "warmup": 5,
+    "iterations": 100,
+    "timeout_sec": 10
+  },
+  "scenarios": [
+    {
+      "name": "latest_chain_state",
+      "description": "Получение актуального состояния цепочки: индексер возвращает последнюю страницу блоков, Bitcoin Core RPC возвращает getblockchaininfo.",
+      "indexer": {
+        "kind": "http_get",
+        "path": "/v1/data/blocks?limit=1"
+      },
+      "bitcoin_core": {
+        "kind": "json_rpc",
+        "method": "getblockchaininfo",
+        "params": []
+      }
+    },
+    {
+      "name": "block_by_hash",
+      "description": "Получение блока по хэшу.",
+      "variables": {
+        "block_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "indexer": {
+        "kind": "http_get",
+        "path": "/v1/data/blocks?block_hash={block_hash}&limit=1"
+      },
+      "bitcoin_core": {
+        "kind": "json_rpc",
+        "method": "getblock",
+        "params": [
+          "{block_hash}",
+          2
+        ]
+      }
+    },
+    {
+      "name": "transaction_by_txid",
+      "enabled": false,
+      "description": "Получение транзакции по txid; для Bitcoin Core требуется txindex=1 либо транзакция из кошелька/мемпула.",
+      "variables": {
+        "txid": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "indexer": {
+        "kind": "http_get",
+        "path": "/v1/data/transactions?txid={txid}&limit=1"
+      },
+      "bitcoin_core": {
+        "kind": "json_rpc",
+        "method": "getrawtransaction",
+        "params": [
+          "{txid}",
+          1
+        ]
+      }
+    },
+    {
+      "name": "address_utxo_lookup",
+      "enabled": false,
+      "description": "Сравнение индексированного поиска UTXO адреса со сканированием UTXO-набора Bitcoin Core; это не полностью эквивалентные операции.",
+      "variables": {
+        "address": "bc1qexampleaddressreplacebeforeuse"
+      },
+      "indexer": {
+        "kind": "http_get",
+        "path": "/v1/data/addresses/{address}/utxos"
+      },
+      "bitcoin_core": {
+        "kind": "json_rpc",
+        "method": "scantxoutset",
+        "params": [
+          "start",
+          [
+            "addr({address})"
+          ]
+        ]
+      }
+    }
+  ]
+}
